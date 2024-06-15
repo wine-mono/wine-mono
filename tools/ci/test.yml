@@ -52,3 +52,33 @@ linux-test:
         - winetest64.log
         - winetest32.log
         - mono-tests.log
+
+windows-test:
+    stage: test
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_PROJECT_NAMESPACE == 'wine-mono'
+          changes:
+            paths:
+              - GNUmakefile
+              - llvm.make
+              - mono
+              - mono.make
+              - mono-basic
+              - mono-basic.make
+              - tools/ci/**/*
+              - tools/run-tests/**/*
+              - tools/tests/**/*
+              - vstests
+    interruptible: true
+    variables:
+        GIT_STRATEGY: none
+    needs:
+        - job: build
+    tags:
+        - win10-21h2
+    script:
+        - tests/run-tests.exe -skip-list:tests/gitlab-windows-skip.txt -fail-list:tests/gitlab-windows-failing.txt -skip-list:tests/gitlab-extra-tests.txt >test-results.txt
+    artifacts:
+        when: always
+        paths:
+            - test-results.txt

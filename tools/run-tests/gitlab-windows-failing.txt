@@ -1,0 +1,2 @@
+MonoTests.System.Windows.Forms.TextBoxTest:ModifiedTest
+MonoTests.System.Windows.Forms.TextBoxTest:PasteTest
