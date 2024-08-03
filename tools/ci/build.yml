@@ -11,6 +11,13 @@ build:
             key: $CI_JOB_NAME-ccache
             paths:
                 - ccache/
+    cache:
+        -
+            key:
+                files:
+                    - llvm.make
+            paths:
+                - llvm-mingw-*/
     before_script:
         - export BASEDIR="$PWD"
         - export CCACHE_BASEDIR="$BASEDIR"
