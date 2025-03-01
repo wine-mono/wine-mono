@@ -107,3 +107,5 @@ x86.pinvoke2:test_0_marshal_delegate_struct
 x86.pinvoke2:test_0_return_vtype
 x86.pinvoke2:test_0_return_vtype_gen
 x86.pinvoke2:test_0_add_lib_to_name
+MonoTests.System.Net.ServicePointTest:All
+MonoTests.System.Net.HttpListener2Test:MultiResponses
