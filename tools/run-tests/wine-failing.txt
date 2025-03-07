@@ -237,8 +237,6 @@ x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Pie
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_String
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker_2
-x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddClosedCurve
-x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddPie
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddString
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Bilinear
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Invalid
@@ -593,7 +591,6 @@ x86.MonoTests.System.Net.HttpRequestStreamTest:Write_Stream_Closed
 x86.MonoTests.System.Net.HttpResponseStreamTest:CanRead
 x86.MonoTests.System.Net.HttpResponseStreamTest:Read_Stream_Closed
 x86.MonoTests.System.Net.HttpWebRequestTest:EndGetResponse_AsyncResult_Invalid
-x86.MonoTests.System.Net.NetworkInformation.NetworkInterfaceTest:FirstInterfaceSpeed
 x86.MonoTests.System.Net.WebSockets.ClientWebSocketTest:ServerHandshakeReturnCrapStatusCodeTest
 x86.MonoTests.System.Security.Cryptography.X509Certificates.X509Cert20Test:Export_Pfx
 x86.MonoTests.System.Security.Cryptography.X509Certificates.X509Cert20Test:Export_Pkcs12
@@ -715,8 +712,6 @@ x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Pie
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_String
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker_2
-x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddClosedCurve
-x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddPie
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddString
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Bilinear
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Invalid
@@ -1091,7 +1086,6 @@ x86_64.MonoTests.System.Net.HttpRequestStreamTest:Write_Stream_Closed
 x86_64.MonoTests.System.Net.HttpResponseStreamTest:CanRead
 x86_64.MonoTests.System.Net.HttpResponseStreamTest:Read_Stream_Closed
 x86_64.MonoTests.System.Net.HttpWebRequestTest:EndGetResponse_AsyncResult_Invalid
-x86_64.MonoTests.System.Net.NetworkInformation.NetworkInterfaceTest:FirstInterfaceSpeed
 x86_64.MonoTests.System.Net.WebSockets.ClientWebSocketTest:ServerHandshakeReturnCrapStatusCodeTest
 x86_64.MonoTests.System.Security.Cryptography.X509Certificates.X509Cert20Test:Export_Pfx
 x86_64.MonoTests.System.Security.Cryptography.X509Certificates.X509Cert20Test:Export_Pkcs12
