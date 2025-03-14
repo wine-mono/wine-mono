@@ -1,4 +1,4 @@
-Wine Mono is a package containing Mono and other projects, intended as a replacement for the .NET Framework (4.8 and earlier) in Wine. It works in conjunction with Wine's builtin mscoree.dll, and it is not intended to be useful for any other purpose.
+Wine Mono is a package containing Framework Mono and other projects, intended as a replacement for the .NET Framework (4.8 and earlier) in Wine. It works in conjunction with Wine's builtin mscoree.dll, and it is not intended to be useful for any other purpose.
 
 
 SOURCE CODE
@@ -57,8 +57,8 @@ COMPOSITION
 
 An installed Wine Mono contains the following:
  * Registry keys and files in C:\windows\Microsoft.NET intended to make it look as if .NET Framework is installed, so that applications won't complain that it's missing, and the installers for .NET Framework won't install. This is part of an msi package named "Wine Mono Windows Support". (Wine Mono should always be removed before installing .NET Framework 4.8 and earlier. Wine Mono can coexist with .NET Core and .NET 5 or later.)
- * A modified version of the Mono runtime and class libraries, in the "Wine Mono Runtime" msi or a shared location outside the prefix.
- * Other supporting libraries that are not part of Mono, in some cases replacing Mono's version.
+ * A modified version of the Framework Mono runtime and class libraries, in the "Wine Mono Runtime" msi or a shared location outside the prefix.
+ * Other supporting libraries that are not part of Framework Mono, in some cases replacing Framework Mono's version, also stored in the "Wine Mono Runtime" msi or a shared location.
 
 
 BUGS
@@ -70,7 +70,7 @@ PATCHES
 
 Patches to the top-level project should be sent as a merge request to https://gitlab.winehq.org/mono/wine-mono.
 
-Patches to Mono should be sent as a merge request to https://gitlab.winehq.org/mono/mono. Ideally, most MRs should be for the main branch, which does not contain Wine Mono's modifications. If the change is specific to Wine Wono, then the MR should be for the wine-mono branch.
+Patches to Mono should be sent as a merge request to https://gitlab.winehq.org/mono/mono. Ideally, most MRs should be for Framework Mono, which is the main branch. If the change is specific to Wine Mono, then the MR should be for the wine-mono branch.
 
 Changes to upstream projects that make sense only within the context of wine-mono and not for the project's general use case should be sent as a merge request to the appropriate fork in https://gitlab.winehq.org/mono, on the wine-mono branch.
 
@@ -78,4 +78,4 @@ FNA and related projects have been very responsive to pull requests, and it's wo
 
 Changes to mono-basic should be sent as a merge request to https://gitlab.winehq.org/mono/mono-basic. However, before doing any substantial work on mono-basic, it may be worth checking whether there's an implementation in https://github.com/dotnet/winforms or https://github.com/dotnet/runtime.
 
-The winforms and wpf projects are not being updated from upstream, and have diverged significantly. Since they are supporting .NET Core, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.
+The winforms and wpf projects are not being updated from upstream and have diverged significantly. Since they are supporting modern .NET, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.
