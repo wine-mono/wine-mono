@@ -1,6 +1,7 @@
 stages:
     - image
     - build
+    - build2
     - test
 
 variables:

@@ -41,3 +41,44 @@ build:
             - build.log
         expire_in: 1 week
 
+build-source:
+    stage: build
+    image: $CI_REGISTRY/mono/wine-mono:debian-bookworm-build
+    when: manual
+    interruptible: true
+    timeout: 1h
+    before_script:
+        - git config --global --add safe.directory $CI_PROJECT_DIR
+        - rm -fr .git/rebase-merge  # in case a previous CI run failed in git rebase
+    script:
+        - "tools/ci/update-submodules.sh"
+        - "make source"
+    artifacts:
+        paths:
+            - wine-mono-*.tar.xz
+        expire_in: 1 week
+
+build-bin:
+    stage: build2
+    image: $CI_REGISTRY/mono/wine-mono:debian-bookworm-build
+    when: manual
+    interruptible: true
+    variables:
+        GIT_STRATEGY: none
+    needs:
+        - job: build-source
+    timeout: 1h
+    before_script:
+        - git config --global --add safe.directory $CI_PROJECT_DIR
+        - rm -fr .git/rebase-merge  # in case a previous CI run failed in git rebase
+    script:
+        - "tar -xJf wine-mono-*.tar.xz"
+        - "cd wine-mono-*/"
+        - "make"
+    artifacts:
+        paths:
+            - wine-mono-*/wine-mono-*-x86.tar.xz
+            - wine-mono-*/wine-mono-*-x86.msi
+            - wine-mono-*/wine-mono-*-tests.zip
+            - wine-mono-*/wine-mono-*-dbgsym.tar.xz
+        expire_in: 1 week
