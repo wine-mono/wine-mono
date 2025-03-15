@@ -67,7 +67,7 @@ build-bin:
         GIT_STRATEGY: none
     needs:
         - job: build-source
-    timeout: 1h
+    timeout: 2h
     before_script:
         - git config --global --add safe.directory $CI_PROJECT_DIR
         - rm -fr .git/rebase-merge  # in case a previous CI run failed in git rebase
