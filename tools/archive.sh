@@ -40,7 +40,7 @@ OUTPUT_FILE="$2/$3.tar"
 
 rm -f "$OUTPUT_FILE"
 
-recursivearchivefiles "$PWD" "$1"/ "$1" "$OUTPUT_FILE"
+recursivearchivefiles "$PWD" "$1"/ HEAD "$OUTPUT_FILE"
 
 # add llvm-mingw
 tar rf "$OUTPUT_FILE" --transform 's:^./:'"$1"'/:g' ./$4
