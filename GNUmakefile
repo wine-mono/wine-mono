@@ -25,6 +25,8 @@ PREFER_DWARF_SYMBOLS=0
 
 ENABLE_ARM=0
 
+ENABLE_SDL3=0
+
 -include user-config.make
 
 MSI_VERSION=10.0.99
@@ -152,7 +154,11 @@ include mono-basic.make
 include fna.make
 include fna3d.make
 include faudio.make
+ifeq (1,$(ENABLE_SDL3))
+include sdl3.make
+else
 include sdl2.make
+endif
 include fnamf.make
 include winforms.make
 include winforms-datavisualization.make
