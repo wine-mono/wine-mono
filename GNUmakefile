@@ -25,7 +25,7 @@ PREFER_DWARF_SYMBOLS=0
 
 ENABLE_ARM=0
 
-ENABLE_SDL3=0
+ENABLE_SDL3=1
 
 -include user-config.make
 
