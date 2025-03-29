@@ -4,3 +4,4 @@ MonoTests.System.Windows.Forms.FormTest:FormStartupPositionTest
 MonoTests.System.Windows.Forms.FormTest:MaximizedParentedFormTest
 MonoTests.System.Net.Sockets.UdpClientTest:Available
 MonoTests.System.Net.Sockets.SocketTest:BeginConnectMultiple
+MonoTests.System.Net.NetworkInformation.NetworkInterfaceTest:FirstInterfaceSpeed

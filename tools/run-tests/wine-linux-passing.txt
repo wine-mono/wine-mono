@@ -5,3 +5,4 @@ MonoTests.System.Windows.Forms.FormTest:MaximizedParentedFormTest # requires vir
 MonoTests.System.Net.Sockets.UdpClientTest:Available
 MonoTests.System.Net.Sockets.SocketTest:BogusEndConnect
 MonoTests.System.Net.Sockets.SocketTest:BeginConnectMultiple
+MonoTests.System.Net.NetworkInformation.NetworkInterfaceTest:FirstInterfaceSpeed
