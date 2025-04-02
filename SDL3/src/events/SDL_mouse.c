@@ -234,6 +234,17 @@ static void SDLCALL SDL_MouseRelativeCursorVisibleChanged(void *userdata, const 
     SDL_SetCursor(NULL); // Update cursor visibility
 }
 
+static void SDLCALL SDL_MouseIntegerModeChanged(void *userdata, const char *name, const char *oldValue, const char *hint)
+{
+    SDL_Mouse *mouse = (SDL_Mouse *)userdata;
+
+    if (hint && *hint) {
+        mouse->integer_mode_flags = (Uint8)SDL_atoi(hint);
+    } else {
+        mouse->integer_mode_flags = 0;
+    }
+}
+
 // Public functions
 bool SDL_PreInitMouse(void)
 {
@@ -287,6 +298,9 @@ bool SDL_PreInitMouse(void)
 
     SDL_AddHintCallback(SDL_HINT_MOUSE_RELATIVE_CURSOR_VISIBLE,
                         SDL_MouseRelativeCursorVisibleChanged, mouse);
+
+    SDL_AddHintCallback("SDL_MOUSE_INTEGER_MODE",
+                        SDL_MouseIntegerModeChanged, mouse);
 
     mouse->was_touch_mouse_events = false; // no touch to mouse movement event pending
 
@@ -720,12 +734,22 @@ static void SDL_PrivateSendMouseMotion(Uint64 timestamp, SDL_Window *window, SDL
                 y *= mouse->normal_speed_scale;
             }
         }
+        if (mouse->integer_mode_flags & 1) {
+            // Accumulate the fractional relative motion and only process the integer portion
+            mouse->integer_mode_residual_motion_x = SDL_modff(mouse->integer_mode_residual_motion_x + x, &x);
+            mouse->integer_mode_residual_motion_y = SDL_modff(mouse->integer_mode_residual_motion_y + y, &y);
+        }
         xrel = x;
         yrel = y;
         x = (mouse->last_x + xrel);
         y = (mouse->last_y + yrel);
         ConstrainMousePosition(mouse, window, &x, &y);
     } else {
+        if (mouse->integer_mode_flags & 1) {
+            // Discard the fractional component from absolute coordinates
+            x = SDL_truncf(x);
+            y = SDL_truncf(y);
+        }
         ConstrainMousePosition(mouse, window, &x, &y);
         if (mouse->has_position) {
             xrel = x - mouse->last_x;
@@ -998,6 +1022,12 @@ void SDL_SendMouseWheel(Uint64 timestamp, SDL_Window *window, SDL_MouseID mouseI
         SDL_SetMouseFocus(window);
     }
 
+    // Accumulate fractional wheel motion if integer mode is enabled
+    if (mouse->integer_mode_flags & 2) {
+        mouse->integer_mode_residual_scroll_x = SDL_modff(mouse->integer_mode_residual_scroll_x + x, &x);
+        mouse->integer_mode_residual_scroll_y = SDL_modff(mouse->integer_mode_residual_scroll_y + y, &y);
+    }
+
     if (x == 0.0f && y == 0.0f) {
         return;
     }
@@ -1107,6 +1137,9 @@ void SDL_QuitMouse(void)
 
     SDL_RemoveHintCallback(SDL_HINT_MOUSE_RELATIVE_CURSOR_VISIBLE,
                         SDL_MouseRelativeCursorVisibleChanged, mouse);
+
+    SDL_RemoveHintCallback("SDL_MOUSE_INTEGER_MODE",
+                        SDL_MouseIntegerModeChanged, mouse);
 
     for (int i = SDL_mouse_count; i--; ) {
         SDL_RemoveMouse(SDL_mice[i].instance_id, false);

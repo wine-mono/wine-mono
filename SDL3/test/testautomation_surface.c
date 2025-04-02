@@ -112,7 +112,7 @@ static void testBlitBlendModeWithFormats(int mode, SDL_PixelFormat src_format, S
     int deltaR, deltaG, deltaB, deltaA;
 
     /* Create dst surface */
-    dst = SDL_CreateSurface(1, 1, dst_format);
+    dst = SDL_CreateSurface(9, 1, dst_format);
     SDLTest_AssertCheck(dst != NULL, "Verify dst surface is not NULL");
     if (dst == NULL) {
         return;
@@ -137,7 +137,7 @@ static void testBlitBlendModeWithFormats(int mode, SDL_PixelFormat src_format, S
     SDL_GetRGBA(color, SDL_GetPixelFormatDetails(dst->format), SDL_GetSurfacePalette(dst), &dstR, &dstG, &dstB, &dstA);
 
     /* Create src surface */
-    src = SDL_CreateSurface(1, 1, src_format);
+    src = SDL_CreateSurface(9, 1, src_format);
     SDLTest_AssertCheck(src != NULL, "Verify src surface is not NULL");
     if (src == NULL) {
         return;
@@ -312,6 +312,24 @@ static void AssertFileExist(const char *filename)
 }
 
 /* Test case functions */
+
+/**
+ * Tests creating surface with invalid format
+ */
+static int SDLCALL surface_testInvalidFormat(void *arg)
+{
+    SDL_Surface *surface;
+
+    surface = SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_UNKNOWN);
+    SDLTest_AssertCheck(surface == NULL, "Verify SDL_CreateSurface(SDL_PIXELFORMAT_UNKNOWN) returned NULL");
+    SDL_DestroySurface(surface);
+
+    surface = SDL_CreateSurfaceFrom(32, 32, SDL_PIXELFORMAT_UNKNOWN, NULL, 0);
+    SDLTest_AssertCheck(surface == NULL, "Verify SDL_CreateSurfaceFrom(SDL_PIXELFORMAT_UNKNOWN) returned NULL");
+    SDL_DestroySurface(surface);
+
+    return TEST_COMPLETED;
+}
 
 /**
  * Tests sprite saving and loading
@@ -1540,6 +1558,10 @@ static int SDLCALL surface_testScale(void *arg)
 /* ================= Test References ================== */
 
 /* Surface test cases */
+static const SDLTest_TestCaseReference surfaceTestInvalidFormat = {
+    surface_testInvalidFormat, "surface_testInvalidFormat", "Tests creating surface with invalid format", TEST_ENABLED
+};
+
 static const SDLTest_TestCaseReference surfaceTestSaveLoadBitmap = {
     surface_testSaveLoadBitmap, "surface_testSaveLoadBitmap", "Tests sprite saving and loading.", TEST_ENABLED
 };
@@ -1638,6 +1660,7 @@ static const SDLTest_TestCaseReference surfaceTestScale = {
 
 /* Sequence of Surface test cases */
 static const SDLTest_TestCaseReference *surfaceTests[] = {
+    &surfaceTestInvalidFormat,
     &surfaceTestSaveLoadBitmap,
     &surfaceTestBlitZeroSource,
     &surfaceTestBlit,

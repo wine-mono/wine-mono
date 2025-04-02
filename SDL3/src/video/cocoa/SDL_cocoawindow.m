@@ -868,14 +868,16 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
         return NO; // we only allow you to make a Space on fullscreen desktop windows.
     } else if (!state && window->last_fullscreen_exclusive_display) {
         return NO; // we only handle leaving the Space on windows that were previously fullscreen desktop.
-    } else if (state == isFullscreenSpace) {
+    } else if (state == isFullscreenSpace && !inFullscreenTransition) {
         return YES; // already there.
     }
 
     if (inFullscreenTransition) {
         if (state) {
+            [self clearPendingWindowOperation:PENDING_OPERATION_LEAVE_FULLSCREEN];
             [self addPendingWindowOperation:PENDING_OPERATION_ENTER_FULLSCREEN];
         } else {
+            [self clearPendingWindowOperation:PENDING_OPERATION_ENTER_FULLSCREEN];
             [self addPendingWindowOperation:PENDING_OPERATION_LEAVE_FULLSCREEN];
         }
         return YES;
@@ -901,6 +903,11 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
 - (void)clearPendingWindowOperation:(PendingWindowOperation)operation
 {
     pendingWindowOperation &= ~operation;
+}
+
+- (void)clearAllPendingWindowOperations
+{
+    pendingWindowOperation = PENDING_OPERATION_NONE;
 }
 
 - (void)addPendingWindowOperation:(PendingWindowOperation)operation
@@ -1350,21 +1357,14 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
     inFullscreenTransition = YES;
 }
 
+/* This is usually sent after an unexpected windowDidExitFullscreen if the window
+ * failed to become fullscreen.
+ *
+ * Since something went wrong and the current state is unknown, dump any pending events.
+ */
 - (void)windowDidFailToEnterFullScreen:(NSNotification *)aNotification
 {
-    SDL_Window *window = _data.window;
-
-    if (window->is_destroying) {
-        return;
-    }
-
-    SetWindowStyle(window, GetWindowStyle(window));
-
-    [self clearPendingWindowOperation:PENDING_OPERATION_ENTER_FULLSCREEN];
-    isFullscreenSpace = NO;
-    inFullscreenTransition = NO;
-
-    [self windowDidExitFullScreen:nil];
+    [self clearAllPendingWindowOperations];
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification *)aNotification
@@ -1372,6 +1372,7 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
     SDL_Window *window = _data.window;
 
     inFullscreenTransition = NO;
+    isFullscreenSpace = YES;
     [self clearPendingWindowOperation:PENDING_OPERATION_ENTER_FULLSCREEN];
 
     if ([self windowOperationIsPending:PENDING_OPERATION_LEAVE_FULLSCREEN]) {
@@ -1422,26 +1423,14 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
     inFullscreenTransition = YES;
 }
 
+/* This may be sent before windowDidExitFullscreen to signal that the window was
+ * dumped out of fullscreen with no animation.
+ *
+ * Since something went wrong and the state is unknown, dump any pending events.
+ */
 - (void)windowDidFailToExitFullScreen:(NSNotification *)aNotification
 {
-    SDL_Window *window = _data.window;
-    const NSUInteger flags = NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable;
-
-    if (window->is_destroying) {
-        return;
-    }
-
-    _data.pending_position = NO;
-    _data.pending_size = NO;
-    window->last_position_pending = false;
-    window->last_size_pending = false;
-
-    SetWindowStyle(window, flags);
-
-    isFullscreenSpace = YES;
-    inFullscreenTransition = NO;
-
-    [self windowDidEnterFullScreen:nil];
+    [self clearAllPendingWindowOperations];
 }
 
 - (void)windowDidExitFullScreen:(NSNotification *)aNotification
@@ -1450,15 +1439,23 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
     NSWindow *nswindow = _data.nswindow;
 
     inFullscreenTransition = NO;
+    isFullscreenSpace = NO;
     _data.fullscreen_space_requested = NO;
 
     /* As of macOS 10.15, the window decorations can go missing sometimes after
-       certain fullscreen-desktop->exlusive-fullscreen->windowed mode flows
+       certain fullscreen-desktop->exclusive-fullscreen->windowed mode flows
        sometimes. Making sure the style mask always uses the windowed mode style
        when returning to windowed mode from a space (instead of using a pending
        fullscreen mode style mask) seems to work around that issue.
      */
     SetWindowStyle(window, GetWindowWindowedStyle(window));
+
+    /* This can happen if the window failed to enter fullscreen, as this
+     * may be called *before* windowDidFailToEnterFullScreen in that case.
+     */
+    if (!(window->flags & SDL_WINDOW_FULLSCREEN)) {
+        [self clearAllPendingWindowOperations];
+    }
 
     /* Don't recurse back into UpdateFullscreenMode() if this was hit in
      * a blocking transition, as the caller is already waiting in
@@ -1504,9 +1501,10 @@ static NSCursor *Cocoa_GetDesiredCursor(void)
         if ([self windowOperationIsPending:PENDING_OPERATION_ZOOM]) {
             [self clearPendingWindowOperation:PENDING_OPERATION_ZOOM];
             [nswindow zoom:nil];
+            _data.was_zoomed = !_data.was_zoomed;
         }
 
-        if (![nswindow isZoomed]) {
+        if (!_data.was_zoomed) {
             // Apply a pending window size, if not zoomed.
             NSRect rect;
             rect.origin.x = _data.pending_position ? window->pending.x : window->floating.x;
@@ -2126,6 +2124,7 @@ static bool SetupWindowData(SDL_VideoDevice *_this, SDL_Window *window, NSWindow
         if (!data) {
             return SDL_OutOfMemory();
         }
+        window->internal = (SDL_WindowData *)CFBridgingRetain(data);
         data.window = window;
         data.nswindow = nswindow;
         data.videodata = videodata;
@@ -2246,7 +2245,6 @@ static bool SetupWindowData(SDL_VideoDevice *_this, SDL_Window *window, NSWindow
         SDL_SetNumberProperty(props, SDL_PROP_WINDOW_COCOA_METAL_VIEW_TAG_NUMBER, SDL_METALVIEW_TAG);
 
         // All done!
-        window->internal = (SDL_WindowData *)CFBridgingRetain(data);
         return true;
     }
 }
@@ -3261,14 +3259,23 @@ bool Cocoa_SetWindowOpacity(SDL_VideoDevice *_this, SDL_Window *window, float op
 
 bool Cocoa_SyncWindow(SDL_VideoDevice *_this, SDL_Window *window)
 {
-    bool result = true;
+    bool result = false;
 
     @autoreleasepool {
+        const Uint64 timeout = SDL_GetTicksNS() + SDL_MS_TO_NS(2500);
         SDL_CocoaWindowData *data = (__bridge SDL_CocoaWindowData *)window->internal;
 
-        do {
+        for (;;) {
             SDL_PumpEvents();
-        } while ([data.listener hasPendingWindowOperation]);
+
+            result = ![data.listener hasPendingWindowOperation];
+            if (result || SDL_GetTicksNS() >= timeout) {
+                break;
+            }
+
+            // Small delay before going again.
+            SDL_Delay(10);
+        }
     }
 
     return result;

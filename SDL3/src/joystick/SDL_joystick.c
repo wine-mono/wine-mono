@@ -427,6 +427,13 @@ static SDL_vidpid_list zero_centered_devices = {
         return result;                                          \
     }
 
+#define CHECK_JOYSTICK_VIRTUAL(joystick, result)                \
+    if (!joystick->is_virtual) {                                \
+        SDL_SetError("joystick isn't virtual");                 \
+        SDL_UnlockJoysticks();                                  \
+        return result;                                          \
+    }
+
 bool SDL_JoysticksInitialized(void)
 {
     return SDL_joysticks_initialized;
@@ -1043,6 +1050,27 @@ static void CleanupSensorFusion(SDL_Joystick *joystick)
     }
 }
 
+static bool ShouldSwapFaceButtons(const SDL_SteamVirtualGamepadInfo *info)
+{
+    // When "Use Nintendo Button Layout" is enabled under Steam (the default)
+    // it will send button 0 for the A (east) button and button 1 for the
+    // B (south) button. This is done so that games that interpret the
+    // buttons as Xbox input will get button 0 for "A" as they expect.
+    //
+    // However, SDL reports positional buttons, so we need to swap
+    // the buttons so they show up in the correct position. This provides
+    // consistent behavior regardless of whether we're running under Steam,
+    // under the default settings.
+    if (info &&
+        (info->type == SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO ||
+         info->type == SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT ||
+         info->type == SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT ||
+         info->type == SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR)) {
+        return true;
+    }
+    return false;
+}
+
 /*
  * Open a joystick for use - the index passed as an argument refers to
  * the N'th joystick on the system.  This index is the value which will
@@ -1094,6 +1122,7 @@ SDL_Joystick *SDL_OpenJoystick(SDL_JoystickID instance_id)
     joystick->attached = true;
     joystick->led_expiration = SDL_GetTicks();
     joystick->battery_percent = -1;
+    joystick->is_virtual = (driver == &SDL_VIRTUAL_JoystickDriver);
 
     if (!driver->Open(joystick, device_index)) {
         SDL_SetObjectValid(joystick, SDL_OBJECT_TYPE_JOYSTICK, false);
@@ -1148,6 +1177,7 @@ SDL_Joystick *SDL_OpenJoystick(SDL_JoystickID instance_id)
     info = SDL_GetJoystickVirtualGamepadInfoForID(instance_id);
     if (info) {
         joystick->steam_handle = info->handle;
+        joystick->swap_face_buttons = ShouldSwapFaceButtons(info);
     }
 
     // Use system gyro and accelerometer if the gamepad doesn't have built-in sensors
@@ -1225,6 +1255,7 @@ bool SDL_SetJoystickVirtualAxis(SDL_Joystick *joystick, int axis, Sint16 value)
     SDL_LockJoysticks();
     {
         CHECK_JOYSTICK_MAGIC(joystick, false);
+        CHECK_JOYSTICK_VIRTUAL(joystick, false);
 
 #ifdef SDL_JOYSTICK_VIRTUAL
         result = SDL_SetJoystickVirtualAxisInner(joystick, axis, value);
@@ -1244,6 +1275,7 @@ bool SDL_SetJoystickVirtualBall(SDL_Joystick *joystick, int ball, Sint16 xrel, S
     SDL_LockJoysticks();
     {
         CHECK_JOYSTICK_MAGIC(joystick, false);
+        CHECK_JOYSTICK_VIRTUAL(joystick, false);
 
 #ifdef SDL_JOYSTICK_VIRTUAL
         result = SDL_SetJoystickVirtualBallInner(joystick, ball, xrel, yrel);
@@ -1263,6 +1295,7 @@ bool SDL_SetJoystickVirtualButton(SDL_Joystick *joystick, int button, bool down)
     SDL_LockJoysticks();
     {
         CHECK_JOYSTICK_MAGIC(joystick, false);
+        CHECK_JOYSTICK_VIRTUAL(joystick, false);
 
 #ifdef SDL_JOYSTICK_VIRTUAL
         result = SDL_SetJoystickVirtualButtonInner(joystick, button, down);
@@ -1282,6 +1315,7 @@ bool SDL_SetJoystickVirtualHat(SDL_Joystick *joystick, int hat, Uint8 value)
     SDL_LockJoysticks();
     {
         CHECK_JOYSTICK_MAGIC(joystick, false);
+        CHECK_JOYSTICK_VIRTUAL(joystick, false);
 
 #ifdef SDL_JOYSTICK_VIRTUAL
         result = SDL_SetJoystickVirtualHatInner(joystick, hat, value);
@@ -1301,6 +1335,7 @@ bool SDL_SetJoystickVirtualTouchpad(SDL_Joystick *joystick, int touchpad, int fi
     SDL_LockJoysticks();
     {
         CHECK_JOYSTICK_MAGIC(joystick, false);
+        CHECK_JOYSTICK_VIRTUAL(joystick, false);
 
 #ifdef SDL_JOYSTICK_VIRTUAL
         result = SDL_SetJoystickVirtualTouchpadInner(joystick, touchpad, finger, down, x, y, pressure);
@@ -1320,6 +1355,7 @@ bool SDL_SendJoystickVirtualSensorData(SDL_Joystick *joystick, SDL_SensorType ty
     SDL_LockJoysticks();
     {
         CHECK_JOYSTICK_MAGIC(joystick, false);
+        CHECK_JOYSTICK_VIRTUAL(joystick, false);
 
 #ifdef SDL_JOYSTICK_VIRTUAL
         result = SDL_SendJoystickVirtualSensorDataInner(joystick, type, sensor_timestamp, data, num_values);
@@ -2305,6 +2341,25 @@ void SDL_SendJoystickButton(Uint64 timestamp, SDL_Joystick *joystick, Uint8 butt
         event.type = SDL_EVENT_JOYSTICK_BUTTON_UP;
     }
 
+    if (joystick->swap_face_buttons) {
+        switch (button) {
+        case 0:
+            button = 1;
+            break;
+        case 1:
+            button = 0;
+            break;
+        case 2:
+            button = 3;
+            break;
+        case 3:
+            button = 2;
+            break;
+        default:
+            break;
+        }
+    }
+
     // Make sure we're not getting garbage or duplicate events
     if (button >= joystick->nbuttons) {
         return;
@@ -2353,11 +2408,13 @@ static void SendSteamHandleUpdateEvents(void)
         if (info) {
             if (joystick->steam_handle != info->handle) {
                 joystick->steam_handle = info->handle;
+                joystick->swap_face_buttons = ShouldSwapFaceButtons(info);
                 changed = true;
             }
         } else {
             if (joystick->steam_handle != 0) {
                 joystick->steam_handle = 0;
+                joystick->swap_face_buttons = false;
                 changed = true;
             }
         }

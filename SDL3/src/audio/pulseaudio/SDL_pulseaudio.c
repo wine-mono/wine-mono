@@ -409,7 +409,7 @@ static bool PULSEAUDIO_WaitDevice(SDL_AudioDevice *device)
     struct SDL_PrivateAudioData *h = device->hidden;
     bool result = true;
 
-    //SDL_Log("PULSEAUDIO PLAYDEVICE START! mixlen=%d", available);
+    //SDL_Log("PULSEAUDIO WAITDEVICE START! mixlen=%d", available);
 
     PULSEAUDIO_pa_threaded_mainloop_lock(pulseaudio_threaded_mainloop);
 
@@ -701,7 +701,10 @@ static bool PULSEAUDIO_OpenDevice(SDL_AudioDevice *device)
         PULSEAUDIO_pa_stream_set_state_callback(h->stream, PulseStreamStateChangeCallback, NULL);
 
         // SDL manages device moves if the default changes, so don't ever let Pulse automatically migrate this stream.
-        flags |= PA_STREAM_DONT_MOVE;
+        // UPDATE: This prevents users from moving the audio to a new sink (device) using standard tools. This is slightly in conflict
+        //  with how SDL wants to manage audio devices, but if people want to do it, we should let them, so this is commented out
+        //  for now. We might revisit later.
+        //flags |= PA_STREAM_DONT_MOVE;
 
         const char *device_path = ((PulseDeviceHandle *) device->handle)->device_path;
         if (recording) {

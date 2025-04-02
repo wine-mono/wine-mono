@@ -620,7 +620,7 @@ static void WIN_HandleRawMouseInput(Uint64 timestamp, SDL_VideoData *data, HANDL
 
     SDL_WindowData *windowdata = window->internal;
 
-    if (haveMotion) {
+    if (haveMotion && !windowdata->in_modal_loop) {
         if (!isAbsolute) {
             SDL_SendMouseMotion(timestamp, window, mouseID, true, (float)dx, (float)dy);
         } else {
@@ -1640,7 +1640,7 @@ LRESULT CALLBACK WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             POINT cursorPos;
             GetCursorPos(&cursorPos);
             ScreenToClient(hwnd, &cursorPos);
-            PostMessage(hwnd, WM_MOUSEMOVE, 0, cursorPos.x | cursorPos.y << 16);
+            PostMessage(hwnd, WM_MOUSEMOVE, 0, cursorPos.x | (((Uint32)((Sint16)cursorPos.y)) << 16));
         }
     } break;
 
@@ -1792,7 +1792,7 @@ LRESULT CALLBACK WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         }
 
         if (!data->disable_move_size_events) {
-            if (GetClientRect(hwnd, &rect) && !WIN_IsRectEmpty(&rect)) {
+            if (GetClientRect(hwnd, &rect) && WIN_WindowRectValid(&rect)) {
                 ClientToScreen(hwnd, (LPPOINT) &rect);
                 ClientToScreen(hwnd, (LPPOINT) &rect + 1);
 
@@ -1804,7 +1804,7 @@ LRESULT CALLBACK WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
             }
 
             // Moving the window from one display to another can change the size of the window (in the handling of SDL_EVENT_WINDOW_MOVED), so we need to re-query the bounds
-            if (GetClientRect(hwnd, &rect) && !WIN_IsRectEmpty(&rect)) {
+            if (GetClientRect(hwnd, &rect) && WIN_WindowRectValid(&rect)) {
                 w = rect.right;
                 h = rect.bottom;
 
@@ -1859,6 +1859,15 @@ LRESULT CALLBACK WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     {
         if (wParam == (UINT_PTR)SDL_IterateMainCallbacks) {
             SDL_OnWindowLiveResizeUpdate(data->window);
+
+#if !defined(SDL_PLATFORM_XBOXONE) && !defined(SDL_PLATFORM_XBOXSERIES)
+#if 0 // This locks up the Windows compositor when called by Steam; disabling until we understand why
+            // Make sure graphics operations are complete for smooth refresh
+            if (data->videodata->DwmFlush) {
+                data->videodata->DwmFlush();
+            }
+#endif
+#endif
             return 0;
         }
     } break;
@@ -2084,7 +2093,7 @@ LRESULT CALLBACK WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
                 RECT rect;
                 float x, y;
 
-                if (!GetClientRect(hwnd, &rect) || WIN_IsRectEmpty(&rect)) {
+                if (!GetClientRect(hwnd, &rect) || !WIN_WindowRectValid(&rect)) {
                     if (inputs) {
                         SDL_small_free(inputs, isstack);
                     }

@@ -213,93 +213,91 @@ static SDL_INLINE void DebugLogRenderCommands(const SDL_RenderCommand *cmd)
     SDL_Log("Render commands to flush:");
     while (cmd) {
         switch (cmd->command) {
-            case SDL_RENDERCMD_NO_OP:
-                SDL_Log(" %u. no-op", i++);
-                break;
+        case SDL_RENDERCMD_NO_OP:
+            SDL_Log(" %u. no-op", i++);
+            break;
 
-            case SDL_RENDERCMD_SETVIEWPORT:
-                SDL_Log(" %u. set viewport (first=%u, rect={(%d, %d), %dx%d})", i++,
-                        (unsigned int) cmd->data.viewport.first,
-                        cmd->data.viewport.rect.x, cmd->data.viewport.rect.y,
-                        cmd->data.viewport.rect.w, cmd->data.viewport.rect.h);
-                break;
+        case SDL_RENDERCMD_SETVIEWPORT:
+            SDL_Log(" %u. set viewport (first=%u, rect={(%d, %d), %dx%d})", i++,
+                    (unsigned int)cmd->data.viewport.first,
+                    cmd->data.viewport.rect.x, cmd->data.viewport.rect.y,
+                    cmd->data.viewport.rect.w, cmd->data.viewport.rect.h);
+            break;
 
-            case SDL_RENDERCMD_SETCLIPRECT:
-                SDL_Log(" %u. set cliprect (enabled=%s, rect={(%d, %d), %dx%d})", i++,
-                        cmd->data.cliprect.enabled ? "true" : "false",
-                        cmd->data.cliprect.rect.x, cmd->data.cliprect.rect.y,
-                        cmd->data.cliprect.rect.w, cmd->data.cliprect.rect.h);
-                break;
+        case SDL_RENDERCMD_SETCLIPRECT:
+            SDL_Log(" %u. set cliprect (enabled=%s, rect={(%d, %d), %dx%d})", i++,
+                    cmd->data.cliprect.enabled ? "true" : "false",
+                    cmd->data.cliprect.rect.x, cmd->data.cliprect.rect.y,
+                    cmd->data.cliprect.rect.w, cmd->data.cliprect.rect.h);
+            break;
 
-            case SDL_RENDERCMD_SETDRAWCOLOR:
-                SDL_Log(" %u. set draw color (first=%u, r=%d, g=%d, b=%d, a=%d, color_scale=%g)", i++,
-                        (unsigned int) cmd->data.color.first,
-                        (int) cmd->data.color.color.r, (int) cmd->data.color.color.g,
-                        (int) cmd->data.color.color.b, (int) cmd->data.color.color.a, cmd->data.color.color_scale);
-                break;
+        case SDL_RENDERCMD_SETDRAWCOLOR:
+            SDL_Log(" %u. set draw color (first=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, color_scale=%g)", i++,
+                    (unsigned int)cmd->data.color.first,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a, cmd->data.color.color_scale);
+            break;
 
-            case SDL_RENDERCMD_CLEAR:
-                SDL_Log(" %u. clear (first=%u, r=%d, g=%d, b=%d, a=%d, color_scale=%g)", i++,
-                        (unsigned int) cmd->data.color.first,
-                        (int) cmd->data.color.color.r, (int) cmd->data.color.color.g,
-                        (int) cmd->data.color.color.b, (int) cmd->data.color.color.a, cmd->data.color.color_scale);
-                break;
+        case SDL_RENDERCMD_CLEAR:
+            SDL_Log(" %u. clear (first=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, color_scale=%g)", i++,
+                    (unsigned int)cmd->data.color.first,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a, cmd->data.color.color_scale);
+            break;
 
-            case SDL_RENDERCMD_DRAW_POINTS:
-                SDL_Log(" %u. draw points (first=%u, count=%u, r=%d, g=%d, b=%d, a=%d, blend=%d, color_scale=%g)", i++,
-                        (unsigned int) cmd->data.draw.first,
-                        (unsigned int) cmd->data.draw.count,
-                        (int) cmd->data.draw.color.r, (int) cmd->data.draw.color.g,
-                        (int) cmd->data.draw.color.b, (int) cmd->data.draw.color.a,
-                        (int) cmd->data.draw.blend, cmd->data.draw.color_scale);
-                break;
+        case SDL_RENDERCMD_DRAW_POINTS:
+            SDL_Log(" %u. draw points (first=%u, count=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, blend=%d, color_scale=%g)", i++,
+                    (unsigned int)cmd->data.draw.first,
+                    (unsigned int)cmd->data.draw.count,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a,
+                    (int)cmd->data.draw.blend, cmd->data.draw.color_scale);
+            break;
 
-            case SDL_RENDERCMD_DRAW_LINES:
-                SDL_Log(" %u. draw lines (first=%u, count=%u, r=%d, g=%d, b=%d, a=%d, blend=%d, color_scale=%g)", i++,
-                        (unsigned int) cmd->data.draw.first,
-                        (unsigned int) cmd->data.draw.count,
-                        (int) cmd->data.draw.color.r, (int) cmd->data.draw.color.g,
-                        (int) cmd->data.draw.color.b, (int) cmd->data.draw.color.a,
-                        (int) cmd->data.draw.blend, cmd->data.draw.color_scale);
-                break;
+        case SDL_RENDERCMD_DRAW_LINES:
+            SDL_Log(" %u. draw lines (first=%u, count=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, blend=%d, color_scale=%g)", i++,
+                    (unsigned int)cmd->data.draw.first,
+                    (unsigned int)cmd->data.draw.count,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a,
+                    (int)cmd->data.draw.blend, cmd->data.draw.color_scale);
+            break;
 
-            case SDL_RENDERCMD_FILL_RECTS:
-                SDL_Log(" %u. fill rects (first=%u, count=%u, r=%d, g=%d, b=%d, a=%d, blend=%d, color_scale=%g)", i++,
-                        (unsigned int) cmd->data.draw.first,
-                        (unsigned int) cmd->data.draw.count,
-                        (int) cmd->data.draw.color.r, (int) cmd->data.draw.color.g,
-                        (int) cmd->data.draw.color.b, (int) cmd->data.draw.color.a,
-                        (int) cmd->data.draw.blend, cmd->data.draw.color_scale);
-                break;
+        case SDL_RENDERCMD_FILL_RECTS:
+            SDL_Log(" %u. fill rects (first=%u, count=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, blend=%d, color_scale=%g)", i++,
+                    (unsigned int)cmd->data.draw.first,
+                    (unsigned int)cmd->data.draw.count,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a,
+                    (int)cmd->data.draw.blend, cmd->data.draw.color_scale);
+            break;
 
-            case SDL_RENDERCMD_COPY:
-                SDL_Log(" %u. copy (first=%u, count=%u, r=%d, g=%d, b=%d, a=%d, blend=%d, color_scale=%g, tex=%p)", i++,
-                        (unsigned int) cmd->data.draw.first,
-                        (unsigned int) cmd->data.draw.count,
-                        (int) cmd->data.draw.color.r, (int) cmd->data.draw.color.g,
-                        (int) cmd->data.draw.color.b, (int) cmd->data.draw.color.a,
-                        (int) cmd->data.draw.blend, cmd->data.draw.color_scale, cmd->data.draw.texture);
-                break;
+        case SDL_RENDERCMD_COPY:
+            SDL_Log(" %u. copy (first=%u, count=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, blend=%d, color_scale=%g, tex=%p)", i++,
+                    (unsigned int)cmd->data.draw.first,
+                    (unsigned int)cmd->data.draw.count,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a,
+                    (int)cmd->data.draw.blend, cmd->data.draw.color_scale, cmd->data.draw.texture);
+            break;
 
+        case SDL_RENDERCMD_COPY_EX:
+            SDL_Log(" %u. copyex (first=%u, count=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, blend=%d, color_scale=%g, tex=%p)", i++,
+                    (unsigned int)cmd->data.draw.first,
+                    (unsigned int)cmd->data.draw.count,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a,
+                    (int)cmd->data.draw.blend, cmd->data.draw.color_scale, cmd->data.draw.texture);
+            break;
 
-            case SDL_RENDERCMD_COPY_EX:
-                SDL_Log(" %u. copyex (first=%u, count=%u, r=%d, g=%d, b=%d, a=%d, blend=%d, color_scale=%g, tex=%p)", i++,
-                        (unsigned int) cmd->data.draw.first,
-                        (unsigned int) cmd->data.draw.count,
-                        (int) cmd->data.draw.color.r, (int) cmd->data.draw.color.g,
-                        (int) cmd->data.draw.color.b, (int) cmd->data.draw.color.a,
-                        (int) cmd->data.draw.blend, cmd->data.draw.color_scale, cmd->data.draw.texture);
-                break;
-
-            case SDL_RENDERCMD_GEOMETRY:
-                SDL_Log(" %u. geometry (first=%u, count=%u, r=%d, g=%d, b=%d, a=%d, blend=%d, color_scale=%g, tex=%p)", i++,
-                        (unsigned int) cmd->data.draw.first,
-                        (unsigned int) cmd->data.draw.count,
-                        (int) cmd->data.draw.color.r, (int) cmd->data.draw.color.g,
-                        (int) cmd->data.draw.color.b, (int) cmd->data.draw.color.a,
-                        (int) cmd->data.draw.blend, cmd->data.draw.color_scale, cmd->data.draw.texture);
-                break;
-
+        case SDL_RENDERCMD_GEOMETRY:
+            SDL_Log(" %u. geometry (first=%u, count=%u, r=%.2f, g=%.2f, b=%.2f, a=%.2f, blend=%d, color_scale=%g, tex=%p)", i++,
+                    (unsigned int)cmd->data.draw.first,
+                    (unsigned int)cmd->data.draw.count,
+                    cmd->data.draw.color.r, cmd->data.draw.color.g,
+                    cmd->data.draw.color.b, cmd->data.draw.color.a,
+                    (int)cmd->data.draw.blend, cmd->data.draw.color_scale, cmd->data.draw.texture);
+            break;
         }
         cmd = cmd->next;
     }
@@ -573,6 +571,9 @@ static SDL_RenderCommand *PrepQueueCmdDraw(SDL_Renderer *renderer, const SDL_Ren
             cmd->data.draw.color = *color;
             cmd->data.draw.blend = blendMode;
             cmd->data.draw.texture = texture;
+            if (texture) {
+                cmd->data.draw.texture_scale_mode = texture->scaleMode;
+            }
             cmd->data.draw.texture_address_mode = SDL_TEXTURE_ADDRESS_CLAMP;
         }
     }
@@ -826,6 +827,10 @@ static bool SDL_RendererEventWatch(void *userdata, SDL_Event *event)
 {
     SDL_Renderer *renderer = (SDL_Renderer *)userdata;
     SDL_Window *window = renderer->window;
+
+    if (event->window.windowID != SDL_GetWindowID(window)) {
+        return true;
+    }
 
     if (renderer->WindowEvent) {
         renderer->WindowEvent(renderer, &event->window);
@@ -1119,12 +1124,7 @@ SDL_Renderer *SDL_CreateRendererWithProperties(SDL_PropertiesID props)
     }
 
     int vsync = (int)SDL_GetNumberProperty(props, SDL_PROP_RENDERER_CREATE_PRESENT_VSYNC_NUMBER, 0);
-    if (!SDL_SetRenderVSync(renderer, vsync)) {
-        if (vsync == 0) {
-            // Some renderers require vsync enabled
-            SDL_SetRenderVSync(renderer, 1);
-        }
-    }
+    SDL_SetRenderVSync(renderer, vsync);
     SDL_CalculateSimulatedVSyncInterval(renderer, window);
 
     SDL_LogInfo(SDL_LOG_CATEGORY_RENDER,
@@ -1962,8 +1962,6 @@ bool SDL_GetTextureBlendMode(SDL_Texture *texture, SDL_BlendMode *blendMode)
 
 bool SDL_SetTextureScaleMode(SDL_Texture *texture, SDL_ScaleMode scaleMode)
 {
-    SDL_Renderer *renderer;
-
     CHECK_TEXTURE_MAGIC(texture, false);
 
     if (scaleMode != SDL_SCALEMODE_NEAREST &&
@@ -1971,12 +1969,10 @@ bool SDL_SetTextureScaleMode(SDL_Texture *texture, SDL_ScaleMode scaleMode)
         return SDL_InvalidParamError("scaleMode");
     }
 
-    renderer = texture->renderer;
     texture->scaleMode = scaleMode;
+
     if (texture->native) {
         return SDL_SetTextureScaleMode(texture->native, scaleMode);
-    } else {
-        renderer->SetTextureScaleMode(renderer, texture, scaleMode);
     }
     return true;
 }
@@ -5493,7 +5489,8 @@ bool SDL_SetRenderVSync(SDL_Renderer *renderer, int vsync)
     }
 #endif
 
-    if (!renderer->SetVSync) {
+    if (!renderer->SetVSync ||
+        !renderer->SetVSync(renderer, vsync)) {
         switch (vsync) {
         case 0:
             renderer->simulate_vsync = false;
@@ -5503,12 +5500,6 @@ bool SDL_SetRenderVSync(SDL_Renderer *renderer, int vsync)
             break;
         default:
             return SDL_Unsupported();
-        }
-    } else if (!renderer->SetVSync(renderer, vsync)) {
-        if (vsync == 1) {
-            renderer->simulate_vsync = true;
-        } else {
-            return false;
         }
     }
     SDL_SetNumberProperty(SDL_GetRendererProperties(renderer), SDL_PROP_RENDERER_VSYNC_NUMBER, vsync);

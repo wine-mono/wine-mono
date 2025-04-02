@@ -977,7 +977,7 @@ void X11_HandleKeyEvent(SDL_VideoDevice *_this, SDL_WindowData *windowdata, SDL_
             X11_HandleModifierKeys(videodata, scancode, true, true);
             SDL_SendKeyboardKeyIgnoreModifiers(timestamp, keyboardID, keycode, scancode, true);
 
-            if (*text) {
+            if (*text && !(SDL_GetModState() & (SDL_KMOD_CTRL | SDL_KMOD_ALT))) {
                 text[text_length] = '\0';
                 X11_ClearComposition(windowdata);
                 SDL_SendKeyboardText(text);
@@ -2113,6 +2113,7 @@ void X11_PumpEvents(SDL_VideoDevice *_this)
                 SDL_LogError(SDL_LOG_CATEGORY_VIDEO,
                              "Time out elapsed after mode switch on display %" SDL_PRIu32 " with no window becoming fullscreen; reverting", _this->displays[i]->id);
                 SDL_SetDisplayModeForDisplay(_this->displays[i], NULL);
+                _this->displays[i]->internal->mode_switch_deadline_ns = 0;
             }
         }
     }
