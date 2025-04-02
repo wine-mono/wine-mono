@@ -232,8 +232,6 @@ x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Flatten_Bezier
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Line
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Line_Closed
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Marker
-x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Path
-x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Pie
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_String
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker_2
@@ -707,8 +705,6 @@ x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Flatten_Bezier
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Line
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Line_Closed
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Marker
-x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Path
-x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Pie
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_String
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker_2
