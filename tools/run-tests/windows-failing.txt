@@ -5275,6 +5275,8 @@ MonoTests.Remoting.HttpAsyncCallTest:BaseCallTest.TestInterfaceComplexParamsInOu
 MonoTests.Remoting.HttpCustomAsyncCallTest:BaseCallTest.TestAbstractComplexParamsInOut
 MonoTests.Remoting.HttpCustomAsyncCallTest:BaseCallTest.TestInstanceComplexParamsInOut
 MonoTests.Remoting.HttpCustomAsyncCallTest:BaseCallTest.TestInterfaceComplexParamsInOut
+MonoTests.System.Net.HttpListenerBugs:Test_HostIpv6
+MonoTests.System.Net.HttpListenerBugs:Test_HostIpv6WithPort
 # unreliable:
 x86.thread-exit
 MonoTests.System.Threading.Tasks.TaskTests:DoubleWaitTest
