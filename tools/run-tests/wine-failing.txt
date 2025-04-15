@@ -1485,3 +1485,4 @@ MonoTests.System.Net.HttpRequestStreamTest:Post_EmptyRequestStream
 MonoTests.System.Threading.Tasks.TaskSchedulerTests:UnobservedTaskExceptionArgumentTest
 MonoTests.System.Net.HttpListener2Test:Test5
 MonoTests.System.Windows.Forms.ControlTest:OnPaintTest
+MonoTests.System.Windows.Forms.ControlTest:OnPaintDoubleBufferedTest
