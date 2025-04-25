@@ -294,7 +294,6 @@ x86.MonoTests.System.Drawing.Imaging.ImageAttributesTest:ColorMatrix1
 x86.MonoTests.System.Drawing.Imaging.ImageAttributesTest:SetColorMatrices_Color
 x86.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:EmfCodec_Decoder
 x86.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:GifCodec
-x86.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:IconCodec_Decoder
 x86.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:TiffCodec
 x86.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:WmfCodec_Decoder
 x86.MonoTests.System.Drawing.Imaging.MetafileFulltrustTest:CreateFilename_MultipleGraphics_EmfOnly
@@ -346,7 +345,6 @@ x86.MonoTests.System.Drawing.TestBitmap:Format4bppIndexed
 x86.MonoTests.System.Drawing.TestBitmap:Format8bppIndexed
 x86.MonoTests.System.Drawing.TestBitmap:LockBits_ImageLockMode_Invalid
 x86.MonoTests.System.Drawing.TestBitmap:Rotate
-x86.MonoTests.System.Drawing.TestBitmap:Serialize_Icon
 x86.MonoTests.System.Drawing.TestBitmap:SetResolution_NaN
 x86.MonoTests.System.Drawing.TestBitmap:SetResolution_NegativeInfinity
 x86.MonoTests.System.Drawing.TestBitmap:SetResolution_Negative_X
@@ -784,7 +782,6 @@ x86_64.MonoTests.System.Drawing.Imaging.ImageAttributesTest:ColorMatrix1
 x86_64.MonoTests.System.Drawing.Imaging.ImageAttributesTest:SetColorMatrices_Color
 x86_64.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:EmfCodec_Decoder
 x86_64.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:GifCodec
-x86_64.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:IconCodec_Decoder
 x86_64.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:TiffCodec
 x86_64.MonoTests.System.Drawing.Imaging.ImageCodecInfoTest:WmfCodec_Decoder
 x86_64.MonoTests.System.Drawing.Imaging.MetafileFulltrustTest:CreateFilename_MultipleGraphics_EmfOnly
@@ -836,7 +833,6 @@ x86_64.MonoTests.System.Drawing.TestBitmap:Format4bppIndexed
 x86_64.MonoTests.System.Drawing.TestBitmap:Format8bppIndexed
 x86_64.MonoTests.System.Drawing.TestBitmap:LockBits_ImageLockMode_Invalid
 x86_64.MonoTests.System.Drawing.TestBitmap:Rotate
-x86_64.MonoTests.System.Drawing.TestBitmap:Serialize_Icon
 x86_64.MonoTests.System.Drawing.TestBitmap:SetResolution_NaN
 x86_64.MonoTests.System.Drawing.TestBitmap:SetResolution_NegativeInfinity
 x86_64.MonoTests.System.Drawing.TestBitmap:SetResolution_Negative_X
