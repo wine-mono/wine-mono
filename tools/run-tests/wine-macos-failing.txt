@@ -1,7 +1,6 @@
 WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:SingleWordTest
 MonoTests.System.Windows.Forms.FormTest:FormStartupPositionChangeTest
 MonoTests.System.Windows.Forms.FormTest:FormStartupPositionTest
-MonoTests.System.Windows.Forms.FormTest:MaximizedParentedFormTest
 MonoTests.System.Net.Sockets.UdpClientTest:Available
 MonoTests.System.Net.Sockets.SocketTest:BeginConnectMultiple
 MonoTests.System.Net.NetworkInformation.NetworkInterfaceTest:FirstInterfaceSpeed
