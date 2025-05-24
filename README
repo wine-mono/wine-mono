@@ -68,7 +68,7 @@ Bugs should be filed in the Wine bugzilla (http://bugs.winehq.org/) with product
 
 PATCHES
 
-Patches to the top-level project should be sent as a merge request to https://gitlab.winehq.org/mono/wine-mono.
+Patches to the top-level project should be sent as a merge request to https://gitlab.winehq.org/mono/wine-mono. There is also an official mirror on GitHub where Pull Requests can be sent, at https://github.com/wine-mono/wine-mono. This creates more work for the maintainer, so it's not preferred, but it may make sense if you're on GitHub already and only planning to send a single change.
 
 Patches to Mono should be sent as a merge request to https://gitlab.winehq.org/mono/mono. Ideally, most MRs should be for Framework Mono, which is the main branch. If the change is specific to Wine Mono, then the MR should be for the wine-mono branch.
 
