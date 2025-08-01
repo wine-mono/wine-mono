@@ -9,15 +9,16 @@ Parts of Mono (mono/) are variously licensed under the GPL, LGPL, and MIT X11 li
 The Visual Basic class libraries (mono-basic/) are MIT X11. The compiler is LGPL v2.
 
 FNA is a mix of MSPL and MIT. It has the following library dependencies:
- * FAudio, MojoShader, Theorafile, SDL2, SDL_image_compact, and SDL2-CS are zlib-licensed. SDL2-CS is built into FNA.dll.
+ * FAudio, FNA3D, MojoShader, SDL3, SDL2-CS, and SDL3-CS are zlib-licensed. SDL2-CS and SDL3-CS are built into FNA.dll.
+ * FNAMF is MIT licensed.
  * FNA.NetStub is MSPL.
 
-The winforms and wpf libraries are MIT.
+The winforms, winforms-datavisualization, wpf, monoDX, and System.Speech libraries are MIT.
 
 
 Any other code not in a submodule is MIT:
 
-Copyright (c) 2012 Vincent Povirk for CodeWeavers
+Copyright (c) <date> <copyright holders>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
