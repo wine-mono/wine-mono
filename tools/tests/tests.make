@@ -89,10 +89,6 @@ tools/tests/privatepath2.exe: tools/tests/testcslib1.dll tools/tests/testcslib2.
 
 tools/tests/wpfclipboard.exe: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built
 
-tools/tests/interactioncommand.exe: $(BUILDDIR)/Microsoft.VisualBasic.dll
-
-tools/tests/vbstartup.exe: $(BUILDDIR)/Microsoft.VisualBasic.dll
-
 tools/tests/direct3dadapter.exe: $(SRCDIR)/monoDX/Microsoft.DirectX.Direct3D/.built
 
 tools/tests/net_4_x_%_test.dll: $(BUILDDIR)/nunitlite.dll

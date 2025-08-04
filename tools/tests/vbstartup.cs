@@ -1,4 +1,4 @@
-// CSCFLAGS=-r:System.Windows.Forms.dll
+// CSCFLAGS=-r:System.Windows.Forms.dll -r:Microsoft.VisualBasic.dll
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

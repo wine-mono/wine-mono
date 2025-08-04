@@ -1,9 +1,6 @@
 [submodule "mono"]
 	path = mono
 	url = ../mono
-[submodule "mono-basic"]
-	path = mono-basic
-	url = ../mono-basic
 [submodule "FNA"]
 	path = FNA
 	url = ../FNA

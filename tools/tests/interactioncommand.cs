@@ -1,3 +1,4 @@
+// CSCFLAGS=-r:Microsoft.VisualBasic.dll
 using System;
 using System.Diagnostics;
 using System.Reflection;
