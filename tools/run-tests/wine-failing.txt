@@ -1218,9 +1218,6 @@ x86.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_2
 x86.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_3
 x86.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_4
 x86.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_5
-x86.MonoTests.Microsoft_VisualBasic.StringsTest:Replace_2
-x86.MonoTests.Microsoft_VisualBasic.StringsTest:Split_2
-x86.MonoTests.Microsoft_VisualBasic.StringsTest:Split_4
 x86.MonoTests.Microsoft_VisualBasic.StringsTest:StrConv_2
 x86.MonoTests.Microsoft_VisualBasic.StringsTest:StrConv_SimplifiedChinese
 x86.MonoTests.Microsoft_VisualBasic.StringsTest:StrConv_TraditionalChinese
@@ -1260,9 +1257,6 @@ x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_2
 x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_3
 x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_4
 x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_5
-x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:Replace_2
-x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:Split_2
-x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:Split_4
 x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:Split_7
 x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:StrConv_2
 x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:StrConv_SimplifiedChinese
@@ -1425,6 +1419,13 @@ MonoTests.System.Windows.Forms.ListViewTest:ListViewPropertyTest
 MonoTests.System.Net.Mail.SmtpClientTest:Credentials_Default
 MonoTests.System.Net.Mail.SmtpClientTest:Host_Default
 MonoTests.System.Drawing.ColorTest:WindowsSystemColors
+FilesSystemTest:ChDir_3
+FilesSystemTest:FileDateTime_2
+FilesSystemTest:FileDateTime_4
+FilesSystemTest:GetAttr_2
+FilesSystemTest:Kill_6
+FilesSystemTest:Rename_5
+FilesSystemTest:SetAttr_2
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit

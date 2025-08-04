@@ -485,7 +485,7 @@ class RunTests
 	void run_clr_test_dll(string filename, string arch)
 	{
 		string basename = Path.GetFileNameWithoutExtension(filename);
-		string testname = basename.Substring(8, basename.Length - 13);
+		string testname = basename.Substring(8, basename.LastIndexOf('_') - 8);
 		string fulltestname = String.Format("{0}.{1}", arch, testname);
 		bool run_all;
 		List<string> tests_to_run = new List<string>();
@@ -539,6 +539,10 @@ class RunTests
 	void run_clr_test_dir(string path, string arch)
 	{
 		foreach (string filename in Directory.EnumerateFiles(path, "net_4_x_*_test.dll"))
+		{
+			run_clr_test_dll(filename, arch);
+		}
+		foreach (string filename in Directory.EnumerateFiles(path, "net_4_x_*_vbtest.dll"))
 		{
 			run_clr_test_dll(filename, arch);
 		}

@@ -235,8 +235,8 @@ $(BUILDDIR)/mono-unix/builtin-types-32.exe: $(SRCDIR)/mono/mono/mini/builtin-typ
 
 tests-clr: $(BUILDDIR)/mono-unix/.built-clr-tests $(BUILDDIR)/nunitlite.dll $(BUILDDIR)/fixupclr.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-clr
-	cp $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_test.dll $(SRCDIR)/mono/mcs/class/lib/net_4_x/nunit* $(TESTS_OUTDIR)/tests-clr
-	cp $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_test.dll.nunitlite.config $(TESTS_OUTDIR)/tests-clr
+	cp $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_test.dll $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_vbtest.dll $(SRCDIR)/mono/mcs/class/lib/net_4_x/nunit* $(TESTS_OUTDIR)/tests-clr
+	cp $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_test.dll.nunitlite.config $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_vbtest.dll.nunitlite.config $(TESTS_OUTDIR)/tests-clr
 	cp $(BUILDDIR)/nunitlite.* $(TESTS_OUTDIR)/tests-clr
 	mkdir -p $(TESTS_OUTDIR)/tests-clr/Test/System.Drawing
 	cp -r $(SRCDIR)/mono/mcs/class/System.Drawing/Test/System.Drawing/bitmaps $(TESTS_OUTDIR)/tests-clr/Test/System.Drawing
@@ -245,7 +245,7 @@ tests-clr: $(BUILDDIR)/mono-unix/.built-clr-tests $(BUILDDIR)/nunitlite.dll $(BU
 	cp $(TESTS_OUTDIR)/tests-clr/nunit-lite-console.exe $(TESTS_OUTDIR)/tests-clr/nunit-lite-console32.exe
 	cd $(TESTS_OUTDIR)/tests-clr; $(WINE) $(BUILDDIR_ABS)/fixupclr.exe x86 nunit-lite-console32.exe
 	cd $(TESTS_OUTDIR)/tests-clr; $(WINE) $(BUILDDIR_ABS)/fixupclr.exe x86_64 nunit-lite-console.exe
-	cd $(TESTS_OUTDIR)/tests-clr; for f in *_test.dll; do $(MONO_ENV) mono nunit-lite-console.exe $$f -explore:$${f}.testlist >/dev/null || rm $$f; done
+	cd $(TESTS_OUTDIR)/tests-clr; for f in *_test.dll *_vbtest.dll; do $(MONO_ENV) mono nunit-lite-console.exe $$f -explore:$${f}.testlist >/dev/null || rm $$f; done
 .PHONY: tests-clr
 tests: tests-clr
 
