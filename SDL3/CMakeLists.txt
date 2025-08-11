@@ -5,7 +5,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 
 # See docs/release_checklist.md
-project(SDL3 LANGUAGES C VERSION "3.2.18")
+project(SDL3 LANGUAGES C VERSION "3.2.20")
 
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   set(SDL3_MAINPROJECT ON)
@@ -1486,6 +1486,11 @@ if(ANDROID)
       endif()
     endif()
   endif()
+
+if(TARGET SDL3-shared)
+  target_link_options(SDL3-shared PRIVATE "-Wl,-z,max-page-size=16384")
+  target_link_options(SDL3-shared PRIVATE "-Wl,-z,common-page-size=16384")
+endif()
 
 elseif(EMSCRIPTEN)
   # Hide noisy warnings that intend to aid mostly during initial stages of porting a new
