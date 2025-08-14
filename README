@@ -76,6 +76,4 @@ Changes to upstream projects that make sense only within the context of wine-mon
 
 FNA and related projects have been very responsive to pull requests, and it's worth sending changes upstream to https://github.com/FNA-XNA/FNA.
 
-Changes to mono-basic should be sent as a merge request to https://gitlab.winehq.org/mono/mono-basic. However, before doing any substantial work on mono-basic, it may be worth checking whether there's an implementation in https://github.com/dotnet/winforms or https://github.com/dotnet/runtime.
-
 The winforms and wpf projects are not being updated from upstream and have diverged significantly. Since they are supporting modern .NET, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.
