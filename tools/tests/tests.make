@@ -39,6 +39,7 @@ TEST_CS_EXE_SRCS = \
 	wpfclipboard.cs
 
 TEST_RAW_FILES = \
+	direct3dadapter.exe.config \
 	configuration-with-defaults.exe.config \
 	mixedmode-managedcaller.exe.config \
 	mixedmode-dllimport-0.exe.config \
