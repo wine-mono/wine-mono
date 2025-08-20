@@ -5419,3 +5419,4 @@ MonoTests.System.Threading.ThreadTest:TestIsBackground2
 x86.pinvoke3:test_0_marshal_byref_class_delegate
 MonoTests.System.Net.HttpListener2Test:Test4
 MonoTests.System.Diagnostics.EventLogTest:Delete1
+x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:GetBounds_WithPen # inconsistent across Windows versions
