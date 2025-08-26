@@ -12,6 +12,8 @@ To install the required dependencies, open the terminal in the Wine Mono folder 
 
 > ./install-dependencies.sh
 
+#### Python
+
 You will also need Python. To check if it is already installed, run:
 
 > python --version
