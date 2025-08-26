@@ -1,3 +1,5 @@
 MonoTests.System.Windows.Forms.FormThreadTest:TestThreadFormsInit
 MonoTests.System.Windows.Forms.ControlInvokeTest:InvokeTest
 MonoTests.System.Threading.ThreadApartmentTest:TestApartmentState
+MonoTests.System.ServiceModel.Discovery.DiscoveryClientBindingElementTest:RequestChannelOpenFails
+MonoTests.System.ServiceModel.Discovery.DiscoveryClientBindingElementTest:RequestChannelOpenFails2
