@@ -54,7 +54,9 @@ $ git clone --recursive https://gitlab.winehq.org/mono/wine-mono.git
 
 To get to the source code for a specific release, check out the appropriate tag, and update the submodules:
 
+`
 $ git checkout wine-mono-9.0.0 $ git submodule update --init --recursive
+`
 
 Source tarballs and binary packages are available at https://dl.winehq.org/wine/wine-mono/
 
@@ -74,17 +76,23 @@ When using the Podman build container, only Podman is required on the host machi
 
 To build Wine Mono, use the msi or bin target.
 
+`
 $ make msi
+`
 
 To use a Podman container, prepend podman- to the build target.
 
+`
 $ make podman-msi
+`
 
 ### INSTALL
 
 To install Wine Mono, run the generated msi file with msiexec:
 
+`
 $ wine msiexec /i wine-mono-9.0.0-x86.msi
+`
 
 Note that if a Wine Mono with a version number >= to this file is already installed, that command will do nothing, so you may have to remove the existing version (using 'wine uninstaller') first.
 
