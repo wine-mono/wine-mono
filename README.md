@@ -34,11 +34,15 @@ sudo apt install python -y
 ### **Install Wine Mono**
 To build and install Wine Mono, simply run the following commands in the terminal:
 
->chmod +x wine-mono-installer-mint.sh
+`
+chmod +x wine-mono-installer-mint.sh
+`
 
 **Then:**
 
-> ./wine-mono-installer-mint.sh
+`
+./wine-mono-installer-mint.sh
+`
 
 # Original instructions (for Power Users)
 
