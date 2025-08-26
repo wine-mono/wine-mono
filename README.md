@@ -7,11 +7,13 @@ Wine Mono is a package containing Framework Mono and other projects, intended as
 
 To install the required dependencies, open the terminal in the Wine Mono folder and run the following commands:
 
-> chmod +x install-dependencies.sh
-
+`
+chmod +x install-dependencies.sh
+`
 **Then:**
-
-> ./install-dependencies.sh
+`
+./install-dependencies.sh
+`
 
 #### Python
 
