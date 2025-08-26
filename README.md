@@ -1,17 +1,16 @@
 Wine Mono is a package containing Framework Mono and other projects, intended as a replacement for the .NET Framework (4.8 and earlier) in Wine. It works in conjunction with Wine's builtin mscoree.dll, and it is not intended to be useful for any other purpose.
 
-## **Simplified Instructions for Linux Mint**
+# **Simplified Instructions for Linux Mint**
 
 ### **Dependencies**
+
 To install the required dependencies, run "dependencies.sh" in the Terminal via the following command:
 
 > ./dependencies.sh
 
+# Original instructions (for Power Users)
 
-
-
-
-SOURCE CODE
+### SOURCE CODE
 
 To obtain the source code, clone it from gitlab:
 
@@ -19,25 +18,23 @@ $ git clone --recursive https://gitlab.winehq.org/mono/wine-mono.git
 
 To get to the source code for a specific release, check out the appropriate tag, and update the submodules:
 
-$ git checkout wine-mono-9.0.0
-$ git submodule update --init --recursive
+$ git checkout wine-mono-9.0.0 $ git submodule update --init --recursive
 
 Source tarballs and binary packages are available at https://dl.winehq.org/wine/wine-mono/
 
-
-DEPENDENCIES
+### DEPENDENCIES
 
 To build Wine Mono, you will need the following:
- * All of the dependencies of Mono for your native (presumably Linux) system, such as autotools, CMake and a C++ compiler.
- * Wine, for the winemsibuilder and cabarc commands. A 32-bit Wine is not necessary, despite the warnings when running 64-bit Wine.
- * Python, to support the build system.
- * libgdiplus, to support Mono's resource compiler.
- * Optional: The zip or 7z command, for the tests-zip target only.
+
+- All of the dependencies of Mono for your native (presumably Linux) system, such as autotools, CMake and a C++ compiler.
+- Wine, for the winemsibuilder and cabarc commands. A 32-bit Wine is not necessary, despite the warnings when running 64-bit Wine.
+- Python, to support the build system.
+- libgdiplus, to support Mono's resource compiler.
+- Optional: The zip or 7z command, for the tests-zip target only.
 
 When using the Podman build container, only Podman is required on the host machine.
 
-
-BUILD
+### BUILD
 
 To build Wine Mono, use the msi or bin target.
 
@@ -47,8 +44,7 @@ To use a Podman container, prepend podman- to the build target.
 
 $ make podman-msi
 
-
-INSTALL
+### INSTALL
 
 To install Wine Mono, run the generated msi file with msiexec:
 
@@ -62,21 +58,19 @@ If you are building for development, you may find it more convenient to use the 
 
 Packagers should extract the tarball from the "make bin" target to /usr/share/wine/mono or the corresponding directory for the prefix used to configure Wine. This should create a directory named something like /usr/share/wine/mono/wine-mono-9.0.0. This conserves space compared to the msi because it doesn't need to be copied into every prefix.
 
-
-COMPOSITION
+### COMPOSITION
 
 An installed Wine Mono contains the following:
- * Registry keys and files in C:\windows\Microsoft.NET intended to make it look as if .NET Framework is installed, so that applications won't complain that it's missing, and the installers for .NET Framework won't install. This is part of an msi package named "Wine Mono Windows Support". (Wine Mono should always be removed before installing .NET Framework 4.8 and earlier. Wine Mono can coexist with .NET Core and .NET 5 or later.)
- * A modified version of the Framework Mono runtime and class libraries, in the "Wine Mono Runtime" msi or a shared location outside the prefix.
- * Other supporting libraries that are not part of Framework Mono, in some cases replacing Framework Mono's version, also stored in the "Wine Mono Runtime" msi or a shared location.
 
+- Registry keys and files in C:\windows\Microsoft.NET intended to make it look as if .NET Framework is installed, so that applications won't complain that it's missing, and the installers for .NET Framework won't install. This is part of an msi package named "Wine Mono Windows Support". (Wine Mono should always be removed before installing .NET Framework 4.8 and earlier. Wine Mono can coexist with .NET Core and .NET 5 or later.)
+- A modified version of the Framework Mono runtime and class libraries, in the "Wine Mono Runtime" msi or a shared location outside the prefix.
+- Other supporting libraries that are not part of Framework Mono, in some cases replacing Framework Mono's version, also stored in the "Wine Mono Runtime" msi or a shared location.
 
-BUGS
+### BUGS
 
 Bugs should be filed in the Wine bugzilla (http://bugs.winehq.org/) with product set to "Wine" and component set to "mscoree".
 
-
-PATCHES
+### PATCHES
 
 Patches to the top-level project should be sent as a merge request to https://gitlab.winehq.org/mono/wine-mono. There is also an official mirror on GitHub where Pull Requests can be sent, at https://github.com/wine-mono/wine-mono. This creates more work for the maintainer, so it's not preferred, but it may make sense if you're on GitHub already and only planning to send a single change.
 
@@ -86,4 +80,4 @@ Changes to upstream projects that make sense only within the context of wine-mon
 
 FNA and related projects have been very responsive to pull requests, and it's worth sending changes upstream to https://github.com/FNA-XNA/FNA.
 
-The winforms and wpf projects are not being updated from upstream and have diverged significantly. Since they are supporting modern .NET, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.
+The winforms and wpf projects are not being updated from upstream and have diverged significantly. Since they are supporting modern .NET, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.å
