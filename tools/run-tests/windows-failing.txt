@@ -1720,12 +1720,6 @@ x86.MonoTests.System.Windows.Forms.ClipboardTest:RtfTextTest
 x86.MonoTests.System.Windows.Forms.ClipboardTest:UnicodeTextTest
 x86.MonoTests.System.Windows.Forms.ClipboardTest
 x86.MonoTests.System.Windows.Forms.ComboBoxTest:InitialBoundValue
-x86.MonoTests.System.Windows.Forms.ContainerControlTest:AutoScaling
-x86.MonoTests.System.Windows.Forms.ContainerControlTest:GetContainerControl
-x86.MonoTests.System.Windows.Forms.ContainerControlTest:GetContainerControl_WithoutStyle
-x86.MonoTests.System.Windows.Forms.ContainerControlTest:MnemonicCalledWhenCanSelectFalse
-x86.MonoTests.System.Windows.Forms.ContainerControlTest:ValidationChildren
-x86.MonoTests.System.Windows.Forms.ContainerControlTest
 x86.MonoTests.System.Windows.Forms.ControlPaintTest:DarkTest
 x86.MonoTests.System.Windows.Forms.ControlPropertyEventsTest:PropertyAllowDrop
 x86.MonoTests.System.Windows.Forms.ControlPropertyEventsTest:PropertyAnchor
@@ -4187,12 +4181,6 @@ x86_64.MonoTests.System.Windows.Forms.ClipboardTest:RtfTextTest
 x86_64.MonoTests.System.Windows.Forms.ClipboardTest:UnicodeTextTest
 x86_64.MonoTests.System.Windows.Forms.ClipboardTest
 x86_64.MonoTests.System.Windows.Forms.ComboBoxTest:InitialBoundValue
-x86_64.MonoTests.System.Windows.Forms.ContainerControlTest:AutoScaling
-x86_64.MonoTests.System.Windows.Forms.ContainerControlTest:GetContainerControl
-x86_64.MonoTests.System.Windows.Forms.ContainerControlTest:GetContainerControl_WithoutStyle
-x86_64.MonoTests.System.Windows.Forms.ContainerControlTest:MnemonicCalledWhenCanSelectFalse
-x86_64.MonoTests.System.Windows.Forms.ContainerControlTest:ValidationChildren
-x86_64.MonoTests.System.Windows.Forms.ContainerControlTest
 x86_64.MonoTests.System.Windows.Forms.ControlPaintTest:DarkTest
 x86_64.MonoTests.System.Windows.Forms.ControlPropertyEventsTest:PropertyAllowDrop
 x86_64.MonoTests.System.Windows.Forms.ControlPropertyEventsTest:PropertyAnchor
@@ -5232,7 +5220,6 @@ MonoTests.System.Drawing.Printing.PrintingServicesUnixTest:BuiltInPrinting
 MonoTests.System.Net.ServicePointTest:All
 MonoTests.System.Net.ServicePointTest:DnsRefreshTimeout
 MonoTests.System.Net.ServicePointTest:EndPointBind
-MonoTests.System.Net.WebClientTest:DownloadTwice
 MonoTests.System.Net.WebClientTest:UploadValues1
 MonoTests.System.Net.WebClientTestAsync:DownloadMultiple
 MonoTests.System.Net.WebClientTestAsync:DownloadMultiple2
