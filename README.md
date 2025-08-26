@@ -1,6 +1,6 @@
 Wine Mono is a package containing Framework Mono and other projects, intended as a replacement for the .NET Framework (4.8 and earlier) in Wine. It works in conjunction with Wine's builtin mscoree.dll, and it is not intended to be useful for any other purpose.
 
-# **Simplified Instructions for Linux Mint**
+# **Simplified Instructions for Linux Mint/Ubuntu**
 #### (For other distros, please refer to Original instructions)
 
 ### **Dependencies**
