@@ -10,7 +10,9 @@ To install the required dependencies, open the terminal in the Wine Mono folder 
 `
 chmod +x install-dependencies.sh
 `
+
 **Then:**
+
 `
 ./install-dependencies.sh
 `
