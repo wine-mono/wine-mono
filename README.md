@@ -7,7 +7,9 @@ Wine Mono is a package containing Framework Mono and other projects, intended as
 To install the required dependencies, run "dependencies.sh" in the Terminal via the following command:
 
 > chmod +x install-dependencies.sh
+
 **Then:**
+
 > ./install-dependencies.sh
 
 # Original instructions (for Power Users)
