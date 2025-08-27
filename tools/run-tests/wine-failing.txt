@@ -1423,6 +1423,7 @@ FilesSystemTest:GetAttr_2
 FilesSystemTest:Kill_6
 FilesSystemTest:Rename_5
 FilesSystemTest:SetAttr_2
+MonoTests.System.Windows.Forms.ContainerControlTest:AutoScaling
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
