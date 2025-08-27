@@ -1,8 +1,8 @@
 .*.swp
 /build/
 /image/
-/llvm-mingw-20250709-ucrt-ubuntu-22.04-x86_64.tar.xz
-/llvm-mingw-20250709-ucrt-ubuntu-22.04-x86_64/
+/llvm-mingw-20250826-ucrt-ubuntu-22.04-x86_64.tar.xz
+/llvm-mingw-20250826-ucrt-ubuntu-22.04-x86_64/
 /tests/
 /tools/tests/*.exe
 /tools/tests/*.dll
