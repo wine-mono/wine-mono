@@ -82,7 +82,7 @@ Packagers should extract the tarball from the `make bin` target to `/usr/share/w
 
 An **installed** Wine Mono **contains the following**:
 
-- **Registry keys and files** in `C:\windows\Microsoft.NET` intended to make it look as if .NET Framework is installed, so that applications won't complain that it's missing, and the installers for .NET Framework won't install. This is part of an msi package named **"Wine Mono Windows Support"**. (Wine Mono should always be removed before installing .NET Framework 4.8 and earlier. Wine Mono can coexist with .NET Core and .NET 5 or later.)
+- **Registry keys and files** in `C:\windows\Microsoft.NET`, intended to make it look as if .NET Framework is installed. This prevents applications from complaining that it’s missing and ensures that .NET Framework installers can run. This is part of an `msi` package named **"Wine Mono Windows Support"**. (Wine Mono should always be removed before installing .NET Framework 4.8 and earlier. Wine Mono can coexist with .NET Core and .NET 5 or later.)
 - **A modified version of the Framework Mono runtime and class libraries**, in the "Wine Mono Runtime" msi or a shared location outside the prefix.
 - **Other supporting libraries** that are not part of Framework Mono, in some cases replacing Framework Mono's version, also stored in the "Wine Mono Runtime" msi or a shared location.
 
