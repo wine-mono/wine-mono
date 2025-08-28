@@ -1383,16 +1383,11 @@ MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest:UseCase1
 MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest:UseCase2
 MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest:UseCase3
 MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest
-WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:NewlineCharacterLoggingTest
 MonoTests.System.Windows.Forms.EventArgsTest:TestToolStripGripRenderEventArgs # ToolStripGrip is larger when themes are enabled
 MonoTests.System.Windows.Forms.ToolStripTests:Constructor # ToolStripGrip is larger when themes are enabled
 MonoTests.System.Windows.Forms.ToolStripTests:ProtectedProperties # ToolStripGrip is larger when themes are enabled
 MonoTests.System.Windows.Forms.ToolStripTests:TestToolStrip # ToolStripGrip is larger when themes are enabled
-WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseFirstWordCharTest
-WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseFirstWordTest
-WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseNullTest
 WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseSecondWordCharTest
-WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseSecondWordTest
 MonoTests.System.Configuration.ApplicationSettingsBaseTest:TestSettings1_Properties
 MonoTests.System.Configuration.SettingsPropertyValueTest:Binary_Serialize
 MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:IsOutlineVisible_Line_WithGraphics # winehq bug 55717
