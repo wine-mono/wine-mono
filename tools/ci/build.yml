@@ -1,7 +1,7 @@
 
 build:
     stage: build
-    image: $CI_REGISTRY/mono/wine-mono:debian-bookworm-build
+    image: $CI_REGISTRY/mono/wine-mono:debian-trixie-build
     rules:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_PROJECT_NAMESPACE == 'mono'
     interruptible: true
@@ -43,7 +43,7 @@ build:
 
 build-source:
     stage: build
-    image: $CI_REGISTRY/mono/wine-mono:debian-bookworm-build
+    image: $CI_REGISTRY/mono/wine-mono:debian-trixie-build
     when: manual
     interruptible: true
     timeout: 1h
@@ -60,7 +60,7 @@ build-source:
 
 build-bin:
     stage: build2
-    image: $CI_REGISTRY/mono/wine-mono:debian-bookworm-build
+    image: $CI_REGISTRY/mono/wine-mono:debian-trixie-build
     when: manual
     interruptible: true
     variables:
