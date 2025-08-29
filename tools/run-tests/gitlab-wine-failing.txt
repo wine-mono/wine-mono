@@ -10,3 +10,7 @@ WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:WrapTest
 MonoTests.System.Windows.Forms.DataGridTableStyleTest:HeaderFontNull2
 MonoTests.System.Windows.Forms.FormTest:FormStartupPositionChangeTest
 MonoTests.System.Drawing.FontTest:GetHashCode_UnitDiffers_HashesNotEqual
+WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseFirstWordCharTest
+WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseFirstWordTest
+WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseSecondWordTest
+WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:NewlineCharacterLoggingTest
