@@ -6089,7 +6089,6 @@ static VkRenderPass VULKAN_INTERNAL_CreateRenderPass(
         colorAttachmentReferences[colorAttachmentReferenceCount].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
         attachmentDescriptionCount += 1;
-        colorAttachmentReferenceCount += 1;
 
         if (colorTargetInfos[i].store_op == SDL_GPU_STOREOP_RESOLVE || colorTargetInfos[i].store_op == SDL_GPU_STOREOP_RESOLVE_AND_STORE) {
             VulkanTextureContainer *resolveContainer = (VulkanTextureContainer *)colorTargetInfos[i].resolve_texture;
@@ -6104,12 +6103,16 @@ static VkRenderPass VULKAN_INTERNAL_CreateRenderPass(
             attachmentDescriptions[attachmentDescriptionCount].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
             attachmentDescriptions[attachmentDescriptionCount].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-            resolveReferences[resolveReferenceCount].attachment = attachmentDescriptionCount;
-            resolveReferences[resolveReferenceCount].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+            resolveReferences[colorAttachmentReferenceCount].attachment = attachmentDescriptionCount;
+            resolveReferences[colorAttachmentReferenceCount].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
             attachmentDescriptionCount += 1;
             resolveReferenceCount += 1;
+        } else {
+            resolveReferences[colorAttachmentReferenceCount].attachment = VK_ATTACHMENT_UNUSED;
         }
+
+        colorAttachmentReferenceCount += 1;
     }
 
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
@@ -9405,6 +9408,8 @@ static bool VULKAN_INTERNAL_AllocateCommandBuffer(
     commandBuffer->usedUniformBuffers = SDL_malloc(
         commandBuffer->usedUniformBufferCapacity * sizeof(VulkanUniformBuffer *));
 
+    commandBuffer->swapchainRequested = false;
+
     // Pool it!
 
     vulkanCommandPool->inactiveCommandBuffers[vulkanCommandPool->inactiveCommandBufferCount] = commandBuffer;
@@ -9587,6 +9592,7 @@ static SDL_GPUCommandBuffer *VULKAN_AcquireCommandBuffer(
 
     commandBuffer->autoReleaseFence = true;
 
+    commandBuffer->swapchainRequested = false;
     commandBuffer->isDefrag = 0;
 
     /* Reset the command buffer here to avoid resets being called
@@ -10494,11 +10500,18 @@ static bool VULKAN_Wait(
     VkResult result;
     Sint32 i;
 
+    SDL_LockMutex(renderer->submitLock);
+
     result = renderer->vkDeviceWaitIdle(renderer->logicalDevice);
 
-    CHECK_VULKAN_ERROR_AND_RETURN(result, vkDeviceWaitIdle, false);
-
-    SDL_LockMutex(renderer->submitLock);
+    if (result != VK_SUCCESS) {
+        if (renderer->debugMode) {
+            SDL_LogError(SDL_LOG_CATEGORY_GPU, "%s %s", "vkDeviceWaitIdle", VkErrorMessages(result));
+        }
+        SDL_SetError("%s %s", "vkDeviceWaitIdle", VkErrorMessages(result));
+        SDL_UnlockMutex(renderer->submitLock);
+        return false;
+    }
 
     for (i = renderer->submittedCommandBufferCount - 1; i >= 0; i -= 1) {
         commandBuffer = renderer->submittedCommandBuffers[i];
