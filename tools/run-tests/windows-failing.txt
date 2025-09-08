@@ -1714,8 +1714,6 @@ x86.MonoTests.System.Resources.WriterTest:Constructor1_Stream_Null
 x86.MonoTests.System.Resources.WriterTest:Constructor2_TextWriter_Null
 x86.MonoTests.System.Resources.WriterTest:Constructor3_FileName_Null
 x86.MonoTests.System.Windows.Forms.ClipboardTest:CustomSerializableData
-x86.MonoTests.System.Windows.Forms.ClipboardTest:DataGetsCleared_Xamarin4959
-x86.MonoTests.System.Windows.Forms.ClipboardTest:DataRemainsOnClipboard_Xamarin4959
 x86.MonoTests.System.Windows.Forms.ClipboardTest:RtfTextTest
 x86.MonoTests.System.Windows.Forms.ClipboardTest:UnicodeTextTest
 x86.MonoTests.System.Windows.Forms.ClipboardTest
@@ -4175,8 +4173,6 @@ x86_64.MonoTests.System.Resources.WriterTest:Constructor1_Stream_Null
 x86_64.MonoTests.System.Resources.WriterTest:Constructor2_TextWriter_Null
 x86_64.MonoTests.System.Resources.WriterTest:Constructor3_FileName_Null
 x86_64.MonoTests.System.Windows.Forms.ClipboardTest:CustomSerializableData
-x86_64.MonoTests.System.Windows.Forms.ClipboardTest:DataGetsCleared_Xamarin4959
-x86_64.MonoTests.System.Windows.Forms.ClipboardTest:DataRemainsOnClipboard_Xamarin4959
 x86_64.MonoTests.System.Windows.Forms.ClipboardTest:RtfTextTest
 x86_64.MonoTests.System.Windows.Forms.ClipboardTest:UnicodeTextTest
 x86_64.MonoTests.System.Windows.Forms.ClipboardTest
