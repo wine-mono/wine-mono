@@ -1478,3 +1478,4 @@ MonoTests.System.Windows.Forms.ControlTest:OnPaintTest
 MonoTests.System.Windows.Forms.ControlTest:OnPaintDoubleBufferedTest
 x86_64.MonoTests.Remoting.IpcReflectionCallTest:BaseCallTest.TestAbstractComplexParams
 x86_64.MonoTests.Remoting.IpcDelegateCallTest:BaseCallTest.TestAbstractComplexParams
+MonoTests.Remoting.IpcSyncCallTest:BaseCallTest.TestAbstractComplexParams
