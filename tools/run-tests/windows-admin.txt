@@ -176,7 +176,6 @@ MonoTests.System.Diagnostics.EventLogTest:Constructor4
 MonoTests.System.Diagnostics.EventLogTest:Constructor4_Log_Empty
 MonoTests.System.Diagnostics.EventLogTest:Constructor4_Source_DoesNotExist
 MonoTests.System.Diagnostics.EventLogTest:Constructor4_Source_Empty
-MonoTests.System.Diagnostics.EventLogTest:Constructor4_Source_Null
 MonoTests.System.Diagnostics.EventLogTest:CreateEventSource1
 MonoTests.System.Diagnostics.EventLogTest:CreateEventSource1_Log_Empty
 MonoTests.System.Diagnostics.EventLogTest:CreateEventSource1_Log_ExistsAsSource
