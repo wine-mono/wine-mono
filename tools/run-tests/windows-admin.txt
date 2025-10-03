@@ -1,6 +1,5 @@
 # Tests that only pass with admin privs on Windows
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests:DateString_1
-MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeOfDay_1
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeString_1
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests
 MonoTests.Microsoft_VisualBasic.MyServices.RegistryProxyTest:TestSetValue

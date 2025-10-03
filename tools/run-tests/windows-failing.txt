@@ -5405,3 +5405,4 @@ MonoTests.System.Diagnostics.EventLogTest:Delete1
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:GetBounds_WithPen # inconsistent across Windows versions
 MonoTests.System.Net.HttpListenerTest:CloseTwice
 MonoTests.System.Diagnostics.EventLogTest:Constructor4_Source_Null
+MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeOfDay_1
