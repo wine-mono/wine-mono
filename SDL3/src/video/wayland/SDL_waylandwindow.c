@@ -1295,8 +1295,13 @@ static void decoration_frame_configure(struct libdecor_frame *frame,
             } else {
                 /* Don't apply the supplied dimensions if they haven't changed from the last configuration
                  * event, or a newer size set programmatically can be overwritten by old data.
+                 *
+                 * If a client takes a long time to present the first frame after creating the window, a
+                 * configure event to set the suspended state may arrive with the content size increased
+                 * by the decoration dimensions, which should also be ignored.
                  */
-                if (width != wind->last_configure.width || height != wind->last_configure.height) {
+                if ((width != wind->last_configure.width || height != wind->last_configure.height) &&
+                    !(wind->shell_surface_status == WAYLAND_SHELL_SURFACE_STATUS_WAITING_FOR_FRAME && wind->suspended != suspended)) {
                     wind->requested.logical_width = width;
                     wind->requested.logical_height = height;
 
@@ -1895,7 +1900,7 @@ void Wayland_ShowWindow(SDL_VideoDevice *_this, SDL_Window *window)
             // Set up the positioner for the popup and configure the constraints
             data->shell_surface.xdg.popup.xdg_positioner = xdg_wm_base_create_positioner(c->shell.xdg);
             xdg_positioner_set_anchor(data->shell_surface.xdg.popup.xdg_positioner, XDG_POSITIONER_ANCHOR_TOP_LEFT);
-            xdg_positioner_set_anchor_rect(data->shell_surface.xdg.popup.xdg_positioner, 0, 0, parent->internal->current.logical_width, parent->internal->current.logical_width);
+            xdg_positioner_set_anchor_rect(data->shell_surface.xdg.popup.xdg_positioner, 0, 0, parent->internal->current.logical_width, parent->internal->current.logical_height);
 
             const Uint32 constraint = window->constrain_popup ? (XDG_POSITIONER_CONSTRAINT_ADJUSTMENT_SLIDE_X | XDG_POSITIONER_CONSTRAINT_ADJUSTMENT_SLIDE_Y) : XDG_POSITIONER_CONSTRAINT_ADJUSTMENT_NONE;
             xdg_positioner_set_constraint_adjustment(data->shell_surface.xdg.popup.xdg_positioner, constraint);
