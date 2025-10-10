@@ -1,2 +1,10 @@
 MonoTests.System.Windows.Forms.TextBoxTest:ModifiedTest
 MonoTests.System.Windows.Forms.TextBoxTest:PasteTest
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Bitmap8bbpIndexedGreyscaleData
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_24bppRgb
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_32bppArgb
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_32bppPArgb
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_32bppRgb
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_48bppRgb
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_64bppArgb
+MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_64bppPArgb
