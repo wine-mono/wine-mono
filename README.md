@@ -1,4 +1,4 @@
-Wine Mono is a package containing Framework Mono and other projects, intended as a replacement for the .NET Framework (4.8 and earlier) in Wine. It works in conjunction with Wine's builtin mscoree.dll, and it is not intended to be useful for any other purpose.
+Wine Mono is a package containing Framework Mono and other projects, intended as a replacement for the .NET Framework (4.8.1 and earlier) in Wine. It works in conjunction with Wine's builtin mscoree.dll, and it is not intended to be useful for any other purpose.
 
 ---
 
@@ -82,7 +82,7 @@ Packagers should extract the tarball from the `make bin` target to `/usr/share/w
 
 An installed Wine Mono contains the following:
 
-- **Registry keys and files** in `C:\windows\Microsoft.NET`, intended to make it look as if .NET Framework is installed. This prevents applications from complaining that it’s missing and ensures that .NET Framework installers do not break Wine Mono by installing their own files. It exists as part of an `msi` package named "Wine Mono Windows Support". Please note that while Wine Mono should always be removed before installing .NET Framework 4.8 and earlier, it can coexist with .NET Core and .NET 5 or later.
+- **Registry keys and files** in `C:\windows\Microsoft.NET`, intended to make it look as if .NET Framework is installed. This prevents applications from complaining that it’s missing and ensures that .NET Framework installers do not break Wine Mono by installing their own files. It exists as part of an `msi` package named "Wine Mono Windows Support". Please note that while Wine Mono should always be removed before installing .NET Framework 4.8.1 and earlier, it can coexist with .NET Core and .NET 5 or later.
 - **A modified version of the Framework Mono runtime and class libraries**, in the "Wine Mono Runtime" msi or a shared location outside the prefix.
 - **Other supporting libraries** that are not part of Framework Mono, in some cases replacing Framework Mono's version, also stored in the "Wine Mono Runtime" msi or a shared location.
 
