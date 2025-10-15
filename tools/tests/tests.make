@@ -34,6 +34,7 @@ TEST_CS_EXE_SRCS = \
 	valist.cs \
 	vbstartup.cs \
 	vtblgap.cs \
+	xnatest.cs \
 	webbrowsertest.cs \
 	winemono-ccw.cs \
 	wpfclipboard.cs
@@ -50,8 +51,7 @@ TEST_RAW_FILES = \
 	privatepath1.exe.config
 
 TEST_IL_EXE_SRCS = \
-	marshalcopy.il \
-	xnatest.il
+	marshalcopy.il
 
 TEST_CLR_EXE_TARGETS = $(TEST_CS_EXE_SRCS:%.cs=tools/tests/%.exe) $(TEST_IL_EXE_SRCS:%.il=tools/tests/%.exe) vstests/wpfapptest/bin/Release/wpfapptest.exe
 
@@ -87,6 +87,8 @@ tools/tests/mixedmode-dllimport-usedlldirectory.exe: tools/tests/mixedmode-dllim
 tools/tests/privatepath1.exe: tools/tests/testcslib1.dll
 
 tools/tests/privatepath2.exe: tools/tests/testcslib1.dll tools/tests/testcslib2.dll
+
+tools/tests/xnatest.exe: tools/tests/Microsoft.Xna.Framework.Game.dll
 
 tools/tests/wpfclipboard.exe: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built
 
