@@ -126,7 +126,6 @@ MonoTests.Microsoft.Build.BuildEngine.BuildPropertyTest:TestClone5
 MonoTests.Microsoft.Build.BuildEngine.BuildPropertyTest:TestClone6
 MonoTests.Microsoft.Build.BuildEngine.BuildPropertyTest:TestCondition1
 MonoTests.Microsoft.Build.BuildEngine.EngineTest:TestGlobalProperties1
-MonoTests.System.Windows.Forms.CursorTest:CursorPropertyTag # Cursor.Current is null on Wine when process starts, Wine bug
 x86.MonoTests.Microsoft.Build.BuildEngine.EngineTest:TestGlobalProperties1a
 x86.MonoTests.Microsoft.Build.BuildEngine.EngineTest:TestGlobalProperties1b
 x86.MonoTests.Microsoft.Build.BuildEngine.EngineTest:TestGlobalProperties2
@@ -1383,10 +1382,6 @@ MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest:UseCase1
 MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest:UseCase2
 MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest:UseCase3
 MonoTests.System.ServiceModel.Discovery.IntegratedDiscoveryTest
-MonoTests.System.Windows.Forms.EventArgsTest:TestToolStripGripRenderEventArgs # ToolStripGrip is larger when themes are enabled
-MonoTests.System.Windows.Forms.ToolStripTests:Constructor # ToolStripGrip is larger when themes are enabled
-MonoTests.System.Windows.Forms.ToolStripTests:ProtectedProperties # ToolStripGrip is larger when themes are enabled
-MonoTests.System.Windows.Forms.ToolStripTests:TestToolStrip # ToolStripGrip is larger when themes are enabled
 WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:CollapseSecondWordCharTest
 MonoTests.System.Configuration.ApplicationSettingsBaseTest:TestSettings1_Properties
 MonoTests.System.Configuration.SettingsPropertyValueTest:Binary_Serialize
