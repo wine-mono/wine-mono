@@ -1,4 +1,3 @@
-// We can't build this properly due to type forwards, so xnatest.il is actually used
 using System;
 using System.Threading;
 using System.Runtime.InteropServices;
@@ -35,7 +34,17 @@ public class TestGame : Game
 	public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
 	[DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-	public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+	public static extern IntPtr SetWindowLongW(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+	[DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+	public static extern IntPtr SetWindowLongPtrW(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+	public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+	{
+		if (IntPtr.Size == 8)
+			return SetWindowLongPtrW(hWnd, nIndex, dwNewLong);
+		return SetWindowLongW(hWnd, nIndex, dwNewLong);
+	}
 
 	public enum Msg : uint
 	{
@@ -67,7 +76,7 @@ public class TestGame : Game
 	protected override void Initialize()
 	{
 		_wndProc = WndProc;
-		_prevWndProc = (IntPtr)SetWindowLong(this.Window.Handle, GWLP_WNDPROC, (int)Marshal.GetFunctionPointerForDelegate((Delegate)_wndProc));
+		_prevWndProc = SetWindowLong(this.Window.Handle, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate((Delegate)_wndProc));
 	}
 
 	protected override void Update(GameTime time)
@@ -77,10 +86,6 @@ public class TestGame : Game
 			SendKeys.SendWait("A");
 			SendKeys.SendWait("B");
 			_sent = true;
-			Exit();
-		}
-		else if (Environment.Is64BitProcess)
-		{
 			Exit();
 		}
 
@@ -95,7 +100,7 @@ public class XnaTest
 		using (var game = new TestGame())
 		{
 			game.Run();
-			if (!Environment.Is64BitProcess && (!game.ASuccess || !game.BSuccess))
+			if (!game.ASuccess || !game.BSuccess)
 				return 1;
 		}
 
