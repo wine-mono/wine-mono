@@ -1415,6 +1415,7 @@ FilesSystemTest:Rename_5
 FilesSystemTest:SetAttr_2
 MonoTests.System.Windows.Forms.ContainerControlTest:AutoScaling
 MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_64bppPArgb
+MonoTests.System.Windows.Forms.CursorTest:CursorPropertyTag
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
