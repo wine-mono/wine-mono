@@ -5893,7 +5893,10 @@ static VulkanTexture *VULKAN_INTERNAL_CreateTexture(
             VULKAN_TEXTURE_USAGE_MODE_UNINITIALIZED,
             texture);
         VULKAN_INTERNAL_TrackTexture(barrierCommandBuffer, texture);
-        VULKAN_Submit((SDL_GPUCommandBuffer *)barrierCommandBuffer);
+        if (!VULKAN_Submit((SDL_GPUCommandBuffer *)barrierCommandBuffer)) {
+            VULKAN_INTERNAL_DestroyTexture(renderer, texture);
+            return NULL;
+        }
     }
 
     return texture;
@@ -9685,6 +9688,13 @@ static bool VULKAN_INTERNAL_OnWindowResize(void *userdata, SDL_Event *e)
         data->swapchainCreateHeight = e->window.data2;
     }
 
+#ifdef SDL_PLATFORM_ANDROID
+    if (e->type == SDL_EVENT_DID_ENTER_BACKGROUND) {
+        data = VULKAN_INTERNAL_FetchWindowData(w);
+        data->needsSwapchainRecreate = true;
+    }
+#endif
+
     return true;
 }
 
@@ -10664,7 +10674,13 @@ static bool VULKAN_Submit(
             presentData->windowData->inFlightFences[presentData->windowData->frameCounter] = (SDL_GPUFence*)vulkanCommandBuffer->inFlightFence;
             (void)SDL_AtomicIncRef(&vulkanCommandBuffer->inFlightFence->referenceCount);
 
-            if (presentResult == VK_SUBOPTIMAL_KHR || presentResult == VK_ERROR_OUT_OF_DATE_KHR) {
+// On the Android platform, VK_SUBOPTIMAL_KHR is returned whenever the device is rotated. We'll just ignore this for now.
+#ifndef SDL_PLATFORM_ANDROID
+            if (presentResult == VK_SUBOPTIMAL_KHR) {
+                presentData->windowData->needsSwapchainRecreate = true;
+            }
+#endif
+            if (presentResult == VK_ERROR_OUT_OF_DATE_KHR) {
                 presentData->windowData->needsSwapchainRecreate = true;
             }
         } else {

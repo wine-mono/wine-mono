@@ -5,7 +5,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 
 # See docs/release_checklist.md
-project(SDL3 LANGUAGES C VERSION "3.2.24")
+project(SDL3 LANGUAGES C VERSION "3.2.26")
 
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   set(SDL3_MAINPROJECT ON)
@@ -1489,6 +1489,9 @@ if(ANDROID)
       endif()
     endif()
   endif()
+  if(TARGET SDL3-static)
+    target_link_options(SDL3-static INTERFACE "-Wl,-u,JNI_OnLoad")
+  endif()
 
 elseif(EMSCRIPTEN)
   # Hide noisy warnings that intend to aid mostly during initial stages of porting a new
@@ -1914,7 +1917,7 @@ elseif(WINDOWS)
     target_compile_options(SDL_uclibc PRIVATE $<$<COMPILE_LANGUAGE:C,CXX>:/GS-> $<$<COMPILE_LANGUAGE:C,CXX>:/Gs1048576>)
     if(SDL_CPU_X86)
       target_compile_options(SDL3-shared PRIVATE "/arch:SSE")
-      target_compile_options(SDL3-SDL_uclibc PRIVATE "/arch:SSE")
+      target_compile_options(SDL_uclibc PRIVATE "/arch:SSE")
     endif()
   endif()
 

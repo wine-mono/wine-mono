@@ -61,7 +61,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     private static final String TAG = "SDL";
     private static final int SDL_MAJOR_VERSION = 3;
     private static final int SDL_MINOR_VERSION = 2;
-    private static final int SDL_MICRO_VERSION = 24;
+    private static final int SDL_MICRO_VERSION = 26;
 /*
     // Display InputType.SOURCE/CLASS of events and devices
     //
@@ -1127,6 +1127,11 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     {
         int orientation_landscape = -1;
         int orientation_portrait = -1;
+
+        if (w <= 1 || h <= 1) {
+            // Invalid width/height, ignore this request
+            return;
+        }
 
         /* If set, hint "explicitly controls which UI orientations are allowed". */
         if (hint.contains("LandscapeRight") && hint.contains("LandscapeLeft")) {
