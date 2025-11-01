@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System.Windows.Forms;
 
 public class TestGame : Game
@@ -86,10 +87,42 @@ public class TestGame : Game
 			SendKeys.SendWait("A");
 			SendKeys.SendWait("B");
 			_sent = true;
+
+			InputForm.Test ();
+
 			Exit();
 		}
 
 		base.Update(time);
+	}
+}
+
+public class InputForm : Form
+{
+	public static bool success;
+
+	public static void Test ()
+	{
+		var form = new InputForm();
+
+		form.Show();
+
+		System.Windows.Forms.Application.DoEvents();
+	}
+
+	protected override void OnGotFocus(EventArgs e)
+	{
+		SendKeys.SendWait("C");
+		base.OnGotFocus(e);
+	}
+
+	protected override void OnKeyDown(KeyEventArgs e)
+	{
+		if (e.KeyCode == System.Windows.Forms.Keys.C)
+		{
+			success = Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.C);
+		}
+		base.OnKeyDown(e);
 	}
 }
 
@@ -102,6 +135,8 @@ public class XnaTest
 			game.Run();
 			if (!game.ASuccess || !game.BSuccess)
 				return 1;
+			if (!InputForm.success)
+				return 2;
 		}
 
 		return 0;

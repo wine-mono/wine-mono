@@ -88,7 +88,7 @@ tools/tests/privatepath1.exe: tools/tests/testcslib1.dll
 
 tools/tests/privatepath2.exe: tools/tests/testcslib1.dll tools/tests/testcslib2.dll
 
-tools/tests/xnatest.exe: tools/tests/Microsoft.Xna.Framework.Game.dll
+tools/tests/xnatest.exe: tools/tests/Microsoft.Xna.Framework.Game.dll tools/tests/Microsoft.Xna.Framework.dll
 
 tools/tests/wpfclipboard.exe: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built
 
