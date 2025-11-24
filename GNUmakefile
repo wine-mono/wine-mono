@@ -278,6 +278,7 @@ $(BUILDDIR)/.runtimemsitables-built: $(BUILDDIR)/.imagedir-built $(SRCDIR)/msi-t
 	touch $@
 
 $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.msi: $(BUILDDIR)/.runtimemsitables-built
+	-mkdir -p $(OUTDIR)
 	rm -f "$@"
 	$(WINE) winemsibuilder -i '$(shell $(WINE) winepath -w $@)' $(BUILDDIR)/msi-tables/runtime/*.idt
 	$(WINE) winemsibuilder -a '$(shell $(WINE) winepath -w $@)' image.cab '$(shell $(WINE) winepath -w $(BUILDDIR)/image.cab)'
@@ -297,6 +298,7 @@ clean-msi:
 clean: clean-msi
 
 $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built
+	-mkdir -p $(OUTDIR)
 	cd $(IMAGEDIR)/..; tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_ABS)):wine-mono-$(MSI_VERSION):g' '--exclude=*.pdb' '--exclude=*.dbg' '--use-compress-program=$(COMPRESSOR)' $(notdir $(IMAGEDIR_ABS))
 
 bin: $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX)
@@ -311,6 +313,7 @@ clean-targz:
 clean: clean-targz
 
 $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built
+	-mkdir -p $(OUTDIR)
 	cd $(IMAGEDIR)/..; find $(notdir $(IMAGEDIR_ABS)) -name '*.pdb' -o -name '*.dbg'|tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_ABS)):wine-mono-$(MSI_VERSION):g' -T - '--use-compress-program=$(COMPRESSOR)'
 
 dbgsym: $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX)
@@ -322,6 +325,7 @@ clean-dbgsym:
 clean: clean-dbgsym
 
 $(OUTDIR)/wine-mono-$(MSI_VERSION)-src.tar.$(COMPRESSED_SUFFIX): $(FETCH_LLVM_MINGW)/.dir
+	-mkdir -p $(OUTDIR)
 	$(SRCDIR)/tools/archive.sh wine-mono-$(MSI_VERSION) $(OUTDIR_ABS) wine-mono-$(MSI_VERSION)-src $(FETCH_LLVM_MINGW_DIRECTORY)
 	rm -f $@
 	$(COMPRESSOR) $(OUTDIR)/wine-mono-$(MSI_VERSION)-src.tar
