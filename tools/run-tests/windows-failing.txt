@@ -5388,3 +5388,4 @@ MonoTests.System.Net.HttpListenerTest:CloseTwice
 MonoTests.System.Diagnostics.EventLogTest:Constructor4_Source_Null
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeOfDay_1
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeString_1
+MonoTests.Microsoft_VisualBasic.Logging.FileLogTraceListenerTest:DiskSpaceTest1 # race with anything that frees disk space
