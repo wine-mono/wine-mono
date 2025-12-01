@@ -23,6 +23,7 @@ ENABLE_MONODX=1
 ENABLE_DEBUG_SYMBOLS=1
 PREFER_DWARF_SYMBOLS=0
 
+ENABLE_ARM64=0
 ENABLE_ARM=0
 
 -include user-config.make
@@ -169,6 +170,9 @@ $(eval $(call MINGW_TEMPLATE,x86_64))
 
 ifeq (1,$(ENABLE_ARM))
 $(eval $(call MINGW_TEMPLATE,arm))
+endif
+
+ifeq (1,$(ENABLE_ARM64))
 $(eval $(call MINGW_TEMPLATE,arm64))
 endif
 
