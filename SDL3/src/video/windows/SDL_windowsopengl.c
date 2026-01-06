@@ -429,7 +429,7 @@ void WIN_GL_InitExtensions(SDL_VideoDevice *_this)
     if (!hwnd) {
         return;
     }
-    WIN_PumpEvents(_this);
+    WIN_PumpEventsForHWND(_this, hwnd);
 
     hdc = GetDC(hwnd);
 
@@ -489,7 +489,9 @@ void WIN_GL_InitExtensions(SDL_VideoDevice *_this)
     }
 
     // Check for WGL_EXT_create_context_es2_profile
-    if (HasExtension("WGL_EXT_create_context_es2_profile", extensions)) {
+    // see if we can get at OpenGL ES profiles even if EGL isn't available.
+    _this->gl_data->HAS_WGL_EXT_create_context_es2_profile = HasExtension("WGL_EXT_create_context_es2_profile", extensions);
+    if (_this->gl_data->HAS_WGL_EXT_create_context_es2_profile) {
         SDL_GL_DeduceMaxSupportedESProfile(
             &_this->gl_data->es_profile_max_supported_version.major,
             &_this->gl_data->es_profile_max_supported_version.minor);
@@ -510,11 +512,22 @@ void WIN_GL_InitExtensions(SDL_VideoDevice *_this)
         _this->gl_data->HAS_WGL_ARB_create_context_no_error = true;
     }
 
+    // Check for WGL_ARB_framebuffer_sRGB
+    if (HasExtension("WGL_ARB_framebuffer_sRGB", extensions)) {
+        _this->gl_data->HAS_WGL_ARB_framebuffer_sRGB = true;
+    } else if (HasExtension("WGL_EXT_framebuffer_sRGB", extensions)) {  // same thing.
+        _this->gl_data->HAS_WGL_ARB_framebuffer_sRGB = true;
+    }
+
+    /* Check for WGL_ARB_pixel_format_float */
+    _this->gl_data->HAS_WGL_ARB_pixel_format_float =
+        HasExtension("WGL_ARB_pixel_format_float", extensions);
+
     _this->gl_data->wglMakeCurrent(hdc, NULL);
     _this->gl_data->wglDeleteContext(hglrc);
     ReleaseDC(hwnd, hdc);
     DestroyWindow(hwnd);
-    WIN_PumpEvents(_this);
+    WIN_PumpEventsForHWND(_this, hwnd);
 }
 
 static int WIN_GL_ChoosePixelFormatARB(SDL_VideoDevice *_this, int *iAttribs, float *fAttribs)
@@ -526,13 +539,10 @@ static int WIN_GL_ChoosePixelFormatARB(SDL_VideoDevice *_this, int *iAttribs, fl
     int pixel_format = 0;
     unsigned int matching;
 
-    int qAttrib = WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB;
-    int srgb = 0;
-
     hwnd =
         CreateWindow(SDL_Appname, SDL_Appname, (WS_POPUP | WS_DISABLED), 0, 0,
                      10, 10, NULL, NULL, SDL_Instance, NULL);
-    WIN_PumpEvents(_this);
+    WIN_PumpEventsForHWND(_this, hwnd);
 
     hdc = GetDC(hwnd);
 
@@ -550,7 +560,11 @@ static int WIN_GL_ChoosePixelFormatARB(SDL_VideoDevice *_this, int *iAttribs, fl
                                                     &matching);
 
             // Check whether we actually got an SRGB capable buffer
-            _this->gl_data->wglGetPixelFormatAttribivARB(hdc, pixel_format, 0, 1, &qAttrib, &srgb);
+            int srgb = 0;
+            if (_this->gl_data->HAS_WGL_ARB_framebuffer_sRGB) {
+                int qAttrib = WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB;
+                _this->gl_data->wglGetPixelFormatAttribivARB(hdc, pixel_format, 0, 1, &qAttrib, &srgb);
+            }
             _this->gl_config.framebuffer_srgb_capable = srgb;
         }
 
@@ -559,7 +573,7 @@ static int WIN_GL_ChoosePixelFormatARB(SDL_VideoDevice *_this, int *iAttribs, fl
     }
     ReleaseDC(hwnd, hdc);
     DestroyWindow(hwnd);
-    WIN_PumpEvents(_this);
+    WIN_PumpEventsForHWND(_this, hwnd);
 
     return pixel_format;
 }
@@ -640,14 +654,14 @@ static bool WIN_GL_SetupWindowInternal(SDL_VideoDevice *_this, SDL_Window *windo
         *iAttr++ = _this->gl_config.multisamplesamples;
     }
 
-    if (_this->gl_config.floatbuffers) {
+    if (_this->gl_data->HAS_WGL_ARB_pixel_format_float && _this->gl_config.floatbuffers) {
         *iAttr++ = WGL_PIXEL_TYPE_ARB;
         *iAttr++ = WGL_TYPE_RGBA_FLOAT_ARB;
     }
 
-    if (_this->gl_config.framebuffer_srgb_capable) {
+    if (_this->gl_data->HAS_WGL_ARB_framebuffer_sRGB) {
         *iAttr++ = WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB;
-        *iAttr++ = _this->gl_config.framebuffer_srgb_capable;
+        *iAttr++ = (_this->gl_config.framebuffer_srgb_capable > 0) ? GL_TRUE : GL_FALSE;
     }
 
     /* We always choose either FULL or NO accel on Windows, because of flaky
@@ -700,7 +714,11 @@ bool WIN_GL_UseEGL(SDL_VideoDevice *_this)
     SDL_assert(_this->gl_data != NULL);
     SDL_assert(_this->gl_config.profile_mask == SDL_GL_CONTEXT_PROFILE_ES);
 
-    return SDL_GetHintBoolean(SDL_HINT_OPENGL_ES_DRIVER, false) || _this->gl_config.major_version == 1 || _this->gl_config.major_version > _this->gl_data->es_profile_max_supported_version.major || (_this->gl_config.major_version == _this->gl_data->es_profile_max_supported_version.major && _this->gl_config.minor_version > _this->gl_data->es_profile_max_supported_version.minor); // No WGL extension for OpenGL ES 1.x profiles.
+    // (we don't need EGL to do OpenGL ES if HAS_WGL_EXT_create_context_es2_profile exists.)
+    return !_this->gl_data->HAS_WGL_EXT_create_context_es2_profile ||
+           SDL_GetHintBoolean(SDL_HINT_OPENGL_ES_DRIVER, false) ||
+           _this->gl_config.major_version > _this->gl_data->es_profile_max_supported_version.major ||
+           (_this->gl_config.major_version == _this->gl_data->es_profile_max_supported_version.major && _this->gl_config.minor_version > _this->gl_data->es_profile_max_supported_version.minor);
 }
 
 SDL_GLContext WIN_GL_CreateContext(SDL_VideoDevice *_this, SDL_Window *window)
@@ -824,6 +842,9 @@ SDL_GLContext WIN_GL_CreateContext(SDL_VideoDevice *_this, SDL_Window *window)
         WIN_GL_DestroyContext(_this, (SDL_GLContext)context);
         return NULL;
     }
+
+    _this->gl_config.HAS_GL_ARB_color_buffer_float =
+        SDL_GL_ExtensionSupported("GL_ARB_color_buffer_float");
 
     return (SDL_GLContext)context;
 }

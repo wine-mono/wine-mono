@@ -3,14 +3,6 @@
  * Adapted/rewritten for test lib by Andreas Schiffler
  */
 
-/* Suppress C4996 VS compiler warnings for unlink() */
-#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_DEPRECATE)
-#define _CRT_SECURE_NO_DEPRECATE
-#endif
-#if defined(_MSC_VER) && !defined(_CRT_NONSTDC_NO_DEPRECATE)
-#define _CRT_NONSTDC_NO_DEPRECATE
-#endif
-
 #include <stdio.h>
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -305,10 +297,7 @@ static void testBlitBlendMode(int mode)
 /* Helper to check that a file exists */
 static void AssertFileExist(const char *filename)
 {
-    struct stat st;
-    int ret = stat(filename, &st);
-
-    SDLTest_AssertCheck(ret == 0, "Verify file '%s' exists", filename);
+    SDLTest_AssertCheck(SDL_GetPathInfo(filename, NULL), "Verify file '%s' exists", filename);
 }
 
 /* Test case functions */
@@ -334,12 +323,19 @@ static int SDLCALL surface_testInvalidFormat(void *arg)
 /**
  * Tests sprite saving and loading
  */
-static int SDLCALL surface_testSaveLoadBitmap(void *arg)
+static int SDLCALL surface_testSaveLoad(void *arg)
 {
     int ret;
-    const char *sampleFilename = "testSaveLoadBitmap.bmp";
+    const char *sampleFilename = "testSaveLoad.tmp";
     SDL_Surface *face;
     SDL_Surface *rface;
+    SDL_Palette *palette;
+    SDL_Color colors[] = {
+        { 255, 0, 0, SDL_ALPHA_OPAQUE },    /* Red */
+        { 0, 255, 0, SDL_ALPHA_OPAQUE }     /* Green */
+    };
+    SDL_IOStream *stream;
+    Uint8 r, g, b, a;
 
     /* Create sample surface */
     face = SDLTest_ImageFace();
@@ -349,31 +345,134 @@ static int SDLCALL surface_testSaveLoadBitmap(void *arg)
     }
 
     /* Delete test file; ignore errors */
-    unlink(sampleFilename);
+    SDL_RemovePath(sampleFilename);
 
-    /* Save a surface */
+    /* Save a BMP surface */
     ret = SDL_SaveBMP(face, sampleFilename);
     SDLTest_AssertPass("Call to SDL_SaveBMP()");
     SDLTest_AssertCheck(ret == true, "Verify result from SDL_SaveBMP, expected: true, got: %i", ret);
     AssertFileExist(sampleFilename);
 
-    /* Load a surface */
+    /* Load a BMP surface */
     rface = SDL_LoadBMP(sampleFilename);
     SDLTest_AssertPass("Call to SDL_LoadBMP()");
     SDLTest_AssertCheck(rface != NULL, "Verify result from SDL_LoadBMP is not NULL");
     if (rface != NULL) {
         SDLTest_AssertCheck(face->w == rface->w, "Verify width of loaded surface, expected: %i, got: %i", face->w, rface->w);
         SDLTest_AssertCheck(face->h == rface->h, "Verify height of loaded surface, expected: %i, got: %i", face->h, rface->h);
+        SDL_DestroySurface(rface);
+        rface = NULL;
     }
 
     /* Delete test file; ignore errors */
-    unlink(sampleFilename);
+    SDL_RemovePath(sampleFilename);
+
+    /* Save a PNG surface */
+    ret = SDL_SavePNG(face, sampleFilename);
+    SDLTest_AssertPass("Call to SDL_SavePNG()");
+    SDLTest_AssertCheck(ret == true, "Verify result from SDL_SavePNG, expected: true, got: %i", ret);
+    AssertFileExist(sampleFilename);
+
+    /* Load a PNG surface */
+    rface = SDL_LoadPNG(sampleFilename);
+    SDLTest_AssertPass("Call to SDL_LoadPNG()");
+    SDLTest_AssertCheck(rface != NULL, "Verify result from SDL_LoadPNG is not NULL");
+    if (rface != NULL) {
+        SDLTest_AssertCheck(face->w == rface->w, "Verify width of loaded surface, expected: %i, got: %i", face->w, rface->w);
+        SDLTest_AssertCheck(face->h == rface->h, "Verify height of loaded surface, expected: %i, got: %i", face->h, rface->h);
+        SDL_DestroySurface(rface);
+        rface = NULL;
+    }
+
+    /* Delete test file; ignore errors */
+    SDL_RemovePath(sampleFilename);
 
     /* Clean up */
     SDL_DestroySurface(face);
     face = NULL;
-    SDL_DestroySurface(rface);
-    rface = NULL;
+
+    /* Create an 8-bit image */
+    face = SDL_CreateSurface(1, 1, SDL_PIXELFORMAT_INDEX8);
+    SDLTest_AssertCheck(face != NULL, "Verify 8-bit surface is not NULL");
+    if (face == NULL) {
+        return TEST_ABORTED;
+    }
+
+    palette = SDL_CreatePalette(2);
+    SDLTest_AssertCheck(palette != NULL, "Verify palette is not NULL");
+    if (palette == NULL) {
+        return TEST_ABORTED;
+    }
+    SDL_SetPaletteColors(palette, colors, 0, SDL_arraysize(colors));
+    SDL_SetSurfacePalette(face, palette);
+    SDL_DestroyPalette(palette);
+
+    /* Set a green pixel */
+    *(Uint8 *)face->pixels = 1;
+
+    /* Save and reload as a BMP */
+    stream = SDL_IOFromDynamicMem();
+    SDLTest_AssertCheck(stream != NULL, "Verify iostream is not NULL");
+    if (stream == NULL) {
+        return TEST_ABORTED;
+    }
+    ret = SDL_SaveBMP_IO(face, stream, false);
+    SDLTest_AssertPass("Call to SDL_SaveBMP()");
+    SDLTest_AssertCheck(ret == true, "Verify result from SDL_SaveBMP, expected: true, got: %i", ret);
+    SDL_SeekIO(stream, 0, SDL_IO_SEEK_SET);
+    rface = SDL_LoadBMP_IO(stream, false);
+    SDLTest_AssertPass("Call to SDL_LoadBMP()");
+    SDLTest_AssertCheck(rface != NULL, "Verify result from SDL_LoadBMP is not NULL");
+    if (rface != NULL) {
+        SDLTest_AssertCheck(face->w == rface->w, "Verify width of loaded surface, expected: %i, got: %i", face->w, rface->w);
+        SDLTest_AssertCheck(face->h == rface->h, "Verify height of loaded surface, expected: %i, got: %i", face->h, rface->h);
+        SDLTest_AssertCheck(rface->format == SDL_PIXELFORMAT_INDEX8, "Verify format of loaded surface, expected: %s, got: %s", SDL_GetPixelFormatName(face->format), SDL_GetPixelFormatName(rface->format));
+        SDL_ReadSurfacePixel(rface, 0, 0, &r, &g, &b, &a);
+        SDLTest_AssertCheck(r == colors[1].r &&
+                            g == colors[1].g &&
+                            b == colors[1].b &&
+                            a == colors[1].a,
+                            "Verify color of loaded surface, expected: %d,%d,%d,%d, got: %d,%d,%d,%d",
+                            r, g, b, a,
+                            colors[1].r, colors[1].g, colors[1].b, colors[1].a);
+        SDL_DestroySurface(rface);
+        rface = NULL;
+    }
+    SDL_CloseIO(stream);
+    stream = NULL;
+
+    /* Save and reload as a PNG */
+    stream = SDL_IOFromDynamicMem();
+    SDLTest_AssertCheck(stream != NULL, "Verify iostream is not NULL");
+    if (stream == NULL) {
+        return TEST_ABORTED;
+    }
+    ret = SDL_SavePNG_IO(face, stream, false);
+    SDLTest_AssertPass("Call to SDL_SavePNG()");
+    SDLTest_AssertCheck(ret == true, "Verify result from SDL_SavePNG, expected: true, got: %i", ret);
+    SDL_SeekIO(stream, 0, SDL_IO_SEEK_SET);
+    rface = SDL_LoadPNG_IO(stream, false);
+    SDLTest_AssertPass("Call to SDL_LoadPNG()");
+    SDLTest_AssertCheck(rface != NULL, "Verify result from SDL_LoadPNG is not NULL");
+    if (rface != NULL) {
+        SDLTest_AssertCheck(face->w == rface->w, "Verify width of loaded surface, expected: %i, got: %i", face->w, rface->w);
+        SDLTest_AssertCheck(face->h == rface->h, "Verify height of loaded surface, expected: %i, got: %i", face->h, rface->h);
+        SDLTest_AssertCheck(rface->format == SDL_PIXELFORMAT_INDEX8, "Verify format of loaded surface, expected: %s, got: %s", SDL_GetPixelFormatName(face->format), SDL_GetPixelFormatName(rface->format));
+        SDL_ReadSurfacePixel(rface, 0, 0, &r, &g, &b, &a);
+        SDLTest_AssertCheck(r == colors[1].r &&
+                            g == colors[1].g &&
+                            b == colors[1].b &&
+                            a == colors[1].a,
+                            "Verify color of loaded surface, expected: %d,%d,%d,%d, got: %d,%d,%d,%d",
+                            r, g, b, a,
+                            colors[1].r, colors[1].g, colors[1].b, colors[1].a);
+        SDL_DestroySurface(rface);
+        rface = NULL;
+    }
+    SDL_CloseIO(stream);
+    stream = NULL;
+
+    SDL_DestroySurface(face);
 
     return TEST_COMPLETED;
 }
@@ -423,6 +522,13 @@ static int SDLCALL surface_testBlitTiled(void *arg)
         SDLTest_AssertCheck(ret == true, "Validate results from call to SDL_BlitSurfaceScaled, expected: true, got: %i", ret);
         ret = SDLTest_CompareSurfaces(testSurface2x, referenceSurface2x, 0);
         SDLTest_AssertCheck(ret == 0, "Validate result from SDLTest_CompareSurfaces, expected: 0, got: %i", ret);
+    }
+
+    /* Tiled blit - very small scale */
+    {
+        float tiny_scale = 0.01f;
+        ret = SDL_BlitSurfaceTiledWithScale(face, NULL, tiny_scale, SDL_SCALEMODE_NEAREST, testSurface, NULL);
+        SDLTest_AssertCheck(ret == true, "Expected SDL_BlitSurfaceTiledWithScale to succeed with very small scale: %f, got: %i", tiny_scale, ret);
     }
 
     /* Clean up. */
@@ -691,6 +797,158 @@ static int SDLCALL surface_testBlitMultiple(void *arg)
 }
 
 /**
+ *  Tests operations on surfaces with NULL pixels
+ */
+static int SDLCALL surface_testSurfaceNULLPixels(void *arg)
+{
+    SDL_Surface *a, *b, *face;
+    bool result;
+
+    face = SDLTest_ImageFace();
+    SDLTest_AssertCheck(face != NULL, "Verify face surface is not NULL");
+    if (face == NULL) {
+        return TEST_ABORTED;
+    }
+
+    /* Test blitting with NULL pixels */
+    a = SDL_CreateSurfaceFrom(face->w, face->h, SDL_PIXELFORMAT_ARGB8888, NULL, 0);
+    SDLTest_AssertCheck(a != NULL, "Verify result from SDL_CreateSurfaceFrom() with NULL pixels is not NULL");
+    result = SDL_BlitSurface(a, NULL, face, NULL);
+    SDLTest_AssertCheck(!result, "Verify result from SDL_BlitSurface() with src having NULL pixels is false");
+    result = SDL_BlitSurface(face, NULL, a, NULL);
+    SDLTest_AssertCheck(!result, "Verify result from SDL_BlitSurface() with dst having NULL pixels is false");
+
+    b = SDL_CreateSurfaceFrom(face->w * 2, face->h * 2, SDL_PIXELFORMAT_ARGB8888, NULL, 0);
+    SDLTest_AssertCheck(b != NULL, "Verify result from SDL_CreateSurfaceFrom() with NULL pixels is not NULL");
+    result = SDL_BlitSurfaceScaled(b, NULL, face, NULL, SDL_SCALEMODE_NEAREST);
+    SDLTest_AssertCheck(!result, "Verify result from SDL_BlitSurfaceScaled() with src having NULL pixels is false");
+    result = SDL_BlitSurfaceScaled(face, NULL, b, NULL, SDL_SCALEMODE_NEAREST);
+    SDLTest_AssertCheck(!result, "Verify result from SDL_BlitSurfaceScaled() with dst having NULL pixels is false");
+    SDL_DestroySurface(b);
+    b = NULL;
+
+    /* Test conversion with NULL pixels */
+    b = SDL_ConvertSurfaceAndColorspace(a, SDL_PIXELFORMAT_ABGR8888, NULL, SDL_COLORSPACE_UNKNOWN, 0);
+    SDLTest_AssertCheck(b != NULL, "Verify result from SDL_ConvertSurfaceAndColorspace() with NULL pixels is not NULL");
+    SDL_DestroySurface(b);
+    b = NULL;
+
+    /* Test duplication with NULL pixels */
+    b = SDL_DuplicateSurface(a);
+    SDLTest_AssertCheck(b != NULL, "Verify result from SDL_DuplicateSurface() with NULL pixels is not NULL");
+    SDL_DestroySurface(b);
+    b = NULL;
+
+    /* Test scaling with NULL pixels */
+    b = SDL_ScaleSurface(a, a->w * 2, a->h * 2, SDL_SCALEMODE_NEAREST);
+    SDLTest_AssertCheck(b != NULL, "Verify result from SDL_ScaleSurface() with NULL pixels is not NULL");
+    SDLTest_AssertCheck(b->pixels == NULL, "Verify pixels from SDL_ScaleSurface() is NULL");
+    SDL_DestroySurface(b);
+    b = NULL;
+
+    /* Test filling surface with NULL pixels */
+    result = SDL_FillSurfaceRect(a, NULL, 0);
+    SDLTest_AssertCheck(result, "Verify result from SDL_FillSurfaceRect() with dst having NULL pixels is true");
+
+    /* Clean up. */
+    SDL_DestroySurface(face);
+    SDL_DestroySurface(a);
+    SDL_DestroySurface(b);
+
+    return TEST_COMPLETED;
+}
+
+/**
+ *  Tests operations on surfaces with RLE pixels
+ */
+static int SDLCALL surface_testSurfaceRLEPixels(void *arg)
+{
+    SDL_Surface *face, *a, *b, *tmp;
+    int ret;
+    bool result;
+
+    face = SDLTest_ImageFace();
+    SDLTest_AssertCheck(face != NULL, "Verify face surface is not NULL");
+    if (face == NULL) {
+        return TEST_ABORTED;
+    }
+
+    /* RLE encoding only works for 32-bit surfaces with alpha in the high bits */
+    if (face->format != SDL_PIXELFORMAT_ARGB8888) {
+        tmp = SDL_ConvertSurface(face, SDL_PIXELFORMAT_ARGB8888);
+        SDLTest_AssertCheck(tmp != NULL, "Verify tmp surface is not NULL");
+        if (tmp == NULL) {
+            return TEST_ABORTED;
+        }
+        SDL_DestroySurface(face);
+        face = tmp;
+    }
+
+    /* Create a temporary surface to trigger RLE encoding during blit */
+    tmp = SDL_DuplicateSurface(face);
+    SDLTest_AssertCheck(tmp != NULL, "Verify result from SDL_DuplicateSurface() with RLE pixels is not NULL");
+
+    result = SDL_SetSurfaceRLE(face, true);
+    SDLTest_AssertCheck(result, "Verify result from SDL_SetSurfaceRLE() is true");
+
+    /* Test duplication with RLE pixels */
+    a = SDL_DuplicateSurface(face);
+    SDLTest_AssertCheck(a != NULL, "Verify result from SDL_DuplicateSurface() with RLE pixels is not NULL");
+    SDLTest_AssertCheck(SDL_SurfaceHasRLE(a), "Verify result from SDL_DuplicateSurface() with RLE pixels has RLE set");
+    ret = SDLTest_CompareSurfaces(a, face, 0);
+    SDLTest_AssertCheck(ret == 0, "Validate result from SDLTest_CompareSurfaces, expected: 0, got: %i", ret);
+
+    /* Verify that blitting from an RLE surface does RLE encode it */
+    SDLTest_AssertCheck(!SDL_MUSTLOCK(a), "Verify initial RLE surface does not need to be locked");
+    SDLTest_AssertCheck(a->pixels != NULL, "Verify initial RLE surface has pixels available");
+    result = SDL_BlitSurface(a, NULL, tmp, NULL);
+    SDLTest_AssertCheck(result, "Verify result from SDL_BlitSurface() with RLE surface is true");
+    SDLTest_AssertCheck(SDL_MUSTLOCK(a), "Verify RLE surface after blit needs to be locked");
+    SDLTest_AssertCheck(a->pixels == NULL, "Verify RLE surface after blit does not have pixels available");
+    ret = SDLTest_CompareSurfaces(tmp, face, 0);
+    SDLTest_AssertCheck(ret == 0, "Validate result from SDLTest_CompareSurfaces, expected: 0, got: %i", ret);
+
+    /* Test scaling with RLE pixels */
+    b = SDL_ScaleSurface(a, a->w * 2, a->h * 2, SDL_SCALEMODE_NEAREST);
+    SDLTest_AssertCheck(b != NULL, "Verify result from SDL_ScaleSurface() is not NULL");
+    SDLTest_AssertCheck(SDL_SurfaceHasRLE(b), "Verify result from SDL_ScaleSurface() with RLE pixels has RLE set");
+
+    /* Test scaling blitting with RLE pixels */
+    result = SDL_BlitSurfaceScaled(a, NULL, b, NULL, SDL_SCALEMODE_NEAREST);
+    SDLTest_AssertCheck(result, "Verify result from SDL_BlitSurfaceScaled() with src having RLE pixels is true");
+    SDL_BlitSurface(a, NULL, tmp, NULL);
+    SDL_DestroySurface(b);
+    b = NULL;
+
+    /* Test conversion with RLE pixels */
+    b = SDL_ConvertSurfaceAndColorspace(a, SDL_PIXELFORMAT_ABGR8888, NULL, SDL_COLORSPACE_UNKNOWN, 0);
+    SDLTest_AssertCheck(b != NULL, "Verify result from SDL_ConvertSurfaceAndColorspace() with RLE pixels is not NULL");
+    SDLTest_AssertCheck(SDL_SurfaceHasRLE(b), "Verify result from SDL_ConvertSurfaceAndColorspace() with RLE pixels has RLE set");
+    ret = SDLTest_CompareSurfacesIgnoreTransparentPixels(b, face, 0);
+    SDLTest_AssertCheck(ret == 0, "Validate result from SDLTest_CompareSurfaces, expected: 0, got: %i", ret);
+    SDL_BlitSurface(a, NULL, tmp, NULL);
+    SDL_DestroySurface(b);
+    b = NULL;
+
+#if 0 /* This will currently fail, you must lock the surface first */
+    /* Test filling surface with RLE pixels */
+    result = SDL_FillSurfaceRect(a, NULL, 0);
+    SDLTest_AssertCheck(result, "Verify result from SDL_FillSurfaceRect() with dst having RLE pixels is true");
+#endif
+
+    /* Make sure the RLE surface still needs to be locked after surface operations */
+    SDLTest_AssertCheck(a->pixels == NULL, "Verify RLE surface after operations does not have pixels available");
+
+    /* Clean up. */
+    SDL_DestroySurface(face);
+    SDL_DestroySurface(a);
+    SDL_DestroySurface(b);
+    SDL_DestroySurface(tmp);
+
+    return TEST_COMPLETED;
+}
+
+/**
  *  Tests surface conversion.
  */
 static int SDLCALL surface_testSurfaceConversion(void *arg)
@@ -723,9 +981,7 @@ static int SDLCALL surface_testSurfaceConversion(void *arg)
 
     /* Clean up. */
     SDL_DestroySurface(face);
-    face = NULL;
     SDL_DestroySurface(rface);
-    rface = NULL;
 
     return TEST_COMPLETED;
 }
@@ -1051,9 +1307,9 @@ static int SDLCALL surface_testBlitInvalid(void *arg)
     SDLTest_AssertCheck(invalid->pixels == NULL, "Check surface pixels are NULL");
 
     result = SDL_BlitSurface(invalid, NULL, valid, NULL);
-    SDLTest_AssertCheck(result == true, "SDL_BlitSurface(invalid, NULL, valid, NULL), result = %s", result ? "true" : "false");
+    SDLTest_AssertCheck(result == false, "SDL_BlitSurface(invalid, NULL, valid, NULL), result = %s", result ? "true" : "false");
     result = SDL_BlitSurface(valid, NULL, invalid, NULL);
-    SDLTest_AssertCheck(result == true, "SDL_BlitSurface(valid, NULL, invalid, NULL), result = %s", result ? "true" : "false");
+    SDLTest_AssertCheck(result == false, "SDL_BlitSurface(valid, NULL, invalid, NULL), result = %s", result ? "true" : "false");
 
     result = SDL_BlitSurfaceScaled(invalid, NULL, valid, NULL, SDL_SCALEMODE_NEAREST);
     SDLTest_AssertCheck(result == false, "SDL_BlitSurfaceScaled(invalid, NULL, valid, NULL, SDL_SCALEMODE_NEAREST), result = %s", result ? "true" : "false");
@@ -1319,6 +1575,57 @@ static int SDLCALL surface_testOverflow(void *arg)
 
     return TEST_COMPLETED;
 }
+
+static int surface_testSetGetSurfaceClipRect(void *args)
+{
+    const struct {
+        SDL_Rect r;
+        bool clipsetval;
+        bool cmpval;
+    } rect_list[] = {
+        { {   0,   0,   0,   0}, false, true},
+        { {   2,   2,   0,   0}, false, true},
+        { {   2,   2,   5,   1}, true,  true},
+        { {   6,   5,  10,   3}, true,  false},
+        { {   0,   0,  10,  10}, true,  true},
+        { {   0,   0, -10,  10}, false, true},
+        { {   0,   0, -10, -10}, false, true},
+        { { -10, -10,  10,  10}, false, false},
+        { {  10, -10,  10,  10}, false, false},
+        { {  10,  10,  10,  10}, true,  false}
+    };
+    SDL_Surface *s;
+    SDL_Rect r;
+    int i;
+    bool b;
+
+    SDLTest_AssertPass("About to call SDL_CreateSurface(15, 15, SDL_PIXELFORMAT_RGBA32)");
+    s = SDL_CreateSurface(15, 15, SDL_PIXELFORMAT_RGBA32);
+    SDLTest_AssertCheck(s != NULL, "SDL_CreateSurface returned non-null surface");
+    SDL_zero(r);
+    b = SDL_GetSurfaceClipRect(s, &r);
+    SDLTest_AssertCheck(b, "SDL_GetSurfaceClipRect succeeded (%s)", SDL_GetError());
+    SDLTest_AssertCheck(r.x == 0 && r.y == 0 && r.w == 15 && r.h == 15,
+        "SDL_GetSurfaceClipRect of just-created surface. Got {%d, %d, %d, %d}. (Expected {%d, %d, %d, %d})",
+        r.x, r.y, r.w, r.h, 0, 0, 15, 15);
+
+    for (i = 0; i < SDL_arraysize(rect_list); i++) {
+        const SDL_Rect *r_in = &rect_list[i].r;
+        SDL_Rect r_out;
+
+        SDLTest_AssertPass("About to do SDL_SetClipRect({%d, %d, %d, %d})", r_in->x, r_in->y, r_in->w, r_in->h);
+        b = SDL_SetSurfaceClipRect(s, r_in);
+        SDLTest_AssertCheck(b == rect_list[i].clipsetval, "SDL_SetSurfaceClipRect returned %d (expected %d)", b, rect_list[i].clipsetval);
+        SDL_zero(r_out);
+        SDL_GetSurfaceClipRect(s, &r_out);
+        SDLTest_AssertPass("SDL_GetSurfaceClipRect returned {%d, %d, %d, %d}", r_out.x, r_out.y, r_out.w, r_out.h);
+        b = r_out.x == r_in->x && r_out.y == r_in->y && r_out.w == r_in->w && r_out.h == r_in->h;
+        SDLTest_AssertCheck(b == rect_list[i].cmpval, "Current clipping rect is identical to input clipping rect: %d (expected %d)",
+            b, rect_list[i].cmpval);
+    }
+    SDL_DestroySurface(s);
+    return TEST_COMPLETED;
+};
 
 static int SDLCALL surface_testFlip(void *arg)
 {
@@ -1652,7 +1959,7 @@ static int SDLCALL surface_testScale(void *arg)
         SDL_PIXELFORMAT_ARGB128_FLOAT, SDL_PIXELFORMAT_RGBA128_FLOAT,
     };
     SDL_ScaleMode modes[] = {
-        SDL_SCALEMODE_NEAREST, SDL_SCALEMODE_LINEAR
+        SDL_SCALEMODE_NEAREST, SDL_SCALEMODE_LINEAR, SDL_SCALEMODE_PIXELART
     };
     SDL_Surface *surface, *result;
     SDL_PixelFormat format;
@@ -1689,13 +1996,104 @@ static int SDLCALL surface_testScale(void *arg)
                 deltaA <= MAXIMUM_ERROR,
                 "Checking %s %s scaling results, expected %.4f,%.4f,%.4f,%.4f got %.4f,%.4f,%.4f,%.4f",
                 SDL_GetPixelFormatName(format),
-                mode == SDL_SCALEMODE_NEAREST ? "nearest" : "linear",
+                mode == SDL_SCALEMODE_NEAREST ? "nearest" :
+                mode == SDL_SCALEMODE_LINEAR ? "linear" :
+                mode == SDL_SCALEMODE_PIXELART ? "pixelart" : "unknown",
                 srcR, srcG, srcB, srcA, actualR, actualG, actualB, actualA);
 
             SDL_DestroySurface(surface);
             SDL_DestroySurface(result);
         }
     }
+
+    return TEST_COMPLETED;
+}
+
+#define GENERATE_SHIFTS
+
+static Uint32 Calculate(int v, int bits, int vmax, int shift)
+{
+#if defined(GENERATE_FLOOR)
+    return (Uint32)SDL_floor(v * 255.0f / vmax) << shift;
+#elif defined(GENERATE_ROUND)
+    return (Uint32)SDL_roundf(v * 255.0f / vmax) << shift;
+#elif defined(GENERATE_SHIFTS)
+    switch (bits) {
+    case 1:
+        v = (v << 7) | (v << 6) | (v << 5) | (v << 4) | (v << 3) | (v << 2) | (v << 1) | v;
+        break;
+    case 2:
+        v = (v << 6) | (v << 4) | (v << 2) | v;
+        break;
+    case 3:
+        v = (v << 5) | (v << 2) | (v >> 1);
+        break;
+    case 4:
+        v = (v << 4) | v;
+        break;
+    case 5:
+        v = (v << 3) | (v >> 2);
+        break;
+    case 6:
+        v = (v << 2) | (v >> 4);
+        break;
+    case 7:
+        v = (v << 1) | (v >> 6);
+        break;
+    case 8:
+        break;
+    }
+    return (Uint32)v << shift;
+#endif
+}
+
+static Uint32 Calculate565toARGB(int v, const SDL_PixelFormatDetails *fmt)
+{
+    Uint8 r = (v & 0xF800) >> 11;
+    Uint8 g = (v & 0x07E0) >> 5;
+    Uint8 b = (v & 0x001F);
+    return fmt->Amask |
+            Calculate(r, 5, 31, fmt->Rshift) |
+            Calculate(g, 6, 63, fmt->Gshift) |
+            Calculate(b, 5, 31, fmt->Bshift);
+}
+
+static int SDLCALL surface_test16BitTo32Bit(void *arg)
+{
+    static const SDL_PixelFormat formats[] = {
+        SDL_PIXELFORMAT_ARGB8888,
+        SDL_PIXELFORMAT_ABGR8888,
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_PIXELFORMAT_BGRA8888
+    };
+    static Uint16 pixels[1 << 16];
+    static Uint32 expected[1 << 16];
+    int i, p, ret;
+    SDL_Surface *surface16;
+    SDL_Surface *surface32;
+    SDL_Surface *expected32;
+
+    for (p = 0; p < SDL_arraysize(pixels); ++p) {
+        pixels[p] = p;
+    }
+    surface16 = SDL_CreateSurfaceFrom(SDL_arraysize(pixels), 1, SDL_PIXELFORMAT_RGB565, pixels, sizeof(pixels));
+
+    for (i = 0; i < SDL_arraysize(formats); ++i) {
+        SDL_PixelFormat format = formats[i];
+        const SDL_PixelFormatDetails *fmt = SDL_GetPixelFormatDetails(format);
+
+        SDLTest_Log("Checking conversion from SDL_PIXELFORMAT_RGB565 to %s", SDL_GetPixelFormatName(format));
+        surface32 = SDL_ConvertSurface(surface16, format);
+        for (p = 0; p < SDL_arraysize(pixels); ++p) {
+            expected[p] = Calculate565toARGB(p, fmt);
+        }
+        expected32 = SDL_CreateSurfaceFrom(SDL_arraysize(expected), 1, format, expected, sizeof(expected));
+        ret = SDLTest_CompareSurfaces(surface32, expected32, 0);
+        SDLTest_AssertCheck(ret == 0, "Validate result from SDLTest_CompareSurfaces, expected: 0, got: %i", ret);
+        SDL_DestroySurface(surface32);
+        SDL_DestroySurface(expected32);
+    }
+    SDL_DestroySurface(surface16);
 
     return TEST_COMPLETED;
 }
@@ -1708,8 +2106,8 @@ static const SDLTest_TestCaseReference surfaceTestInvalidFormat = {
     surface_testInvalidFormat, "surface_testInvalidFormat", "Tests creating surface with invalid format", TEST_ENABLED
 };
 
-static const SDLTest_TestCaseReference surfaceTestSaveLoadBitmap = {
-    surface_testSaveLoadBitmap, "surface_testSaveLoadBitmap", "Tests sprite saving and loading.", TEST_ENABLED
+static const SDLTest_TestCaseReference surfaceTestSaveLoad = {
+    surface_testSaveLoad, "surface_testSaveLoad", "Tests sprite saving and loading.", TEST_ENABLED
 };
 
 static const SDLTest_TestCaseReference surfaceTestBlitZeroSource = {
@@ -1734,6 +2132,14 @@ static const SDLTest_TestCaseReference surfaceTestBlitMultiple = {
 
 static const SDLTest_TestCaseReference surfaceTestLoadFailure = {
     surface_testLoadFailure, "surface_testLoadFailure", "Tests sprite loading. A failure case.", TEST_ENABLED
+};
+
+static const SDLTest_TestCaseReference surfaceTestNULLPixels = {
+    surface_testSurfaceNULLPixels, "surface_testSurfaceNULLPixels", "Tests surface operations with NULL pixels.", TEST_ENABLED
+};
+
+static const SDLTest_TestCaseReference surfaceTestRLEPixels = {
+    surface_testSurfaceRLEPixels, "surface_testSurfaceRLEPixels", "Tests surface operations with RLE surfaces.", TEST_ENABLED
 };
 
 static const SDLTest_TestCaseReference surfaceTestSurfaceConversion = {
@@ -1792,6 +2198,10 @@ static const SDLTest_TestCaseReference surfaceTestOverflow = {
     surface_testOverflow, "surface_testOverflow", "Test overflow detection.", TEST_ENABLED
 };
 
+static const SDLTest_TestCaseReference surfaceTestSetGetClipRect = {
+    surface_testSetGetSurfaceClipRect, "surface_testSetGetSurfaceClipRect", "Test SDL_(Set|Get)SurfaceClipRect.", TEST_ENABLED
+};
+
 static const SDLTest_TestCaseReference surfaceTestFlip = {
     surface_testFlip, "surface_testFlip", "Test surface flipping.", TEST_ENABLED
 };
@@ -1816,16 +2226,22 @@ static const SDLTest_TestCaseReference surfaceTestScale = {
     surface_testScale, "surface_testScale", "Test scaling operations.", TEST_ENABLED
 };
 
+static const SDLTest_TestCaseReference surfaceTest16BitTo32Bit = {
+    surface_test16BitTo32Bit, "surface_test16BitTo32Bit", "Test conversion from 16-bit to 32-bit pixels.", TEST_ENABLED
+};
+
 /* Sequence of Surface test cases */
 static const SDLTest_TestCaseReference *surfaceTests[] = {
     &surfaceTestInvalidFormat,
-    &surfaceTestSaveLoadBitmap,
+    &surfaceTestSaveLoad,
     &surfaceTestBlitZeroSource,
     &surfaceTestBlit,
     &surfaceTestBlitTiled,
     &surfaceTestBlit9Grid,
     &surfaceTestBlitMultiple,
     &surfaceTestLoadFailure,
+    &surfaceTestNULLPixels,
+    &surfaceTestRLEPixels,
     &surfaceTestSurfaceConversion,
     &surfaceTestCompleteSurfaceConversion,
     &surfaceTestBlitColorMod,
@@ -1840,12 +2256,14 @@ static const SDLTest_TestCaseReference *surfaceTests[] = {
     &surfaceTestBlitInvalid,
     &surfaceTestBlitsWithBadCoordinates,
     &surfaceTestOverflow,
+    &surfaceTestSetGetClipRect,
     &surfaceTestFlip,
     &surfaceTestPalette,
     &surfaceTestPalettization,
     &surfaceTestClearSurface,
     &surfaceTestPremultiplyAlpha,
     &surfaceTestScale,
+    &surfaceTest16BitTo32Bit,
     NULL
 };
 

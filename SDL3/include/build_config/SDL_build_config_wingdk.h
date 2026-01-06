@@ -37,6 +37,7 @@
 #define HAVE_DSOUND_H 1
 /* No SDK version checks needed for these because the SDK has to be new. */
 #define HAVE_DXGI_H 1
+#define HAVE_DXGI1_5_H 1
 #define HAVE_DXGI1_6_H 1
 #define HAVE_XINPUT_H 1
 #define HAVE_WINDOWS_GAMING_INPUT_H 1
@@ -145,7 +146,7 @@
 #define HAVE_TRUNC 1
 #define HAVE_TRUNCF 1
 #define HAVE__FSEEKI64 1
-#endif    /* _MSC_VER */
+#endif /* _MSC_VER */
 
 /* Enable various audio drivers */
 #if defined(HAVE_MMDEVICEAPI_H) && defined(HAVE_AUDIOCLIENT_H)

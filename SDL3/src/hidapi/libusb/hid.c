@@ -288,7 +288,7 @@ static int get_usage(uint8_t *report_descriptor, size_t size,
 	return -1; /* failure */
 }
 
-#if defined(__FreeBSD__) && __FreeBSD__ < 10
+#if defined(__FreeBSD__) && __FreeBSD__ < 10 && !defined(libusb_get_string_descriptor)
 /* The libusb version included in FreeBSD < 10 doesn't have this function. In
    mainline libusb, it's inlined in libusb.h. This function will bear a striking
    resemblance to that one, because there's about one way to code it.
@@ -886,9 +886,13 @@ static int is_xboxone(unsigned short vendor_id, const struct libusb_interface_de
 		0x1532, /* Razer Wildcat */
 		0x20d6, /* PowerA */
 		0x24c6, /* PowerA */
+		0x294b, /* Snakebyte */
 		0x2dc8, /* 8BitDo */
 		0x2e24, /* Hyperkin */
+		0x2e95, /* SCUF */
+		0x3285, /* Nacon */
 		0x3537, /* GameSir */
+		0x366c, /* ByoWave */
 	};
 
 	if (intf_desc->bInterfaceNumber == 0 &&
@@ -978,7 +982,7 @@ struct hid_device_info  HID_API_EXPORT *hid_enumerate(unsigned short vendor_id, 
 
 #ifdef HIDAPI_IGNORE_DEVICE
 		/* See if there are any devices we should skip in enumeration */
-		if (HIDAPI_IGNORE_DEVICE(HID_API_BUS_USB, dev_vid, dev_pid, 0, 0)) {
+		if (HIDAPI_IGNORE_DEVICE(HID_API_BUS_USB, dev_vid, dev_pid, 0, 0, true)) {
 			continue;
 		}
 #endif

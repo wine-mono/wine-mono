@@ -43,6 +43,9 @@ static SDL_SensorDriver *SDL_sensor_drivers[] = {
 #ifdef SDL_SENSOR_N3DS
     &SDL_N3DS_SensorDriver,
 #endif
+#ifdef SDL_SENSOR_EMSCRIPTEN
+    &SDL_EMSCRIPTEN_SensorDriver,
+#endif
 #if defined(SDL_SENSOR_DUMMY) || defined(SDL_SENSOR_DISABLED)
     &SDL_DUMMY_SensorDriver
 #endif
@@ -57,11 +60,11 @@ static int SDL_sensors_locked;
 static bool SDL_sensors_initialized;
 static SDL_Sensor *SDL_sensors SDL_GUARDED_BY(SDL_sensor_lock) = NULL;
 
-#define CHECK_SENSOR_MAGIC(sensor, result)                  \
-    if (!SDL_ObjectValid(sensor, SDL_OBJECT_TYPE_SENSOR)) { \
-        SDL_InvalidParamError("sensor");                    \
-        SDL_UnlockSensors();                                \
-        return result;                                      \
+#define CHECK_SENSOR_MAGIC(sensor, result)                          \
+    CHECK_PARAM(!SDL_ObjectValid(sensor, SDL_OBJECT_TYPE_SENSOR)) { \
+        SDL_InvalidParamError("sensor");                            \
+        SDL_UnlockSensors();                                        \
+        return result;                                              \
     }
 
 bool SDL_SensorsInitialized(void)

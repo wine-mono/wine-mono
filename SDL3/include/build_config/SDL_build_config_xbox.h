@@ -144,7 +144,7 @@
 #define HAVE_TRUNC 1
 #define HAVE_TRUNCF 1
 #define HAVE__FSEEKI64 1
-#endif    /* _MSC_VER */
+#endif /* _MSC_VER */
 
 /* Enable various audio drivers */
 #if defined(HAVE_MMDEVICEAPI_H) && defined(HAVE_AUDIOCLIENT_H)
@@ -219,5 +219,8 @@
 
 /* Enable dialog subsystem */
 #define SDL_DIALOG_DUMMY 1
+
+/* Enable tray subsystem */
+#define SDL_TRAY_DUMMY 1
 
 #endif /* SDL_build_config_wingdk_h_ */

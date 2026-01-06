@@ -22,12 +22,20 @@
 #ifndef SDL_evdev_kbd_h_
 #define SDL_evdev_kbd_h_
 
+#ifdef SDL_INPUT_FBSDKBIO
+enum {
+    VT_OURS,
+    VT_THEIRS,
+};
+extern SDL_AtomicInt vt_current;
+#endif
+
 struct SDL_EVDEV_keyboard_state;
 typedef struct SDL_EVDEV_keyboard_state SDL_EVDEV_keyboard_state;
 
 extern SDL_EVDEV_keyboard_state *SDL_EVDEV_kbd_init(void);
 extern void SDL_EVDEV_kbd_set_muted(SDL_EVDEV_keyboard_state *state, bool muted);
-extern void SDL_EVDEV_kbd_set_vt_switch_callbacks(SDL_EVDEV_keyboard_state *state, void (*release_callback)(void*), void *release_callback_data, void (*acquire_callback)(void*), void *acquire_callback_data);
+extern void SDL_EVDEV_kbd_set_vt_switch_callbacks(SDL_EVDEV_keyboard_state *state, void (*release_callback)(void *), void *release_callback_data, void (*acquire_callback)(void *), void *acquire_callback_data);
 extern void SDL_EVDEV_kbd_update(SDL_EVDEV_keyboard_state *state);
 extern void SDL_EVDEV_kbd_keycode(SDL_EVDEV_keyboard_state *state, unsigned int keycode, int down);
 extern void SDL_EVDEV_kbd_quit(SDL_EVDEV_keyboard_state *state);

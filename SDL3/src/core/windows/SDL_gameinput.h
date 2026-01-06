@@ -25,8 +25,17 @@
 
 #ifdef HAVE_GAMEINPUT_H
 
-#define COBJMACROS
 #include <gameinput.h>
+
+#ifndef GAMEINPUT_API_VERSION
+#define GAMEINPUT_API_VERSION 0
+#endif
+
+#if GAMEINPUT_API_VERSION == 2
+using namespace GameInput::v2;
+#elif GAMEINPUT_API_VERSION == 1
+using namespace GameInput::v1;
+#endif
 
 extern bool SDL_InitGameInput(IGameInput **ppGameInput);
 extern void SDL_QuitGameInput(void);
