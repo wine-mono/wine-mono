@@ -10,11 +10,13 @@ Framework20Ngen	Microsoft.NET|Framework	ngen.exe	Microsoft.NET|Framework|v2.0.50
 Framework20Fusion	Microsoft.NET|Framework	fusion.dll	Microsoft.NET|Framework|v2.0.50727	2
 Framework20Mscorwks	Microsoft.NET|Framework	mscorwks.dll	Microsoft.NET|Framework|v2.0.50727	2
 Framework20RegAsm	Microsoft.NET|Framework	regasm.exe	Microsoft.NET|Framework|v2.0.50727	2
+Framework20WminetUtils	Microsoft.NET|Framework	wminet_utils.dll	Microsoft.NET|Framework|v2.0.50727	2
 Framework30wcfServiceModelReg	Microsoft.NET|Framework	servicemodelreg.exe	Microsoft.NET|Framework|v3.0|windows communication foundation	2
 Framework30wpfPresentationFontCache	Microsoft.NET|Framework	presentationfontcache.exe	Microsoft.NET|Framework|v3.0|wpf	2
 Framework40Ngen	Microsoft.NET|Framework	ngen.exe	Microsoft.NET|Framework|v4.0.30319	2
 Framework40Fusion	Microsoft.NET|Framework	fusion.dll	Microsoft.NET|Framework|v4.0.30319	2
 Framework40DiaSymReader	Microsoft.NET|Framework	diasymreader.dll	Microsoft.NET|Framework|v4.0.30319	2
+Framework40WminetUtils	Microsoft.NET|Framework	wminet_utils.dll	Microsoft.NET|Framework|v4.0.30319	2
 Framework11AspnetRegiis64	Microsoft.NET|Framework64	aspnet_regiis.exe	Microsoft.NET|Framework64|v1.1.4322	2
 Framework11Ngen64	Microsoft.NET|Framework64	ngen.exe	Microsoft.NET|Framework64|v1.1.4322	2
 Framework11Fusion64	Microsoft.NET|Framework64	fusion.dll	Microsoft.NET|Framework64|v1.1.4322	2
@@ -24,9 +26,11 @@ Framework20Ngen64	Microsoft.NET|Framework64	ngen.exe	Microsoft.NET|Framework64|v
 Framework20Fusion64	Microsoft.NET|Framework64	fusion.dll	Microsoft.NET|Framework64|v2.0.50727	2
 Framework20Mscorwks64	Microsoft.NET|Framework64	mscorwks.dll	Microsoft.NET|Framework64|v2.0.50727	2
 Framework20RegAsm64	Microsoft.NET|Framework64	regasm.exe	Microsoft.NET|Framework64|v2.0.50727	2
+Framework20WminetUtils64	Microsoft.NET|Framework64	wminet_utils.dll	Microsoft.NET|Framework64|v2.0.50727	2
 Framework30wcfServiceModelReg64	Microsoft.NET|Framework64	servicemodelreg.exe	Microsoft.NET|Framework64|v3.0|windows communication foundation	2
 Framework30wpfPresentationFontCache64	Microsoft.NET|Framework64	presentationfontcache.exe	Microsoft.NET|Framework64|v3.0|wpf	2
 Framework40Ngen64	Microsoft.NET|Framework64	ngen.exe	Microsoft.NET|Framework64|v4.0.30319	2
 Framework40Fusion64	Microsoft.NET|Framework64	fusion.dll	Microsoft.NET|Framework64|v4.0.30319	2
 Framework40DiaSymReader64	Microsoft.NET|Framework64	diasymreader.dll	Microsoft.NET|Framework64|v4.0.30319	2
+Framework40WminetUtils64	Microsoft.NET|Framework64	wminet_utils.dll	Microsoft.NET|Framework64|v4.0.30319	2
 
