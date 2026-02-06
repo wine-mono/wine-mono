@@ -126,6 +126,10 @@ $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationProvider/.bu
 	+$(MONO_ENV) $(MAKE) -C $(@D) MONO_PREFIX=$(BUILDDIR_ABS)/mono-unix-install RESX2SRID=$(BUILDDIR_ABS)/resx2srid.exe WINE_MONO_SRCDIR=$(SRCDIR_ABS)
 	touch $@
 
+$(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationClient/.built: $(BUILDDIR)/mono-unix/.installed $(WPF_SRCS) $(SRCDIR)/winforms/src/Accessibility/src/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationTypes/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationProvider/.built $(BUILDDIR)/resx2srid.exe 
+	+$(MONO_ENV) $(MAKE) -C $(@D) MONO_PREFIX=$(BUILDDIR_ABS)/mono-unix-install RESX2SRID=$(BUILDDIR_ABS)/resx2srid.exe WINE_MONO_SRCDIR=$(SRCDIR_ABS) ACCESSIBILITY_DLL=$(SRCDIR_ABS)/winforms/src/Accessibility/src/Accessibility.dll
+	touch $@
+
 $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built: $(BUILDDIR)/mono-unix/.installed $(WPF_SRCS) $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/WindowsBase/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/System.Windows.Input.Manipulations/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationTypes/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationProvider/.built $(BUILDDIR)/resx2srid.exe
 	+$(MONO_ENV) $(MAKE) -C $(@D) MONO_PREFIX=$(BUILDDIR_ABS)/mono-unix-install RESX2SRID=$(BUILDDIR_ABS)/resx2srid.exe WINE_MONO_SRCDIR=$(SRCDIR_ABS)
 	touch $@
@@ -201,6 +205,13 @@ UIAutomationProvider.dll: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomatio
 	$(MONO_ENV) gacutil -i $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationProvider/UIAutomationProvider.dll -root $(IMAGEDIR)/lib
 .PHONY: UIAutomationProvider.dll
 imagedir-targets: UIAutomationProvider.dll
+
+IMAGEDIR_BUILD_TARGETS += $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationClient/.built
+
+UIAutomationClient.dll: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationClient/.built
+	$(MONO_ENV) gacutil -i $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationClient/UIAutomationClient.dll -root $(IMAGEDIR)/lib
+.PHONY: UIAutomationClient.dll
+imagedir-targets: UIAutomationClient.dll
 
 IMAGEDIR_BUILD_TARGETS += $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built
 
