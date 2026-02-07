@@ -96,7 +96,7 @@ Bugs should be filed in the [Wine bugzilla](http://bugs.winehq.org/) with produc
 
 ### PATCHES
 
-Patches to the top-level project should be sent as a merge request to the [Wine Mono GitLab repository](https://gitlab.winehq.org/mono/wine-mono). There is also an [official mirror](https://github.com/wine-mono/wine-mono) on GitHub where Pull Requests can be sent. This creates more work for the maintainer, so it's not preferred. You may use it if you're on GitHub already and only sending a single request.
+Patches to the top-level project should be sent as a merge request to the [Wine Mono GitLab repository](https://gitlab.winehq.org/mono/wine-mono). There is also an [official mirror](https://github.com/wine-mono/wine-mono) on GitHub where Pull Requests can be sent. GitHub PRs create more work for the maintainer, so they're not ideal, but a little bit of extra work for the maintainer is preferable to losing contributions.
 
 Patches to Mono should be sent as a merge request to the [Framework Mono GitLab repository](https://gitlab.winehq.org/mono/mono). Ideally, most MRs should be for the main branch. If the change is specific to Wine Mono, then the MR should be for the wine-mono branch.
 
@@ -104,4 +104,4 @@ Changes to upstream projects that make sense only within the context of wine-mon
 
 FNA and related projects have been very responsive to pull requests, and it's worth sending changes upstream to [them](https://github.com/FNA-XNA/FNA).
 
-The [winforms](https://github.com/dotnet/winforms) and [wpf](https://github.com/dotnet/wpf) projects are not being updated from upstream and have diverged significantly. Since they are supporting modern .NET, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.
+The [winforms](https://github.com/dotnet/winforms) and [wpf](https://github.com/dotnet/wpf) projects are not being updated from upstream and have diverged significantly. Since upstream is supporting modern .NET, which adds new features and is not binary-compatible with .NET Framework, their use case is very different from ours. Any changes should be sent directly to the appropriate fork, but feel free to also send them upstream if it makes sense.
