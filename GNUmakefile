@@ -28,7 +28,7 @@ ENABLE_ARM=0
 
 -include user-config.make
 
-MSI_VERSION=10.4.99
+MSI_VERSION=11.0.0
 
 # variables
 SRCDIR_ABS=$(shell cd $(SRCDIR); pwd)
