@@ -311,7 +311,6 @@ x86.MonoTests.System.Drawing.TestBitmap:Format16bppRgb555
 x86.MonoTests.System.Drawing.TestBitmap:Format1bppIndexed
 x86.MonoTests.System.Drawing.TestBitmap:Format4bppIndexed
 x86.MonoTests.System.Drawing.TestBitmap:Format8bppIndexed
-x86.MonoTests.System.Drawing.TestBitmap:LockBits_ImageLockMode_Invalid
 x86.MonoTests.System.Drawing.TestBitmap:Rotate
 x86.MonoTests.System.Drawing.TestBitmap:SetResolution_NaN
 x86.MonoTests.System.Drawing.TestBitmap:SetResolution_NegativeInfinity
@@ -467,7 +466,6 @@ x86.MonoTests.System.Windows.Forms.Design.ControlBindingsConverterTest
 x86.MonoTests.System.Windows.Forms.EventArgsTest:TestToolStripItemTextRenderEventArgs
 x86.MonoTests.System.Windows.Forms.FocusTest:ActiveControl_NoChild
 x86.MonoTests.System.Windows.Forms.FormTest:FormPropertyTest
-x86.MonoTests.System.Windows.Forms.InputLanguageTest:Test
 x86.MonoTests.System.Windows.Forms.Layout.TableLayoutSettingsTypeConverterTest:ConvertTo_CurrentCultureHasComma
 x86.MonoTests.System.Windows.Forms.Layout.TableLayoutSettingsTypeConverterTest:ConvertTo_Loop_CurrentCultureWithComma_CultureWithComma
 x86.MonoTests.System.Windows.Forms.ListBindingHelperTest:GetListItemPropertiesTest2
@@ -765,7 +763,6 @@ x86_64.MonoTests.System.Drawing.TestBitmap:Format16bppRgb555
 x86_64.MonoTests.System.Drawing.TestBitmap:Format1bppIndexed
 x86_64.MonoTests.System.Drawing.TestBitmap:Format4bppIndexed
 x86_64.MonoTests.System.Drawing.TestBitmap:Format8bppIndexed
-x86_64.MonoTests.System.Drawing.TestBitmap:LockBits_ImageLockMode_Invalid
 x86_64.MonoTests.System.Drawing.TestBitmap:Rotate
 x86_64.MonoTests.System.Drawing.TestBitmap:SetResolution_NaN
 x86_64.MonoTests.System.Drawing.TestBitmap:SetResolution_NegativeInfinity
@@ -921,7 +918,6 @@ x86_64.MonoTests.System.Windows.Forms.Design.ControlBindingsConverterTest
 x86_64.MonoTests.System.Windows.Forms.EventArgsTest:TestToolStripItemTextRenderEventArgs
 x86_64.MonoTests.System.Windows.Forms.FocusTest:ActiveControl_NoChild
 x86_64.MonoTests.System.Windows.Forms.FormTest:FormPropertyTest
-x86_64.MonoTests.System.Windows.Forms.InputLanguageTest:Test
 x86_64.MonoTests.System.Windows.Forms.Layout.TableLayoutSettingsTypeConverterTest:ConvertTo_CurrentCultureHasComma
 x86_64.MonoTests.System.Windows.Forms.Layout.TableLayoutSettingsTypeConverterTest:ConvertTo_Loop_CurrentCultureWithComma_CultureWithComma
 x86_64.MonoTests.System.Windows.Forms.ListBindingHelperTest:GetListItemPropertiesTest2
