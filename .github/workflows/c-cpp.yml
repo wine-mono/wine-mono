@@ -179,7 +179,7 @@ jobs:
         brew update-reset
         brew update
         brew install coreutils # for gtimeout
-        brew install --cask --no-quarantine wine@devel
+        brew install --cask wine@devel
     - name: Download Wine Mono msi
       uses: actions/download-artifact@v4
       with:
