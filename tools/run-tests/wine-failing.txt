@@ -1339,7 +1339,6 @@ MonoTests.System.Windows.Forms.DataGridViewTest:RowHeadersWidth
 MonoTests.System.Windows.Forms.ListViewTest:ListViewPropertyTest
 MonoTests.System.Net.Mail.SmtpClientTest:Credentials_Default
 MonoTests.System.Net.Mail.SmtpClientTest:Host_Default
-MonoTests.System.Drawing.ColorTest:WindowsSystemColors
 FilesSystemTest:ChDir_3
 FilesSystemTest:FileDateTime_2
 FilesSystemTest:FileDateTime_4
