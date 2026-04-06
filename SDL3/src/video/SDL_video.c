@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -59,6 +59,11 @@
 // GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH and GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH_KHR have the same number.
 #ifndef GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH
 #define GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH 0x82FC
+#endif
+
+// This is always the same number between the various EXT/ARB/GLES extensions.
+#ifndef GL_FRAMEBUFFER_SRGB
+#define GL_FRAMEBUFFER_SRGB 0x8DB9
 #endif
 
 #ifdef SDL_PLATFORM_EMSCRIPTEN
@@ -4064,7 +4069,7 @@ bool SDL_GetWindowMouseGrab(SDL_Window *window)
 
 SDL_Window *SDL_GetGrabbedWindow(void)
 {
-    if (_this->grabbed_window &&
+    if (_this && _this->grabbed_window &&
         (_this->grabbed_window->flags & (SDL_WINDOW_MOUSE_GRABBED | SDL_WINDOW_KEYBOARD_GRABBED)) != 0) {
         return _this->grabbed_window;
     } else {
@@ -4794,6 +4799,7 @@ void SDL_GL_UnloadLibrary(void)
 typedef GLenum (APIENTRY* PFNGLGETERRORPROC) (void);
 typedef void (APIENTRY* PFNGLGETINTEGERVPROC) (GLenum pname, GLint *params);
 typedef const GLubyte *(APIENTRY* PFNGLGETSTRINGPROC) (GLenum name);
+typedef void (APIENTRY* PFNGLENABLEPROC) (GLenum cap);
 #ifndef SDL_VIDEO_OPENGL
 typedef const GLubyte *(APIENTRY* PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);
 #endif
@@ -4985,7 +4991,7 @@ void SDL_GL_ResetAttributes(void)
     }
 
     _this->gl_config.flags = 0;
-    _this->gl_config.framebuffer_srgb_capable = -1;
+    _this->gl_config.framebuffer_srgb_capable = 0;
     _this->gl_config.no_error = 0;
     _this->gl_config.release_behavior = SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH;
     _this->gl_config.reset_notification = SDL_GL_CONTEXT_RESET_NO_NOTIFICATION;
@@ -5404,6 +5410,15 @@ SDL_GLContext SDL_GL_CreateContext(SDL_Window *window)
         return NULL;
     }
 
+#if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2)
+    int srgb_requested = -1;
+    const char *srgbhint = SDL_GetHint(SDL_HINT_OPENGL_FORCE_SRGB_FRAMEBUFFER);
+    if (srgbhint && *srgbhint) {
+        srgb_requested = SDL_GetStringBoolean(srgbhint, false) ? 1 : 0;
+    }
+
+#endif
+
     ctx = _this->GL_CreateContext(_this, window);
 
     // Creating a context is assumed to make it current in the SDL driver.
@@ -5413,6 +5428,28 @@ SDL_GLContext SDL_GL_CreateContext(SDL_Window *window)
         SDL_SetTLS(&_this->current_glwin_tls, window, NULL);
         SDL_SetTLS(&_this->current_glctx_tls, ctx, NULL);
     }
+
+#if defined(SDL_VIDEO_OPENGL) || defined(SDL_VIDEO_OPENGL_ES) || defined(SDL_VIDEO_OPENGL_ES2)
+    if (srgb_requested != -1) {
+        PFNGLENABLEPROC glToggleFunc = (PFNGLENABLEPROC) SDL_GL_GetProcAddress(srgb_requested ? "glEnable" : "glDisable");
+        PFNGLGETSTRINGPROC glGetStringFunc = (PFNGLGETSTRINGPROC)SDL_GL_GetProcAddress("glGetString");
+        if (glToggleFunc && glGetStringFunc) {
+            bool supported = false;
+            if (_this->gl_config.profile_mask & SDL_GL_CONTEXT_PROFILE_ES) {
+                supported = SDL_GL_ExtensionSupported("GL_EXT_sRGB_write_control");  // GL_FRAMEBUFFER_SRGB is not core in any GLES version at the moment.
+            } else {
+                supported = isAtLeastGL3((const char *)glGetStringFunc(GL_VERSION)) ||  // no extensions needed in OpenGL 3+.
+                            SDL_GL_ExtensionSupported("GL_EXT_framebuffer_sRGB") ||
+                            SDL_GL_ExtensionSupported("GL_ARB_framebuffer_sRGB");
+            }
+
+            if (supported) {
+                glToggleFunc(GL_FRAMEBUFFER_SRGB);
+            }
+        }
+    }
+#endif
+
     return ctx;
 }
 
@@ -6125,9 +6162,13 @@ bool SDL_SetWindowShape(SDL_Window *window, SDL_Surface *shape)
         return false;
     }
 
-    surface = SDL_ConvertSurface(shape, SDL_PIXELFORMAT_ARGB32);
-    if (!surface) {
-        return false;
+    if (shape) {
+        surface = SDL_ConvertSurface(shape, SDL_PIXELFORMAT_ARGB32);
+        if (!surface) {
+            return false;
+        }
+    } else {
+        surface = NULL;
     }
 
     if (!SDL_SetSurfaceProperty(props, SDL_PROP_WINDOW_SHAPE_POINTER, surface)) {

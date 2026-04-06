@@ -554,6 +554,7 @@ enum ETritonReportIDTypes
 {
     ID_TRITON_CONTROLLER_STATE	= 0x42,
     ID_TRITON_BATTERY_STATUS	= 0x43,
+    ID_TRITON_CONTROLLER_STATE_BLE = 0x45,
     ID_TRITON_WIRELESS_STATUS_X = 0x46,
     ID_TRITON_WIRELESS_STATUS   = 0x79,
 };
@@ -603,15 +604,25 @@ typedef struct
     TritonMTUIMU_t imu;
 } TritonMTUFull_t;
 
+enum EChargeState
+{
+    k_EChargeStateReset,
+    k_EChargeStateDischarging,
+    k_EChargeStateCharging,
+    k_EChargeStateSrcValidate,
+    k_EChargeStateChargingDone,
+};
+
 typedef struct
 {
+    unsigned char ucChargeState; // EChargeState
     unsigned char ucBatteryLevel;
     unsigned short sBatteryVoltage;
     unsigned short sSystemVoltage;
     unsigned short sInputVoltage;
     unsigned short sCurrent;
     unsigned short sInputCurrent;
-    char cTemperature;
+    unsigned short sTemperature;
 } TritonBatteryStatus_t;
 
 typedef struct

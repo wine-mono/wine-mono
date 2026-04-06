@@ -457,7 +457,7 @@ macro(CheckX11)
               #include <X11/Xproto.h>
               #include <X11/extensions/XInput2.h>
               int event_type = XI_GesturePinchBegin;
-              XITouchClassInfo *t;
+              XIGesturePinchEvent *t;
               Status XIAllowTouchEvents(Display *a,int b,unsigned int c,Window d,int f) {
                 return (Status)0;
               }
@@ -1113,22 +1113,22 @@ macro(CheckUSBHID)
   cmake_push_check_state()
   check_library_exists(usbhid hid_init "" LIBUSBHID)
   if(LIBUSBHID)
-    check_include_file(usbhid.h HAVE_USBHID_H)
+    check_include_files("stdint.h;usbhid.h" HAVE_USBHID_H)
     if(HAVE_USBHID_H)
       set(USB_CFLAGS "-DHAVE_USBHID_H")
     endif()
 
-    check_include_file(libusbhid.h HAVE_LIBUSBHID_H)
+    check_include_files("stdint.h;libusbhid.h" HAVE_LIBUSBHID_H)
     if(HAVE_LIBUSBHID_H)
       string(APPEND USB_CFLAGS " -DHAVE_LIBUSBHID_H")
     endif()
     set(USB_LIBS ${USB_LIBS} usbhid)
   else()
-    check_include_file(usb.h HAVE_USB_H)
+    check_include_files("stdint.h;usb.h" HAVE_USB_H)
     if(HAVE_USB_H)
       set(USB_CFLAGS "-DHAVE_USB_H")
     endif()
-    check_include_file(libusb.h HAVE_LIBUSB_H)
+    check_include_files("stdint.h;libusb.h" HAVE_LIBUSB_H)
     if(HAVE_LIBUSB_H)
       string(APPEND USB_CFLAGS " -DHAVE_LIBUSB_H")
     endif()
@@ -1141,7 +1141,7 @@ macro(CheckUSBHID)
   string(APPEND CMAKE_REQUIRED_FLAGS " ${USB_CFLAGS}")
   list(APPEND CMAKE_REQUIRED_LIBRARIES ${USB_LIBS})
   check_c_source_compiles("
-       #include <sys/types.h>
+        #include <stdint.h>
         #if defined(HAVE_USB_H)
         #include <usb.h>
         #endif
@@ -1167,7 +1167,7 @@ macro(CheckUSBHID)
         }" HAVE_USBHID)
   if(HAVE_USBHID)
     check_c_source_compiles("
-          #include <sys/types.h>
+          #include <stdint.h>
           #if defined(HAVE_USB_H)
           #include <usb.h>
           #endif
@@ -1195,7 +1195,7 @@ macro(CheckUSBHID)
     endif()
 
     check_c_source_compiles("
-          #include <sys/types.h>
+          #include <stdint.h>
           #if defined(HAVE_USB_H)
           #include <usb.h>
           #endif
@@ -1270,12 +1270,15 @@ macro(CheckHIDAPI)
         cmake_pop_check_state()
         if(HAVE_LIBUSB_H)
           set(HAVE_LIBUSB TRUE)
-          target_get_dynamic_library(dynamic_libusb LibUSB::LibUSB)
-          if(SDL_HIDAPI_LIBUSB_SHARED AND dynamic_libusb)
-            set(HAVE_HIDAPI_LIBUSB_SHARED ON)
-            set(SDL_LIBUSB_DYNAMIC "\"${dynamic_libusb}\"")
-            sdl_link_dependency(hidapi INCLUDES $<TARGET_PROPERTY:LibUSB::LibUSB,INTERFACE_INCLUDE_DIRECTORIES>)
-          else()
+          if(SDL_HIDAPI_LIBUSB_SHARED)
+            target_get_dynamic_library(dynamic_libusb LibUSB::LibUSB)
+            if(dynamic_libusb)
+              set(HAVE_HIDAPI_LIBUSB_SHARED ON)
+              set(SDL_LIBUSB_DYNAMIC "\"${dynamic_libusb}\"")
+              sdl_link_dependency(hidapi INCLUDES $<TARGET_PROPERTY:LibUSB::LibUSB,INTERFACE_INCLUDE_DIRECTORIES>)
+            endif()
+          endif()
+          if(NOT HAVE_HIDAPI_LIBUSB_SHARED)
             sdl_link_dependency(hidapi LIBS LibUSB::LibUSB PKG_CONFIG_SPECS "${LibUSB_PKG_CONFIG_SPEC}" CMAKE_MODULE LibUSB)
           endif()
         endif()

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -291,9 +291,8 @@ static void DrawSprites(SDL_Renderer * renderer, SDL_Texture * sprite)
     SDL_RenderPresent(renderer);
 }
 
-static void loop()
+static void update()
 {
-    int i;
     SDL_Event event;
 
     /* Check for events */
@@ -310,20 +309,39 @@ static void loop()
         SDLTest_CommonEvent(state, &event, &done);
 #endif
     }
+    fillerup();
+}
+
+static void draw()
+{
+    int i;
     for (i = 0; i < state->num_windows; ++i) {
         if (state->windows[i] == NULL) {
             continue;
         }
         DrawSprites(state->renderers[i], sprites[i]);
     }
-    fillerup();
+}
+
+static bool SDLCALL GDKEventWatch(void* userdata, SDL_Event* event)
+{
+    bool *suppressdraw = (bool *)userdata;
+    SDL_assert(suppressdraw != NULL);
+    if (event->type == SDL_EVENT_DID_ENTER_BACKGROUND) {
+        *suppressdraw = true;
+        SDL_GDKSuspendComplete();
+    } else if (event->type == SDL_EVENT_WILL_ENTER_FOREGROUND) {
+        *suppressdraw = false;
+    }
+    return true;
 }
 
 int main(int argc, char *argv[])
 {
     int i;
-    const char *icon = "icon.bmp";
+    const char *icon = "icon.png";
     char *soundname = NULL;
+    bool suppressdraw = false;
 
     /* Initialize parameters */
     num_sprites = NUM_SPRITES;
@@ -390,6 +408,9 @@ int main(int argc, char *argv[])
         quit(2);
     }
 
+    /* By this point the renderers are made, so we can now add this watcher */
+    SDL_AddEventWatch(GDKEventWatch, &suppressdraw);
+
     /* Create the windows, initialize the renderers, and load the textures */
     sprites =
         (SDL_Texture **) SDL_malloc(state->num_windows * sizeof(*sprites));
@@ -441,7 +462,10 @@ int main(int argc, char *argv[])
     AddUserSilent();
 
     while (!done) {
-        loop();
+        update();
+        if (!suppressdraw) {
+            draw();
+        }
     }
 
     quit(0);

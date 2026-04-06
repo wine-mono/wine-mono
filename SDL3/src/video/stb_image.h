@@ -101,7 +101,7 @@ RECENT REVISION HISTORY:
     Marc LeBlanc            David Woo          Guillaume George     Martins Mozeiko
     Christpher Lloyd        Jerry Jansson      Joseph Thomson       Blazej Dariusz Roszkowski
     Phil Jordan             Henner Zeller      Dave Moore           Roy Eltham
-    Hayaki Saito            Nathan Reed        Won Chun
+    Hayaki Saito            Nathan Reed        Won Chun             Björn Wahlstrand
     Luke Graham             Johan Duparc       Nick Verigakis       the Horde3D community
     Thomas Ruf              Ronny Chevalier                         github:rlyeh
     Janez Zemva             John Bartholomew   Michal Cichon        github:romigrou
@@ -772,7 +772,7 @@ typedef unsigned char validate_uint32[sizeof(stbi__uint32)==4 ? 1 : -1];
 // exposed in GCC/Clang is, sadly, not really suited for one-file libs.
 // New behavior: if compiled with -msse2, we use SSE2 without any
 // detection; if not, we don't use it at all.
-#define STBI_NO_SIMD
+// #define STBI_NO_SIMD /* Changed by SDL: use SDL_TARGETING("sse2") */
 #endif
 
 #if defined(__MINGW32__) && defined(STBI__X86_TARGET) && !defined(STBI_MINGW_ENABLE_SSE2) && !defined(STBI_NO_SIMD)
@@ -895,6 +895,8 @@ static void stbi__refill_buffer(stbi__context *s);
 static void stbi__start_mem(stbi__context *s, stbi_uc const *buffer, int len)
 {
    s->io.read = NULL;
+   s->io.skip = NULL;
+   s->io.eof = NULL;
    s->read_from_callbacks = 0;
    s->callback_already_read = 0;
    s->img_buffer = s->img_buffer_original = (stbi_uc *) buffer;
@@ -2581,7 +2583,7 @@ stbi_inline static stbi_uc stbi__clamp(int x)
    return (stbi_uc) x;
 }
 
-#define stbi__f2f(x)  ((int) (((x) * 4096 + 0.5)))
+#define stbi__f2f(x)  ((int) (((x) * 4096 + 0.5f)))
 #define stbi__fsh(x)  ((x) * 4096)
 
 // derived from jidctint -- DCT_ISLOW
@@ -2685,7 +2687,7 @@ static void stbi__idct_block(stbi_uc *out, int out_stride, short data[64])
 // sse2 integer IDCT. not the fastest possible implementation but it
 // produces bit-identical results to the generic C version so it's
 // fully "transparent".
-static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
+static void SDL_TARGETING("sse2") stbi__idct_simd(stbi_uc *out, int out_stride, short data[64]) /* Changed by SDL: SDL_TARGETING("sse2") */
 {
    // This is constructed to match our regular (generic) integer IDCT exactly.
    __m128i row0, row1, row2, row3, row4, row5, row6, row7;
@@ -3685,7 +3687,12 @@ static stbi_uc *stbi__resample_row_hv_2(stbi_uc *out, stbi_uc *in_near, stbi_uc 
 }
 
 #if defined(STBI_SSE2) || defined(STBI_NEON)
-static stbi_uc *stbi__resample_row_hv_2_simd(stbi_uc *out, stbi_uc *in_near, stbi_uc *in_far, int w, int hs)
+#ifdef STBI_SSE2 /* Added by SDL */
+#define TARGETING_SSE2 SDL_TARGETING("sse2") /* Added by SDL */
+#else
+#define TARGETING_SSE2
+#endif // STBI_SSE2 /* Added by SDL */
+static stbi_uc *TARGETING_SSE2 stbi__resample_row_hv_2_simd(stbi_uc *out, stbi_uc *in_near, stbi_uc *in_far, int w, int hs) /* Changed by SDL: TARGETING_SSE2 */
 {
    // need to generate 2x2 samples for every one in input
    int i=0,t0,t1;
@@ -3841,7 +3848,7 @@ static void stbi__YCbCr_to_RGB_row(stbi_uc *out, const stbi_uc *y, const stbi_uc
 }
 
 #if defined(STBI_SSE2) || defined(STBI_NEON)
-static void stbi__YCbCr_to_RGB_simd(stbi_uc *out, stbi_uc const *y, stbi_uc const *pcb, stbi_uc const *pcr, int count, int step)
+static void TARGETING_SSE2 stbi__YCbCr_to_RGB_simd(stbi_uc *out, stbi_uc const *y, stbi_uc const *pcb, stbi_uc const *pcr, int count, int step) /* Changed by SDL: TARGETING_SSE2 */
 {
    int i = 0;
 

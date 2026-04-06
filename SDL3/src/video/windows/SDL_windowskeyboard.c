@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -243,7 +243,7 @@ void WIN_QuitKeyboard(SDL_VideoDevice *_this)
     for (int i = 0; i < keymap_cache_size; ++i) {
         SDL_DestroyKeymap(keymap_cache[i].keymap);
     }
-    SDL_memset(keymap_cache, 0, sizeof(keymap_cache));
+    SDL_zeroa(keymap_cache);
     keymap_cache_size = 0;
 }
 
@@ -599,7 +599,6 @@ static DWORD IME_GetId(SDL_VideoData *videodata, UINT uIndex)
     static HKL hklprev = 0;
     static DWORD dwRet[2] = { 0 };
     DWORD dwVerSize = 0;
-    DWORD dwVerHandle = 0;
     LPVOID lpVerBuffer = 0;
     LPVOID lpVerData = 0;
     UINT cbVerData = 0;
@@ -637,11 +636,11 @@ static DWORD IME_GetId(SDL_VideoData *videodata, UINT uIndex)
             return dwRet[0];
         }
 #undef LCID_INVARIANT
-        dwVerSize = GetFileVersionInfoSizeA(szTemp, &dwVerHandle);
+        dwVerSize = GetFileVersionInfoSizeA(szTemp, NULL);
         if (dwVerSize) {
             lpVerBuffer = SDL_malloc(dwVerSize);
             if (lpVerBuffer) {
-                if (GetFileVersionInfoA(szTemp, dwVerHandle, dwVerSize, lpVerBuffer)) {
+                if (GetFileVersionInfoA(szTemp, 0, dwVerSize, lpVerBuffer)) {
                     if (VerQueryValueA(lpVerBuffer, "\\", &lpVerData, &cbVerData)) {
 #define pVerFixedInfo ((VS_FIXEDFILEINFO FAR *)lpVerData)
                         DWORD dwVer = pVerFixedInfo->dwFileVersionMS;
@@ -1072,6 +1071,14 @@ bool WIN_HandleIMEMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM *lParam, SD
         *lParam &= element_mask;
 
         return false;
+    } else if (msg == WM_IME_STARTCOMPOSITION) {
+        SDL_DebugIMELog("WM_IME_STARTCOMPOSITION");
+        if (videodata->ime_internal_composition) {
+            // Windows may still display a composition dialog even with
+            // ISC_SHOWUICOMPOSITIONWINDOW cleared, so trap the message
+            // here to prevent that (even when the IME is disabled).
+            return true;
+        }
     }
 
     if (!videodata->ime_initialized || !videodata->ime_available || !videodata->ime_enabled) {
@@ -1098,12 +1105,6 @@ bool WIN_HandleIMEMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM *lParam, SD
     case WM_INPUTLANGCHANGE:
         SDL_DebugIMELog("WM_INPUTLANGCHANGE");
         IME_InputLangChanged(videodata);
-        break;
-    case WM_IME_STARTCOMPOSITION:
-        SDL_DebugIMELog("WM_IME_STARTCOMPOSITION");
-        if (videodata->ime_internal_composition) {
-            trap = true;
-        }
         break;
     case WM_IME_COMPOSITION:
         SDL_DebugIMELog("WM_IME_COMPOSITION %x", lParam);

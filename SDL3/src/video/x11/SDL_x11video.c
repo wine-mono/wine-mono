@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -97,6 +97,14 @@ static SDL_VideoDevice *X11_CreateDevice(void)
 
     if (!x11_display) {
         SDL_X11_UnloadSymbols();
+
+        const char *session = SDL_getenv("XDG_SESSION_TYPE");
+        if (session && SDL_strcasecmp(session, "wayland") == 0) {
+            SDL_LogDebug(SDL_LOG_CATEGORY_VIDEO, "Failed to connect to the X11 (XWayland) display server");
+        } else {
+            SDL_LogDebug(SDL_LOG_CATEGORY_VIDEO, "Failed to connect to the X11 display server");
+        }
+
         return NULL;
     }
 

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -354,7 +354,7 @@ SDL_WindowFlags X11_GetNetWMState(SDL_VideoDevice *_this, SDL_Window *window, Wi
          */
         {
             XWindowAttributes attr;
-            SDL_memset(&attr, 0, sizeof(attr));
+            SDL_zero(attr);
             X11_XGetWindowAttributes(videodata->display, xwindow, &attr);
             if (attr.map_state == IsUnmapped) {
                 flags |= SDL_WINDOW_HIDDEN;

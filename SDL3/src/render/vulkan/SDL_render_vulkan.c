@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -591,7 +591,7 @@ static void VULKAN_DestroyAll(SDL_Renderer *renderer)
     for (uint32_t i = 0; i < SDL_arraysize(rendererData->vertexBuffers); i++ ) {
         VULKAN_DestroyBuffer(rendererData, &rendererData->vertexBuffers[i]);
     }
-    SDL_memset(rendererData->vertexBuffers, 0, sizeof(rendererData->vertexBuffers));
+    SDL_zeroa(rendererData->vertexBuffers);
     for (uint32_t i = 0; i < VULKAN_RENDERPASS_COUNT; i++) {
         if (rendererData->renderPasses[i] != VK_NULL_HANDLE) {
             vkDestroyRenderPass(rendererData->device, rendererData->renderPasses[i], NULL);
@@ -718,7 +718,7 @@ static void VULKAN_DestroyBuffer(VULKAN_RenderData *rendererData, VULKAN_Buffer 
         vkFreeMemory(rendererData->device, vulkanBuffer->deviceMemory, NULL);
         vulkanBuffer->deviceMemory = VK_NULL_HANDLE;
     }
-    SDL_memset(vulkanBuffer, 0, sizeof(VULKAN_Buffer));
+    SDL_zerop(vulkanBuffer);
 }
 
 static VkResult VULKAN_AllocateBuffer(VULKAN_RenderData *rendererData, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags requiredMemoryProps, VkMemoryPropertyFlags desiredMemoryProps, VULKAN_Buffer *bufferOut)
@@ -794,7 +794,7 @@ static void VULKAN_DestroyImage(VULKAN_RenderData *rendererData, VULKAN_Image *v
         }
         vulkanImage->deviceMemory = VK_NULL_HANDLE;
     }
-    SDL_memset(vulkanImage, 0, sizeof(VULKAN_Image));
+    SDL_zerop(vulkanImage);
 }
 
 static VkResult VULKAN_AllocateImage(VULKAN_RenderData *rendererData, SDL_PropertiesID create_props, uint32_t width, uint32_t height, VkFormat format, VkImageUsageFlags imageUsage, VkComponentMapping swizzle, VkSamplerYcbcrConversionKHR samplerYcbcrConversion, VULKAN_Image *imageOut)
@@ -802,7 +802,7 @@ static VkResult VULKAN_AllocateImage(VULKAN_RenderData *rendererData, SDL_Proper
     VkResult result;
     VkSamplerYcbcrConversionInfoKHR samplerYcbcrConversionInfo = { 0 };
 
-    SDL_memset(imageOut, 0, sizeof(VULKAN_Image));
+    SDL_zerop(imageOut);
     imageOut->format = format;
     imageOut->image = (VkImage)SDL_GetNumberProperty(create_props, SDL_PROP_TEXTURE_CREATE_VULKAN_TEXTURE_NUMBER, 0);
 
@@ -1235,7 +1235,7 @@ static VULKAN_PipelineState *VULKAN_CreatePipelineState(SDL_Renderer *renderer,
     // Shaders
     const char *name = "main";
     for (uint32_t i = 0; i < 2; i++) {
-        SDL_memset(&shaderStageCreateInfo[i], 0, sizeof(shaderStageCreateInfo[i]));
+        SDL_zero(shaderStageCreateInfo[i]);
         shaderStageCreateInfo[i].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStageCreateInfo[i].module = (i == 0) ? rendererData->vertexShaderModules[shader] : rendererData->fragmentShaderModules[shader];
         shaderStageCreateInfo[i].stage = (i == 0) ? VK_SHADER_STAGE_VERTEX_BIT : VK_SHADER_STAGE_FRAGMENT_BIT;
@@ -2631,7 +2631,7 @@ static bool VULKAN_CreateTexture(SDL_Renderer *renderer, SDL_Texture *texture, S
     }
 
     if (textureFormat == VK_FORMAT_UNDEFINED) {
-        return SDL_SetError("%s, An unsupported SDL pixel format (0x%x) was specified", __FUNCTION__, texture->format);
+        return SDL_SetError("%s, An unsupported SDL pixel format (0x%x) was specified", SDL_FUNCTION, texture->format);
     }
 
     textureData = (VULKAN_TextureData *)SDL_calloc(1, sizeof(*textureData));
@@ -3352,7 +3352,7 @@ static bool VULKAN_UpdateViewport(SDL_Renderer *renderer)
          * SDL_CreateRenderer is calling it, and will call it again later
          * with a non-empty viewport.
          */
-        // SDL_Log("%s, no viewport was set!", __FUNCTION__);
+        // SDL_Log("%s, no viewport was set!", SDL_FUNCTION);
         return false;
     }
 
@@ -3874,6 +3874,11 @@ static bool VULKAN_SetDrawState(SDL_Renderer *renderer, const SDL_RenderCommand 
 
 static VkSampler VULKAN_GetSampler(VULKAN_RenderData *data, SDL_PixelFormat format, SDL_ScaleMode scale_mode, SDL_TextureAddressMode address_u, SDL_TextureAddressMode address_v)
 {
+    if (format == SDL_PIXELFORMAT_INDEX8) {
+        // We'll do linear sampling in the shader if needed
+        scale_mode = SDL_SCALEMODE_NEAREST;
+    }
+
     Uint32 key = RENDER_SAMPLER_HASHKEY(scale_mode, address_u, address_v);
     SDL_assert(key < SDL_arraysize(data->samplers));
     if (!data->samplers[key]) {
@@ -3893,14 +3898,8 @@ static VkSampler VULKAN_GetSampler(VULKAN_RenderData *data, SDL_PixelFormat form
             break;
         case SDL_SCALEMODE_PIXELART:    // Uses linear sampling
         case SDL_SCALEMODE_LINEAR:
-            if (format == SDL_PIXELFORMAT_INDEX8) {
-                // We'll do linear sampling in the shader
-                samplerCreateInfo.magFilter = VK_FILTER_NEAREST;
-                samplerCreateInfo.minFilter = VK_FILTER_NEAREST;
-            } else {
-                samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
-                samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
-            }
+            samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
+            samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
             break;
         default:
             SDL_SetError("Unknown scale mode: %d", scale_mode);
@@ -4038,7 +4037,7 @@ static bool VULKAN_RunCommandQueue(SDL_Renderer *renderer, SDL_RenderCommand *cm
     VULKAN_RenderData *rendererData = (VULKAN_RenderData *)renderer->internal;
     VkSurfaceTransformFlagBitsKHR currentRotation = VULKAN_GetRotationForCurrentRenderTarget(rendererData);
     VULKAN_DrawStateCache stateCache;
-    SDL_memset(&stateCache, 0, sizeof(stateCache));
+    SDL_zero(stateCache);
 
     if (!rendererData->device) {
         return SDL_SetError("Device lost and couldn't be recovered");

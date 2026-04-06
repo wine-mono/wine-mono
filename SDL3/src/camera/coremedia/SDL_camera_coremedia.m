@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -245,7 +245,7 @@ static SDL_CameraFrameResult COREMEDIA_AcquireFrame(SDL_Camera *device, SDL_Surf
     if (device->position == SDL_CAMERA_POSITION_BACK_FACING) {
         static const Uint16 back_rotations[4][4] = {
             {   90,  90,  90,  90 },  // ui portrait
-            {  270, 270, 270, 270 },  // ui portait upside down
+            {  270, 270, 270, 270 },  // ui portrait upside down
             {    0,   0,   0,   0 },  // ui landscape left
             {  180, 180, 180, 180 }   // ui landscape right
         };
@@ -253,7 +253,7 @@ static SDL_CameraFrameResult COREMEDIA_AcquireFrame(SDL_Camera *device, SDL_Surf
     } else {
         static const Uint16 front_rotations[4][4] = {
             {   90,  90, 270, 270 },  // ui portrait
-            {  270, 270,  90,  90 },  // ui portait upside down
+            {  270, 270,  90,  90 },  // ui portrait upside down
             {    0,   0, 180, 180 },  // ui landscape left
             {  180, 180,   0,   0 }   // ui landscape right
         };
@@ -368,8 +368,7 @@ static bool COREMEDIA_OpenDevice(SDL_Camera *device, const SDL_CameraSpec *spec)
     avdevice.activeFormat = spec_format;
 
     // Try to set the frame duration to enforce the requested frame rate
-    const float frameRate = (float)spec->framerate_numerator / spec->framerate_denominator;
-    const CMTime frameDuration = CMTimeMake(1, (int32_t)frameRate);
+    const CMTime frameDuration = CMTimeMake(spec->framerate_denominator, spec->framerate_numerator);
 
     // Check if the device supports setting frame duration
     if ([avdevice respondsToSelector:@selector(setActiveVideoMinFrameDuration:)] &&
@@ -437,13 +436,15 @@ static bool COREMEDIA_OpenDevice(SDL_Camera *device, const SDL_CameraSpec *spec)
     }
     [session addOutput:output];
 
-    // Try to set the frame rate on the connection
-    AVCaptureConnection *connection = [output connectionWithMediaType:AVMediaTypeVideo];
-    if (connection && connection.isVideoMinFrameDurationSupported) {
-        connection.videoMinFrameDuration = frameDuration;
-        if (connection.isVideoMaxFrameDurationSupported) {
-            connection.videoMaxFrameDuration = frameDuration;
+    // Try to set the frame rate on the device (preferred modern approach)
+    if ([avdevice lockForConfiguration:nil]) {
+        @try {
+            avdevice.activeVideoMinFrameDuration = frameDuration;
+            avdevice.activeVideoMaxFrameDuration = frameDuration;
+        } @catch (NSException *exception) {
+            // Some devices don't support setting frame duration, that's okay
         }
+        [avdevice unlockForConfiguration];
     }
 
     [session commitConfiguration];
@@ -462,7 +463,7 @@ static bool COREMEDIA_OpenDevice(SDL_Camera *device, const SDL_CameraSpec *spec)
     // the device's accelerometer, so I assume this burns power, so we don't leave this running all
     // the time. These calls nest, so we just need to call the matching `end` message when we close.
     // You _can_ get an actual events through this mechanism, but we just want to be able to call
-    // -[UIDevice orientation], which will update with real info while notificatons are enabled.
+    // -[UIDevice orientation], which will update with real info while notifications are enabled.
     UIDevice *uidevice = [UIDevice currentDevice];
     [uidevice beginGeneratingDeviceOrientationNotifications];
     hidden.last_device_orientation = uidevice.orientation;

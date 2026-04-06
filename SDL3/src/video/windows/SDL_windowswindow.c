@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2025 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2026 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -1227,7 +1227,7 @@ static void WIN_UpdateCornerRoundingForHWND(SDL_VideoDevice *_this, HWND hwnd, D
 {
 #if !defined(SDL_PLATFORM_XBOXONE) && !defined(SDL_PLATFORM_XBOXSERIES)
     SDL_VideoData *videodata = _this->internal;
-    if (videodata->DwmSetWindowAttribute) {
+    if (videodata->DwmSetWindowAttribute && WIN_IsWindows11OrGreater()) {
         videodata->DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPref, sizeof(cornerPref));
     }
 #endif
@@ -1237,7 +1237,7 @@ static void WIN_UpdateBorderColorForHWND(SDL_VideoDevice *_this, HWND hwnd, COLO
 {
 #if !defined(SDL_PLATFORM_XBOXONE) && !defined(SDL_PLATFORM_XBOXSERIES)
     SDL_VideoData *videodata = _this->internal;
-    if (videodata->DwmSetWindowAttribute) {
+    if (videodata->DwmSetWindowAttribute && WIN_IsWindows11OrGreater()) {
         videodata->DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &colorRef, sizeof(colorRef));
     }
 #endif
