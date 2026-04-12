@@ -39,6 +39,7 @@ class GetFileHashes
             switch (fileinfo.FileType)
             {
             case FileTypes.RegularFile:
+            case FileTypes.SymbolicLink: // Assume all symlinks are to regular files
                 string hash;
 
                 if (fileinfo.Length == 0)
@@ -52,7 +53,6 @@ class GetFileHashes
                 ScanPath((UnixDirectoryInfo)fileinfo, string.Concat(id, "\\"));
                 break;
             default:
-                /* Do nothing for symlinks or other weird things. */
                 break;
             }
         }

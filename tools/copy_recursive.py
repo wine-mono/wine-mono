@@ -40,7 +40,7 @@ def copy_recursive(src, destdir):
 			path = os.path.join(src, filename)
 			copy_recursive(path, dest)
 	elif os.path.islink(src):
-		pass
+		shutil.copy(src, dest, follow_symlinks=False)
 	elif os.path.isfile(src):
 		shutil.copy(src, dest)
 	else:
