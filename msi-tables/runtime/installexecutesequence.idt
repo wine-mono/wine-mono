@@ -13,6 +13,8 @@ RemoveFiles		700
 CreateFolders		750
 RemoveFolders		760
 InstallFiles		800
+CREATELINKS64	(&wine_mono=3) AND (VersionNT64)	825
+CREATELINKS	(&wine_mono=3) AND (NOT VersionNT64)	826
 INSTALLSUPPORT	(&wine_mono=3)	850
 REMOVESUPPORT	(&wine_mono=2)	851
 RegisterProduct		1000

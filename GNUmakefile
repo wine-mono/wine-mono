@@ -146,6 +146,22 @@ clean-build-removeuserinstalls-$(1):
 .PHONY: clean-build-removeuserinstalls-$(1)
 clean-build: clean-build-removeuserinstalls-$(1)
 
+# createlinks.exe
+$$(BUILDDIR)/createlinks-$(1).dll: $$(SRCDIR)/tools/createlinks/createlinks.c $$(MINGW_DEPS)
+	$$(MINGW_ENV) $$(MINGW_$(1))-gcc $$< -lmsi -shared -municode -mwindows -L$$(BUILDDIR) -o $$@ $$(PDB_CFLAGS_$(1)) $$(PDB_LDFLAGS_$(1))
+
+support-createlinks-$(1): $$(BUILDDIR)/createlinks-$(1).dll
+	mkdir -p $$(IMAGEDIR)/support/
+	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/createlinks-$(1).dll $$(IMAGEDIR)/support/createlinks-$(1).dll
+.PHONY: support-createlinks-$(1)
+imagedir-targets: support-createlinks-$(1)
+IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/createlinks-$(1).dll
+
+clean-build-createlinks-$(1):
+	rm -rf $$(BUILDDIR)/createlinks-$(1).dll
+.PHONY: clean-build-createlinks-$(1)
+clean-build: clean-build-createlinks-$(1)
+
 endef
 
 include mono.make

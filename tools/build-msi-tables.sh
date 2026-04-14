@@ -49,6 +49,13 @@ find . '!' -name '*.pdb' | cut -d '/' -f2- | while read -r f; do
         printf "%s\t%s\n" "$DIRKEY" "$DIRKEY" >> ${TABLEDIR}/createfolder.idt
         printf "%s\t%s\t%s\n" "$DIRKEY" "$PARENTKEY" "$BASENAME" >> ${TABLEDIR}/directory.idt
         printf "wine_mono\t%s\n" "$DIRKEY" >> ${TABLEDIR}/featurecomponents.idt
+    elif test -L "$f"; then
+        printf "%s\t%s\t%s\t%s\t2\n" "$FILEKEY" "$PARENTKEY" "$BASENAME" "$PARENTKEY" >> ${TABLEDIR}/removefile.idt
+        TARGET=`readlink "$f"`
+        TARGETBASE=`basename "$TARGET"`
+        TARGETRELDIR=`dirname "$TARGET"`
+        TARGETPARENT=`python3 -c 'import os.path; import sys; print(os.path.normpath(os.path.join(*sys.argv[1:])).replace("/", "|"))' "$PARENT" "$TARGETRELDIR"`
+        printf "%s\t%s\t%s\t%s\t%s\n" "$FILEKEY" "$BASENAME" "$PARENTKEY" "$TARGETBASE" "$TARGETPARENT" >> ${TABLEDIR}/symlinks.idt
     elif test -f "$f"; then
 		ln -s "${IMAGEDIR}"/"$f" "${CONTENTDIR}"/"$f"
     fi

@@ -1,4 +1,6 @@
 Action	Type	Source	Target	ExtendedType
 s72	i2	S72	L0	I4
 CustomAction	Action
+CREATELINKS	1041	support\createlinks-x86.dll	create_links	
+CREATELINKS64	1041	support\createlinks-x86_64.dll	create_links	
 INSTALLSUPPORT	1122	support	msiexec /i [$support]\winemono-support.msi	
