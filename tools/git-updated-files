@@ -45,6 +45,7 @@ _source_suffixes = (
 	'.config',
 	'.resx',
 	'.xaml',
+	'.idl',
 )
 
 _ignore_file_suffixes = (
