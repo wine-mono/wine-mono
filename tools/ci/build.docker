@@ -12,7 +12,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     chmod +x /usr/sbin/policy-rc.d && \
     dpkg --add-architecture i386 && \
     apt-get update && \
-    apt-get install -y git build-essential ca-certificates autoconf libtool automake cmake python3 gettext wget libgdiplus zip unzip libc6:i386 libunwind8:i386 libunwind8:amd64 uuid-runtime libgnutls28-dev:i386 libgnutls28-dev:amd64 wine && \
+    apt-get install -y git build-essential ca-certificates autoconf libtool automake cmake python3 gettext wget libgdiplus zip unzip libc6:i386 libunwind8:i386 libunwind8:amd64 uuid-runtime libgnutls28-dev:i386 libgnutls28-dev:amd64 wine wine64-tools && \
     apt-get clean && \
     useradd -m gitlab
 
