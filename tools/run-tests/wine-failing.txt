@@ -142,9 +142,6 @@ x86.MonoTests.Microsoft.Build.BuildEngine.ProjectTest:TestGetConditionedProperty
 x86.MonoTests.Microsoft.Build.BuildEngine.Various.Conditions:TestCondition7
 x86.MonoTests.Microsoft.Build.Tasks.ALTest:TestAssignment2
 x86.MonoTests.Microsoft.Build.Tasks.ALTest:TestPlatform
-x86.MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:Hello
-x86.MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:HelloWithParameter
-x86.MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:Reference
 x86.MonoTests.Microsoft.Build.Tasks.CopyTest:TestCopy_OverwriteReadOnlyFalse
 x86.MonoTests.Microsoft.Build.Tasks.CopyTest:TestCopy_OverwriteReadOnlyTrue
 x86.MonoTests.Microsoft.Build.Tasks.CopyTest:TestCopy_ReadOnlyUpdate
@@ -206,7 +203,6 @@ x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marker_2
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddString
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Bilinear
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Invalid
-x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_NoPoints
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Rectangle_Empty
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Rectangle_NegativeWidthHeight
 x86.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Wrap_Line
@@ -225,7 +221,6 @@ x86.MonoTests.System.Drawing.FontFamilyTest:FontFamily_String_PrivateFontCollect
 x86.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_FirstTooFar
 x86.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_LengthTooLong
 x86.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_Alignment_DirectionVertical
-x86.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment
 x86.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment_DirectionVertical
 x86.MonoTests.System.Drawing.GraphicsTest:MeasureLimits
 x86.MonoTests.System.Drawing.GraphicsTest:MeasureString_Bug76664
@@ -577,9 +572,6 @@ x86_64.MonoTests.Microsoft.Build.BuildEngine.ProjectTest:TestGetConditionedPrope
 x86_64.MonoTests.Microsoft.Build.BuildEngine.Various.Conditions:TestCondition7
 x86_64.MonoTests.Microsoft.Build.Tasks.ALTest:TestAssignment2
 x86_64.MonoTests.Microsoft.Build.Tasks.ALTest:TestPlatform
-x86_64.MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:Hello
-x86_64.MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:HelloWithParameter
-x86_64.MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:Reference
 x86_64.MonoTests.Microsoft.Build.Tasks.CopyTest:TestCopy_OverwriteReadOnlyFalse
 x86_64.MonoTests.Microsoft.Build.Tasks.CopyTest:TestCopy_OverwriteReadOnlyTrue
 x86_64.MonoTests.Microsoft.Build.Tasks.CopyTest:TestCopy_ReadOnlyUpdate
@@ -641,7 +633,6 @@ x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Reverse_Subpath_Marke
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:StartClose_AddString
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Bilinear
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Invalid
-x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_NoPoints
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Rectangle_Empty
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_Rectangle_NegativeWidthHeight
 x86_64.MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Wrap_Line
@@ -677,7 +668,6 @@ x86_64.MonoTests.System.Drawing.GraphicsTest:DrawImage_ImageRectangleRectangleGr
 x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_FirstTooFar
 x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_LengthTooLong
 x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_Alignment_DirectionVertical
-x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment
 x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment_DirectionVertical
 x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureLimits
 x86_64.MonoTests.System.Drawing.GraphicsTest:MeasureString_Bug76664
