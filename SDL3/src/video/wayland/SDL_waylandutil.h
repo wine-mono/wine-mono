@@ -20,27 +20,15 @@
 */
 #include "SDL_internal.h"
 
-#ifndef SDL_x11clipboard_h_
-#define SDL_x11clipboard_h_
+#ifndef SDL_waylandutil_h_
+#define SDL_waylandutil_h_
 
-#include <X11/Xlib.h>
+#include "../SDL_sysvideo.h"
 
-typedef struct X11_ClipboardData {
-    SDL_ClipboardDataCallback callback;
-    void *userdata;
-    const char *const *mime_types;
-    size_t mime_count;
-    Uint32 sequence;
-} SDLX11_ClipboardData;
+/**
+ * Generates an activation token that can be passed to external clients.
+ * The token and window_id parameters must be freed with SDL_free() when done.
+ */
+extern bool Wayland_GetActivationTokenForExport(SDL_VideoDevice *_this, char **token, char **window_id);
 
-extern const char *const *X11_GetTextMimeTypes(SDL_VideoDevice *_this, size_t *num_mime_types);
-extern bool X11_SetClipboardData(SDL_VideoDevice *_this);
-extern void *X11_GetClipboardData(SDL_VideoDevice *_this, const char *mime_type, size_t *length);
-extern bool X11_HasClipboardData(SDL_VideoDevice *_this, const char *mime_type);
-extern bool X11_SetPrimarySelectionText(SDL_VideoDevice *_this, const char *text);
-extern char *X11_GetPrimarySelectionText(SDL_VideoDevice *_this);
-extern bool X11_HasPrimarySelectionText(SDL_VideoDevice *_this);
-extern void X11_QuitClipboard(SDL_VideoDevice *_this);
-Window GetWindow(SDL_VideoDevice *_this);
-
-#endif // SDL_x11clipboard_h_
+#endif // SDL_waylandutil_h_
