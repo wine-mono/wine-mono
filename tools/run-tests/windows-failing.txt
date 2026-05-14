@@ -5389,3 +5389,4 @@ MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeOfDay_1
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests:TimeString_1
 MonoTests.Microsoft_VisualBasic.Logging.FileLogTraceListenerTest:DiskSpaceTest1 # race with anything that frees disk space
 MonoTests.System.AppDomainTest:ReflectionOnlyGetAssemblies
+MonoTests.System.Threading.WaitHandleTest:WaitAnyWithSecondMutexAbandoned # sometimes second ReleaseMutex throws ApplicationException
