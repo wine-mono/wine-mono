@@ -165,7 +165,6 @@ clean-build: clean-build-createlinks-$(1)
 endef
 
 include mono.make
-include mono-basic.make
 include fna.make
 include fna3d.make
 include faudio.make
