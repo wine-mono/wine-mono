@@ -205,7 +205,7 @@ jobs:
         wine winetest.exe -x winetest
         wine winetest/mscoree_test.exe --list 2>/dev/null|sed 's/.$//'|tail -n +2|while read testname; do
           echo BEGIN $testname TEST
-          WINETEST_REPORT_SUCCESS=1 WINEDEBUG=mscoree,process,pid,tid,ole,module,seh,syscall WINE_MONO_TRACE=x WINE_MONO_VERBOSE=1 MONO_LOG_LEVEL=debug gtimeout -v 300 wine winetest/mscoree_test.exe $testname || printf 'mscoree:%s 32-bit test failed\n' $testname >> tests-failed
+          WINETEST_REPORT_SUCCESS=1 WINEDEBUG=mscoree,process,pid,tid,ole,module,seh,syscall,server WINE_MONO_TRACE=x WINE_MONO_VERBOSE=1 MONO_LOG_LEVEL=debug gtimeout -v 300 wine winetest/mscoree_test.exe $testname || printf 'mscoree:%s 32-bit test failed\n' $testname >> tests-failed
           echo END $testname TEST
         done
         if test -f tests-failed; then
