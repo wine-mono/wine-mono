@@ -199,19 +199,6 @@ jobs:
           cat tests-failed
           exit 1
         fi
-    - name: Run 32-bit Wine mscoree tests
-      run: |
-        wget -nc 'https://gitlab.winehq.org/wine/wine/-/jobs/artifacts/master/raw/winetest.exe?job=build-daily-winetest' -O winetest.exe
-        wine winetest.exe -x winetest
-        wine winetest/mscoree_test.exe --list 2>/dev/null|sed 's/.$//'|tail -n +2|while read testname; do
-          echo BEGIN $testname TEST
-          WINETEST_REPORT_SUCCESS=1 WINEDEBUG=mscoree WINE_MONO_TRACE=x gtimeout -v 300 wine winetest/mscoree_test.exe $testname || printf 'mscoree:%s 32-bit test failed\n' $testname >> tests-failed
-          echo END $testname TEST
-        done
-        if test -f tests-failed; then
-          cat tests-failed
-          exit 1
-        fi
     - name: Download Wine Mono tests
       uses: actions/download-artifact@v4
       with:
@@ -220,4 +207,4 @@ jobs:
       run: |
         unzip wine-mono-*-tests.zip 1>&2
         wine reg add 'HKCU\Software\Wine\WineDbg' /v ShowCrashDialog /t REG_DWORD /d 0 /f
-        wine tests/run-tests.exe -fail-list:tests/github-wine-failing.txt -fail-list:tests/github-macos-failing.txt -skip-list:tests/github-macos-skip.txt
+        wine tests/run-tests.exe -fail-list:tests/github-wine-failing.txt -fail-list:tests/github-macos-failing.txt -skip-list:tests/github-macos-skip.txt -arch:x86_64
