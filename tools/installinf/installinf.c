@@ -12,7 +12,13 @@ int wmain(int argc, wchar_t **argv)
 	wchar_t* buf;
 	const wchar_t* prefix = L"DefaultInstall 128 ";
 
-	buf = malloc(sizeof(wchar_t) * (wcslen(prefix) + wcslen(argv[1]) + 1));
+	size_t prefix_len = wcslen(prefix);
+	size_t arg_len = wcslen(argv[1]);
+
+	if (arg_len > (SIZE_MAX / sizeof(wchar_t)) - prefix_len - 1)
+		return 1;
+
+	buf = calloc(prefix_len + arg_len + 1, sizeof(wchar_t));
 
 	wcscpy(buf, prefix);
 	wcscat(buf, argv[1]);
