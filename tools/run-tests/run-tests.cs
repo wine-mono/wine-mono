@@ -20,6 +20,7 @@ class RunTests
 	Dictionary<string, List<string>> skip_list = new Dictionary<string, List<string>> ();
 	Dictionary<string, List<string>> run_list = new Dictionary<string, List<string>> ();
 	List<string> skip_categories = new List<string> ();
+	List<string> arch_list = new List<string> ();
 
 	int timeout = 300;
 	bool timeout_specified;
@@ -226,6 +227,8 @@ class RunTests
 
 	void run_mono_test_dir(string path, string arch)
 	{
+		if (arch_list.Count != 0 && !arch_list.Contains (arch))
+			return;
 		foreach (string filename in Directory.EnumerateFiles(path, "*.exe"))
 		{
 			run_mono_test_exe(filename, arch);
@@ -538,6 +541,8 @@ class RunTests
 
 	void run_clr_test_dir(string path, string arch)
 	{
+		if (arch_list.Count != 0 && !arch_list.Contains (arch))
+			return;
 		foreach (string filename in Directory.EnumerateFiles(path, "net_4_x_*_test.dll"))
 		{
 			run_clr_test_dll(filename, arch);
@@ -661,6 +666,8 @@ class RunTests
 				read_stringlist(argument.Substring(11), pass_list);
 			else if (argument.StartsWith("-fail-list:"))
 				read_stringlist(argument.Substring(11), fail_list);
+			else if (argument.StartsWith("-arch:"))
+				arch_list.Add(argument.Substring(6));
 			else if (argument.StartsWith("-timeout:"))
 			{
 				timeout = int.Parse(argument.Substring(9));
