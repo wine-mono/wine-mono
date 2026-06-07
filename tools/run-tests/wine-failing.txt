@@ -1210,7 +1210,7 @@ x86.MonoTests.System.ServiceModel.Description.MetadataResolverTest:Resolve2
 x86.MonoTests.System.ServiceModel.Description.MetadataResolverTest:Resolve3
 x86.MonoTests.System.ServiceModel.Description.MetadataResolverTest:Resolve4
 x86.MonoTests.System.ServiceModel.IntegratedConnectionTest:TestSessionInstancesWsHttp
-x86.MonoTests.System.Diagnostics.EventLogTest:Clear
+MonoTests.System.Diagnostics.EventLogTest:Clear
 x86.MonoTests.System.Net.HttpListenerRequestTest:HasEntityBody
 x86.MonoTests.System.Security.Cryptography.X509Certificates.X509Certificate2CollectionTest:Export_Empty_Pfx
 x86.MonoTests.System.Security.Cryptography.X509Certificates.X509Certificate2CollectionTest:Export_Empty_Pkcs12
