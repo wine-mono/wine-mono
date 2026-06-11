@@ -138,6 +138,10 @@ $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/ReachFramework/.built: $(BUILDDIR)/mo
 	+$(MONO_ENV) $(MAKE) -C $(@D) MONO_PREFIX=$(BUILDDIR_ABS)/mono-unix-install RESX2SRID=$(BUILDDIR_ABS)/resx2srid.exe WINE_MONO_SRCDIR=$(SRCDIR_ABS)
 	touch $@
 
+$(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/Extensions/PresentationFramework-SystemDrawing/.built: $(BUILDDIR)/mono-unix/.installed $(WPF_SRCS) $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/WindowsBase/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built
+	+$(MONO_ENV) $(MAKE) -C $(@D) MONO_PREFIX=$(BUILDDIR_ABS)/mono-unix-install WINE_MONO_SRCDIR=$(SRCDIR_ABS)
+	touch $@
+
 $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationFramework/.built: $(BUILDDIR)/mono-unix/.installed $(WPF_SRCS) $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/System.Xaml/.built $(SRCDIR)/winforms/src/Accessibility/src/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/WindowsBase/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationTypes/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/UIAutomation/UIAutomationProvider/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationCore/.built $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/ReachFramework/.built $(BUILDDIR)/resx2srid.exe
 	+$(MONO_ENV) $(MAKE) -C $(@D) MONO_PREFIX=$(BUILDDIR_ABS)/mono-unix-install RESX2SRID=$(BUILDDIR_ABS)/resx2srid.exe WINE_MONO_SRCDIR=$(SRCDIR_ABS) ACCESSIBILITY_DLL=$(SRCDIR_ABS)/winforms/src/Accessibility/src/Accessibility.dll
 	touch $@
@@ -226,6 +230,13 @@ ReachFramework.dll: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/ReachFramework/.b
 	$(MONO_ENV) gacutil -i $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/ReachFramework/ReachFramework.dll -root $(IMAGEDIR)/lib
 .PHONY: ReachFramework.dll
 imagedir-targets: ReachFramework.dll
+
+IMAGEDIR_BUILD_TARGETS += $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/Extensions/PresentationFramework-SystemDrawing/.built
+
+PresentationFramework-SystemDrawing.dll: $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/Extensions/PresentationFramework-SystemDrawing/.built
+	$(MONO_ENV) gacutil -i $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/Extensions/PresentationFramework-SystemDrawing/PresentationFramework-SystemDrawing.dll -root $(IMAGEDIR)/lib
+.PHONY: PresentationFramework-SystemDrawing.dll
+imagedir-targets: PresentationFramework-SystemDrawing.dll
 
 IMAGEDIR_BUILD_TARGETS += $(SRCDIR)/wpf/src/Microsoft.DotNet.Wpf/src/PresentationFramework/.built
 
