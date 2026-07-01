@@ -1,1 +1,1 @@
-release-3.4.10-0-g8e37db5e7
+release-3.4.12-0-gf87239e71

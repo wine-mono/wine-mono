@@ -751,7 +751,9 @@ macro(CheckWayland)
             sdl_link_dependency(libdecor INCLUDES $<TARGET_PROPERTY:PkgConfig::PC_LIBDECOR,INTERFACE_INCLUDE_DIRECTORIES>)
           else()
             sdl_link_dependency(libdecor LIBS PkgConfig::PC_LIBDECOR PKG_CONFIG_PREFIX PC_LIBDECOR PKG_CONFIG_SPECS ${LibDecor_PKG_CONFIG_SPEC})
-            endif()
+          endif()
+        else()
+          message(WARNING "Unable to find the libdecor development library (required for window decorations on GNOME and Weston)")
         endif()
       endif()
 
@@ -1264,7 +1266,7 @@ macro(CheckHIDAPI)
           #include <stddef.h>
           #include <libusb.h>
           int main(int argc, char **argv) {
-            libusb_close(NULL);
+            libusb_interrupt_event_handler(NULL);
             return 0;
           }" HAVE_LIBUSB_H)
         cmake_pop_check_state()
