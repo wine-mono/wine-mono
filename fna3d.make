@@ -11,16 +11,18 @@ $$(BUILDDIR)/FNA3D-$(1)/Makefile: $$(SRCDIR)/FNA/lib/FNA3D/CMakeLists.txt $$(SRC
 $$(BUILDDIR)/FNA3D-$(1)/.built: $$(BUILDDIR)/FNA3D-$(1)/Makefile $$(FNA3D_SRCS) $$(MINGW_DEPS)
 	+$$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/FNA3D-$(1)
 	touch "$$@"
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/FNA3D-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/FNA3D-$(1)/.built
 
 FNA3D-$(1).dll: $$(BUILDDIR)/FNA3D-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/FNA3D-$(1)/FNA3D.dll" "$$(IMAGEDIR)/lib/$(1)/FNA3D.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/FNA3D-$(1)/FNA3D.dll" "$$(IMAGEDIR)/lib/$(2)/FNA3D.dll"
 .PHONY: FNA3D-$(1).dll
-imagedir-targets: FNA3D-$(1).dll
+imagedir-targets-$(1): FNA3D-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 FNA3D.dll: FNA3D-$(1).dll
 .PHONY: FNA3D.dll
+endif
 
 clean-build-FNA3D-$(1):
 	rm -rf $$(BUILDDIR)/FNA3D-$(1)

@@ -28,6 +28,7 @@ MINGW_x86 ?= i686-w64-mingw32
 MINGW_x86_64 ?= x86_64-w64-mingw32
 MINGW_arm ?= armv7-w64-mingw32
 MINGW_arm64 ?= aarch64-w64-mingw32
+MINGW_arm64ec ?= arm64ec-w64-mingw32
 
 # automatically fetching and extracting llvm-mingw
 

@@ -40,10 +40,10 @@ $(foreach arch,Framework Framework64,$(BUILDDIR)/image-support/Microsoft.NET/$(a
 IMAGE_SUPPORT_FILES += $(foreach arch,Framework Framework64,$(BUILDDIR)/image-support/Microsoft.NET/$(arch)/v4.0.30319/csc.exe)
 
 # installutil.exe
-$(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework/$(version)/installutil.exe): $(BUILDDIR)/mono-unix/.installed $(BUILDDIR)/fixupclr.exe
+$(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework/$(version)/installutil.exe): $(BUILDDIR)/mono-unix/.installed $(BUILDDIR)/fixuparch.exe
 	mkdir -p $(@D)
 	cp $(BUILDDIR)/mono-win32-install/lib/mono/4.5/installutil.exe $@
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86 $@
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $@
 IMAGE_SUPPORT_FILES += $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework/$(version)/installutil.exe)
 
 $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework64/$(version)/installutil.exe): $(BUILDDIR)/mono-unix/.installed

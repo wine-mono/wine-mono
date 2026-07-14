@@ -11,16 +11,18 @@ $$(BUILDDIR)/FAudio-$(1)/Makefile: $$(SRCDIR)/FNA/lib/FAudio/CMakeLists.txt $$(S
 $$(BUILDDIR)/FAudio-$(1)/.built: $$(BUILDDIR)/FAudio-$(1)/Makefile $$(FAUDIO_SRCS) $$(MINGW_DEPS)
 	+$$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/FAudio-$(1)
 	touch "$$@"
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/FAudio-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/FAudio-$(1)/.built
 
 FAudio-$(1).dll: $$(BUILDDIR)/FAudio-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/FAudio-$(1)/FAudio.dll" "$$(IMAGEDIR)/lib/$(1)/FAudio.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/FAudio-$(1)/FAudio.dll" "$$(IMAGEDIR)/lib/$(2)/FAudio.dll"
 .PHONY: FAudio-$(1).dll
-imagedir-targets: FAudio-$(1).dll
+imagedir-targets-$(1): FAudio-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 FAudio.dll: FAudio-$(1).dll
 .PHONY: FAudio.dll
+endif
 
 clean-build-FAudio-$(1):
 	rm -rf $$(BUILDDIR)/FAudio-$(1)

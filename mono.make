@@ -38,32 +38,49 @@ $$(BUILDDIR)/mono-$(1)/mono/mini/.built: $$(BUILDDIR)/mono-$(1)/mono/metadata/.b
 $$(BUILDDIR)/mono-$(1)/.built: $$(BUILDDIR)/mono-$(1)/mono/mini/.built $$(MONO_MONO_SRCS) $$(MINGW_DEPS)
 	+WINEPREFIX=/dev/null $$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/mono-$(1)
 	touch "$$@"
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/mono-$(1)/.built
 
 $$(BUILDDIR)/mono-$(1)/support/.built: $$(BUILDDIR)/mono-$(1)/.built $$(MINGW_DEPS)
 	+WINEPREFIX=/dev/null $$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/mono-$(1)/support
 	touch "$$@"
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/mono-$(1)/support/.built
 
 libmono-2.0-$(1).dll: $$(BUILDDIR)/mono-$(1)/mono/mini/.built
 	mkdir -p "$$(IMAGEDIR)/bin"
 	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/mono-$(1)/mono/mini/.libs/libmonosgen-2.0.dll" "$$(IMAGEDIR)/bin/libmono-2.0-$(1).dll"
 	if test x1 = x$(ENABLE_DEBUG_SYMBOLS) -a x1 != x$(PREFER_DWARF_SYMBOLS); then cp "$$(BUILDDIR)/mono-$(1)/mono/mini/libmono-2.0-$(1).pdb" "$$(IMAGEDIR)/bin/libmono-2.0-$(1).pdb"; fi
 
+ifeq ($(1),arm64ec)
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/mono-x86_64/.built
+.PHONY: libmono-2.0-x86_64.dll
+imagedir-targets-$(1): libmono-2.0-x86_64.dll
+else
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/mono-$(1)/.built
 .PHONY: libmono-2.0-$(1).dll
-imagedir-targets: libmono-2.0-$(1).dll
+imagedir-targets-$(1): libmono-2.0-$(1).dll
+endif
 
+ifeq ($$(NATIVE_$(1)),1)
 libmono.dll libmono-2.0.dll: libmono-2.0-$(1).dll
 .PHONY: libmono.dll libmono-2.0.dll
+endif
 
 MonoPosixHelper-$(1).dll: $$(BUILDDIR)/mono-$(1)/support/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/mono-$(1)/support/.libs/libMonoPosixHelper.dll" "$$(IMAGEDIR)/lib/$(1)/MonoPosixHelper.dll"
-.PHONY: MonoPosixHelper-$(1).dll
-imagedir-targets: MonoPosixHelper-$(1).dll
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/mono-$(1)/support/.libs/libMonoPosixHelper.dll" "$$(IMAGEDIR)/lib/$(2)/MonoPosixHelper.dll"
 
+ifeq ($(1),arm64ec)
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/mono-x86_64/support/.built
+.PHONY: MonoPosixHelper-x86_64.dll
+imagedir-targets-$(1): MonoPosixHelper-x86_64.dll
+else
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/mono-$(1)/support/.built
+.PHONY: MonoPosixHelper-$(1).dll
+imagedir-targets-$(1): MonoPosixHelper-$(1).dll
+endif
+
+ifeq ($$(NATIVE_$(1)),1)
 MonoPosixHelper.dll: MonoPosixHelper-$(1).dll
 .PHONY: MonoPosixHelper.dll
+endif
 
 clean-build-mono-$(1):
 	rm -rf $$(BUILDDIR)/mono-$(1)
@@ -80,13 +97,13 @@ $$(BUILDDIR)/btls-$(1)/Makefile: $$(SRCDIR)/mono/mono/btls/CMakeLists.txt $$(SRC
 $$(BUILDDIR)/btls-$(1)/.built: $$(BUILDDIR)/btls-$(1)/Makefile $$(MONO_BTLS_SRCS) $$(MINGW_DEPS)
 	+WINEPREFIX=/dev/null $$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/btls-$(1)
 	touch "$$@"
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/btls-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/btls-$(1)/.built
 
 libmono-btls-shared-$(1).dll: $$(BUILDDIR)/btls-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/btls-$(1)/libmono-btls-shared.dll" "$$(IMAGEDIR)/lib/$(1)/libmono-btls-shared.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/btls-$(1)/libmono-btls-shared.dll" "$$(IMAGEDIR)/lib/$(2)/libmono-btls-shared.dll"
 .PHONY: libmono-btls-shared-$(1).dll
-imagedir-targets: libmono-btls-shared-$(1).dll
+imagedir-targets-$(1): libmono-btls-shared-$(1).dll
 
 libmono-btls-shared.dll: libmono-btls-shared-$(1).dll
 .PHONY: libmono-btls-shared.dll
@@ -101,28 +118,40 @@ $$(TESTS_OUTDIR)/tests-$(1)/libtest.dll: $$(BUILDDIR)/mono-$(1)/.built $$(MINGW_
 	+WINEPREFIX=/dev/null $$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/mono-$(1)/mono/tests libtest.la
 	mkdir -p $$(@D)
 	cp $$(BUILDDIR)/mono-$(1)/mono/tests/.libs/libtest-0.dll $$@
+ifeq ($(1),$(filter x86 x86_64 arm64,$(1)))
 tests: $$(TESTS_OUTDIR)/tests-$(1)/libtest.dll
+endif
 
 clean-tests-$(1):
 	rm -rf $$(TESTS_OUTDIR)/tests-$(1)
 .PHONY: clean-tests-$(1)
 clean-tests: clean-tests-$(1)
 
-tests-runtime-$(1): $$(BUILDDIR)/mono-unix/mono/mini/.built-tests $$(SYSCONFIG_TESTDIR)/.built-tests $$(BUILDDIR)/mono-unix/mono/tests/.built $$(BUILDDIR)/fixupclr.exe
-	mkdir -p $$(TESTS_OUTDIR)/tests-$(1)
-	cp $$(BUILDDIR)/mono-unix/mono/tests/*.exe $$(BUILDDIR)/mono-unix/mono/tests/*.dll $$(BUILDDIR)/mono-unix/mono/mini/*.exe $$(SYSCONFIG_TESTDIR)/*.exe $$(SYSCONFIG_TESTDIR)/*.dll $$(SYSCONFIG_TESTDIR)/*.exe.config $$(SYSCONFIG_TESTDIR)/*.exe.config2 $$(SYSCONFIG_TESTDIR)/*.exe.expected $$(TESTS_OUTDIR)/tests-$(1)
-	mkdir -p $$(TESTS_OUTDIR)/tests-$(1)/assembly-load-dir1
-	# exclude libsimplename.dll because it's undefined which one we'll get on a case-insensitive filesystem
-	cp $$(BUILDDIR)/mono-unix/mono/tests/assembly-load-dir1/Lib*.dll $$(TESTS_OUTDIR)/tests-$(1)/assembly-load-dir1
-	mkdir -p $$(TESTS_OUTDIR)/tests-$(1)/assembly-load-dir2
-	cp $$(BUILDDIR)/mono-unix/mono/tests/assembly-load-dir2/*.dll $$(TESTS_OUTDIR)/tests-$(1)/assembly-load-dir2
-	$$(CP_R) $$(BUILDDIR)/mono-unix/mono/tests/assemblyresolve_deps $$(TESTS_OUTDIR)/tests-$(1)/
-ifeq ($(1),x86)
-	cp $$(BUILDDIR)/mono-unix/builtin-types-32.exe $$(TESTS_OUTDIR)/tests-$(1)/builtin-types.exe
-endif
-	cd $$(TESTS_OUTDIR)/tests-$(1); $$(WINE) $$(BUILDDIR_ABS)/fixupclr.exe $(1) *.exe
+clean-build-tests-$(1):
+	rm -rf $$(BUILDDIR)/tests-$(1)
+.PHONY: clean-build-tests-$(1)
+clean-tests: clean-build-tests-$(1)
 
+tests-runtime-$(1): $$(BUILDDIR)/mono-unix/mono/mini/.built-tests $$(SYSCONFIG_TESTDIR)/.built-tests $$(BUILDDIR)/mono-unix/mono/tests/.built $$(BUILDDIR)/fixuparch.exe
+	mkdir -p $$(BUILDDIR)/tests-$(1)
+	cp $$(BUILDDIR)/mono-unix/mono/tests/*.exe $$(BUILDDIR)/mono-unix/mono/tests/*.dll $$(BUILDDIR)/mono-unix/mono/mini/*.exe $$(SYSCONFIG_TESTDIR)/*.exe $$(SYSCONFIG_TESTDIR)/*.dll $$(SYSCONFIG_TESTDIR)/*.exe.config $$(SYSCONFIG_TESTDIR)/*.exe.config2 $$(SYSCONFIG_TESTDIR)/*.exe.expected $$(BUILDDIR)/tests-$(1)/
+	rm $$(BUILDDIR)/tests-$(1)/invalid-token.exe $$(BUILDDIR)/tests-$(1)/modules.exe # Mono.Cecil can't round-trip these
+	mkdir -p $$(BUILDDIR)/tests-$(1)/assembly-load-dir1
+	# exclude libsimplename.dll because it's undefined which one we'll get on a case-insensitive filesystem
+	cp $$(BUILDDIR)/mono-unix/mono/tests/assembly-load-dir1/Lib*.dll $$(BUILDDIR)/tests-$(1)/assembly-load-dir1
+	mkdir -p $$(BUILDDIR)/tests-$(1)/assembly-load-dir2
+	cp $$(BUILDDIR)/mono-unix/mono/tests/assembly-load-dir2/*.dll $$(BUILDDIR)/tests-$(1)/assembly-load-dir2
+	$$(CP_R) $$(BUILDDIR)/mono-unix/mono/tests/assemblyresolve_deps $$(BUILDDIR)/tests-$(1)/
+ifeq ($(1),x86)
+	cp $$(BUILDDIR)/mono-unix/builtin-types-32.exe $$(BUILDDIR)/tests-$(1)/builtin-types.exe
+endif
+	cd $$(BUILDDIR)/tests-$(1); $$(MONO_ENV) mono $$(BUILDDIR_ABS)/fixuparch.exe $(1) *.exe
+	mkdir -p $$(TESTS_OUTDIR)/tests-$(1)
+	$$(CP_R) $$(BUILDDIR)/tests-$(1) $$(TESTS_OUTDIR)/tests-$(1)
+
+ifeq ($(1),$(filter x86 x86_64 arm64,$(1)))
 tests: tests-runtime-$(1)
+endif
 
 ifeq ($(1),x86)
 tests-runtime-$(1): $$(BUILDDIR)/mono-unix/builtin-types-32.exe
@@ -232,7 +261,7 @@ $(SYSCONFIG_TESTDIR)/.built-tests: $(foreach test,$(SYSCONFIG_TESTS),$(SYSCONFIG
 $(BUILDDIR)/mono-unix/builtin-types-32.exe: $(SRCDIR)/mono/mono/mini/builtin-types.cs $(BUILDDIR)/mono-unix/mono/mini/.built-tests $(BUILDDIR)/mono-unix/.installed
 	$(MONO_ENV) mcs -out:$@ -unsafe -define:ARCH_32 $< -r:$(BUILDDIR)/mono-unix/mono/mini/TestDriver.dll
 
-tests-clr: $(BUILDDIR)/mono-unix/.built-clr-tests $(BUILDDIR)/nunitlite.dll $(BUILDDIR)/fixupclr.exe
+tests-clr: $(BUILDDIR)/mono-unix/.built-clr-tests $(BUILDDIR)/nunitlite.dll $(BUILDDIR)/fixuparch.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-clr
 	cp $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_test.dll $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_vbtest.dll $(SRCDIR)/mono/mcs/class/lib/net_4_x/nunit* $(TESTS_OUTDIR)/tests-clr
 	cp $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_test.dll.nunitlite.config $(SRCDIR)/mono/mcs/class/lib/net_4_x/tests/*_vbtest.dll.nunitlite.config $(TESTS_OUTDIR)/tests-clr
@@ -241,9 +270,12 @@ tests-clr: $(BUILDDIR)/mono-unix/.built-clr-tests $(BUILDDIR)/nunitlite.dll $(BU
 	cp -r $(SRCDIR)/mono/mcs/class/System.Drawing/Test/System.Drawing/bitmaps $(TESTS_OUTDIR)/tests-clr/Test/System.Drawing
 	cp -r $(SRCDIR)/mono/mcs/class/System.Windows.Forms/Test/resources $(TESTS_OUTDIR)/tests-clr/Test
 	cp $(SRCDIR)/mono/mcs/class/System.Configuration/Test/appSettings.config $(TESTS_OUTDIR)/tests-clr/System.Configuration-appSettings.config
-	cp $(TESTS_OUTDIR)/tests-clr/nunit-lite-console.exe $(TESTS_OUTDIR)/tests-clr/nunit-lite-console32.exe
-	cd $(TESTS_OUTDIR)/tests-clr; $(WINE) $(BUILDDIR_ABS)/fixupclr.exe x86 nunit-lite-console32.exe
-	cd $(TESTS_OUTDIR)/tests-clr; $(WINE) $(BUILDDIR_ABS)/fixupclr.exe x86_64 nunit-lite-console.exe
+	cp $(TESTS_OUTDIR)/tests-clr/nunit-lite-console.exe $(TESTS_OUTDIR)/tests-clr/nunit-lite-console-x86.exe
+	cp $(TESTS_OUTDIR)/tests-clr/nunit-lite-console.exe $(TESTS_OUTDIR)/tests-clr/nunit-lite-console-x86_64.exe
+	cp $(TESTS_OUTDIR)/tests-clr/nunit-lite-console.exe $(TESTS_OUTDIR)/tests-clr/nunit-lite-console-arm64.exe
+	cd $(TESTS_OUTDIR)/tests-clr; $(MONO_ENV) mono $(BUILDDIR_ABS)/fixuparch.exe x86 nunit-lite-console-x86.exe
+	cd $(TESTS_OUTDIR)/tests-clr; $(MONO_ENV) mono $(BUILDDIR_ABS)/fixuparch.exe x86_64 nunit-lite-console-x86_64.exe
+	cd $(TESTS_OUTDIR)/tests-clr; $(MONO_ENV) mono $(BUILDDIR_ABS)/fixuparch.exe arm64 nunit-lite-console-arm64.exe
 	cd $(TESTS_OUTDIR)/tests-clr; for f in *_test.dll *_vbtest.dll; do $(MONO_ENV) mono nunit-lite-console.exe $$f -explore:$${f}.testlist >/dev/null || rm $$f; done
 .PHONY: tests-clr
 tests: tests-clr

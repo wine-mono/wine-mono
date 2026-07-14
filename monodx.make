@@ -7,19 +7,21 @@ $$(BUILDDIR)/monodx-$(1)/.built: $$(MONODX_SRCS) $$(MINGW_DEPS)
 	+$$(MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1))" $(MAKE) -C $$(@D) -f $$(SRCDIR_ABS)/monoDX/monodx/Makefile ARCH=$(1) SRCDIR="$$(SRCDIR_ABS)/monoDX/monodx" "MINGW=$$(MINGW_$(1))"
 	touch "$$@"
 ifeq (1,$(ENABLE_MONODX))
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/monodx-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/monodx-$(1)/.built
 endif
 
 monodx-$(1).dll: $$(BUILDDIR)/monodx-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/monodx-$(1)/monodx.dll" "$$(IMAGEDIR)/lib/$(1)/monodx.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/monodx-$(1)/monodx.dll" "$$(IMAGEDIR)/lib/$(2)/monodx.dll"
 .PHONY: monodx-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 monodx.dll: monodx-$(1).dll
 .PHONY: monodx.dll
+endif
 
 ifeq (1,$(ENABLE_MONODX))
-imagedir-targets: monodx-$(1).dll
+imagedir-targets-$(1): monodx-$(1).dll
 endif
 
 clean-build-monodx-$(1):

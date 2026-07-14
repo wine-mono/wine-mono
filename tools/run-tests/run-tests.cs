@@ -238,10 +238,7 @@ class RunTests
 	string get_nunit_lite_console(string arch)
 	{
 		string basename;
-		if (arch == "x86")
-			basename = "nunit-lite-console32.exe";
-		else
-			basename = "nunit-lite-console.exe";
+		basename = $"nunit-lite-console-{arch}.exe";
 
 		return Path.Combine(BasePath, "tests-clr", basename);
 	}
@@ -761,12 +758,31 @@ class RunTests
 					read_stringlist(Path.Combine(BasePath, "windows-admin.txt"), fail_list);
 				read_testlist(Path.Combine(BasePath, "skip-windows.txt"), skip_list);
 			}
+			
+			if (arch_list.Count == 0) {
+				switch (RuntimeInformation.OSArchitecture) {
+				case Architecture.X86:
+					arch_list.Add("x86");
+					break;
+				case Architecture.X64:
+					arch_list.Add("x86");
+					arch_list.Add("x86_64");
+					break;
+				case Architecture.Arm64:
+					arch_list.Add("x86");
+					arch_list.Add("x86_64");
+					arch_list.Add("arm64");
+					break;
+				}
+			}
 		}
 
 		run_mono_test_dir(Path.Combine(BasePath, "tests-x86"), "x86");
 		run_mono_test_dir(Path.Combine(BasePath, "tests-x86_64"), "x86_64");
+		run_mono_test_dir(Path.Combine(BasePath, "tests-arm64"), "arm64");
 		run_clr_test_dir(Path.Combine(BasePath, "tests-clr"), "x86");
 		run_clr_test_dir(Path.Combine(BasePath, "tests-clr"), "x86_64");
+		run_clr_test_dir(Path.Combine(BasePath, "tests-clr"), "arm64");
 
 		result = failing_tests.Count;
 

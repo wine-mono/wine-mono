@@ -11,16 +11,18 @@ $$(BUILDDIR)/SDL3-$(1)/Makefile: $$(SRCDIR)/SDL3/CMakeLists.txt $$(SRCDIR)/sdl3.
 $$(BUILDDIR)/SDL3-$(1)/.built: $$(BUILDDIR)/SDL3-$(1)/Makefile $$(SDL3_SRCS) $$(MINGW_DEPS)
 	+WINEPREFIX=/dev/null $$(MINGW_ENV) $$(MAKE) -C $$(BUILDDIR)/SDL3-$(1)
 	touch "$$@"
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/SDL3-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/SDL3-$(1)/.built
 
 SDL3-$(1).dll: $$(BUILDDIR)/SDL3-$(1)/.built
 	mkdir -p "$$(IMAGEDIR)/lib"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/SDL3-$(1)/SDL3.dll" "$$(IMAGEDIR)/lib/$(1)/SDL3.dll"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/SDL3-$(1)/SDL3.dll" "$$(IMAGEDIR)/lib/$(2)/SDL3.dll"
 .PHONY: SDL3-$(1).dll
-imagedir-targets: SDL3-$(1).dll
+imagedir-targets-$(1): SDL3-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 SDL3.dll: SDL3-$(1).dll
 .PHONY: SDL3.dll
+endif
 
 clean-build-SDL3-$(1):
 	rm -rf $$(BUILDDIR)/SDL3-$(1)

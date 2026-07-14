@@ -23,9 +23,6 @@ ENABLE_MONODX=1
 ENABLE_DEBUG_SYMBOLS=1
 PREFER_DWARF_SYMBOLS=0
 
-ENABLE_ARM64=0
-ENABLE_ARM=0
-
 -include user-config.make
 
 MSI_VERSION=11.2.99
@@ -34,7 +31,23 @@ MSI_VERSION=11.2.99
 SRCDIR_ABS=$(shell cd $(SRCDIR); pwd)
 BUILDDIR_ABS=$(shell cd $(BUILDDIR); pwd)
 IMAGEDIR_ABS=$(shell cd $(IMAGEDIR); pwd)
+IMAGEDIR_arm64_ABS=$(shell cd $(IMAGEDIR_arm64); pwd)
+IMAGEDIR_x86_64_ABS=$(shell cd $(IMAGEDIR_x86_64); pwd)
 OUTDIR_ABS=$(shell cd $(OUTDIR); pwd)
+
+ARCH:=$(shell uname -m)
+ifeq ($(ARCH),aarch64)
+IMAGEDIR_arm64:=$(IMAGEDIR)
+IMAGEDIR_x86_64:=$(SRCDIR)/image-x86_64
+NATIVE_arm64=1
+NATIVE_arm64ec=1
+NATIVE_x86=1
+else
+IMAGEDIR_arm64:=$(SRCDIR)/image-arm64
+IMAGEDIR_x86_64:=$(IMAGEDIR)
+NATIVE_x86_64=1
+NATIVE_x86=1
+endif
 
 MONO_BIN_PATH=$(BUILDDIR_ABS)/mono-unix-install/bin
 MONO_LD_PATH=$(BUILDDIR_ABS)/mono-unix-install/lib
@@ -53,8 +66,8 @@ RM_F=rm -f
 # $(error '$(WINE)' command not found. Please install wine or specify its location in the WINE variable)
 # endif
 
-all: image targz msi tests tests-zip dbgsym
-.PHONY: all clean imagedir-targets tests tests-zip dbgsym
+all: image-x86_64 image-arm64 bin-x86_64 bin-arm64 msi-x86_64 msi-arm64 tests tests-zip dbgsym-x86_64 dbgsym-arm64
+.PHONY: all clean imagedir-targets imagedir-targets-x86 imagedir-targets-x86_64 imagedir-targets-arm imagedir-targets-arm64 tests tests-zip dbgsym
 
 define HELP_TEXT =
 The following targets are defined:
@@ -79,8 +92,8 @@ help:
 
 include llvm.make
 
-dev-setup: build/removeuserinstalls-x86.exe
-	$(WINE) build/removeuserinstalls-x86.exe -a
+dev-setup: build/x86/removeuserinstalls-x86.exe
+	$(WINE) build/x86/removeuserinstalls-x86.exe -a
 	$(WINE) msiexec /i '$(shell $(WINE) winepath -w $(IMAGEDIR)/support/winemono-support.msi)'
 	$(WINE) reg add 'HKCU\Software\Wine\Mono' /v RuntimePath /d '$(shell $(WINE) winepath -w $(IMAGEDIR))' /f
 
@@ -114,53 +127,62 @@ else
 INSTALL_PE_$(1)=do_install () { cp "$$$$1" "$$$$2"; $$(MINGW_ENV) $$(MINGW_$(1))-strip "$$$$2"; tools/mark-wine-builtin.sh "$$$$2"; }; do_install
 endif
 
+$$(BUILDDIR)/$(1)/.dir:
+	mkdir -p $$(@D)
+	touch $$@
+clean-build-$(1):
+	rm -f $$(BUILDDIR)/$(1)/.dir
+	-rmdir $$(BUILDDIR)/$(1)
+.PHONY: clean-build-$(1)
+clean-build: clean-build-$(1)
+
 # installinf.exe
-$$(BUILDDIR)/installinf-$(1).exe: $$(SRCDIR)/tools/installinf/installinf.c $$(MINGW_DEPS)
+$$(BUILDDIR)/$(1)/installinf-$(2).exe: $$(SRCDIR)/tools/installinf/installinf.c $$(MINGW_DEPS) $$(BUILDDIR)/$(1)/.dir
 	$$(MINGW_ENV) $$(MINGW_$(1))-gcc $$< -lsetupapi -municode -mwindows -o $$@ $$(PDB_CFLAGS_$(1)) $$(PDB_LDFLAGS_$(1))
 
-support-installinf-$(1): $$(BUILDDIR)/installinf-$(1).exe
+support-installinf-$(1): $$(BUILDDIR)/$(1)/installinf-$(2).exe
 	mkdir -p $$(IMAGEDIR)/support/
-	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/installinf-$(1).exe $$(IMAGEDIR)/support/installinf-$(1).exe
+	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/$(1)/installinf-$(2).exe $$(IMAGEDIR)/support/installinf-$(2).exe
 .PHONY: support-installinf-$(1)
-imagedir-targets: support-installinf-$(1)
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/installinf-$(1).exe
+imagedir-targets-$(1): support-installinf-$(1)
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/$(1)/installinf-$(2).exe
 
 clean-build-installinf-$(1):
-	rm -rf $$(BUILDDIR)/installinf-$(1).exe
+	rm -rf $$(BUILDDIR)/$(1)/installinf-$(2).exe
 .PHONY: clean-build-installinf-$(1)
-clean-build: clean-build-installinf-$(1)
+clean-build-$(1): clean-build-installinf-$(1)
 
 # removeuserinstalls.exe
-$$(BUILDDIR)/removeuserinstalls-$(1).exe: $$(SRCDIR)/tools/removeuserinstalls/removeuserinstalls.c $$(MINGW_DEPS)
+$$(BUILDDIR)/$(1)/removeuserinstalls-$(2).exe: $$(SRCDIR)/tools/removeuserinstalls/removeuserinstalls.c $$(MINGW_DEPS) $$(BUILDDIR)/$(1)/.dir
 	$$(MINGW_ENV) $$(MINGW_$(1))-gcc $$< -lmsi -lole32 -municode -mwindows -o $$@ $$(PDB_CFLAGS_$(1)) $$(PDB_LDFLAGS_$(1))
 
-support-removeuserinstalls-$(1): $$(BUILDDIR)/removeuserinstalls-$(1).exe
+support-removeuserinstalls-$(1): $$(BUILDDIR)/$(1)/removeuserinstalls-$(2).exe
 	mkdir -p $$(IMAGEDIR)/support/
-	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/removeuserinstalls-$(1).exe $$(IMAGEDIR)/support/removeuserinstalls-$(1).exe
+	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/$(1)/removeuserinstalls-$(2).exe $$(IMAGEDIR)/support/removeuserinstalls-$(2).exe
 .PHONY: support-removeuserinstalls-$(1)
-imagedir-targets: support-removeuserinstalls-$(1)
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/removeuserinstalls-$(1).exe
+imagedir-targets-$(1): support-removeuserinstalls-$(1)
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/$(1)/removeuserinstalls-$(2).exe
 
 clean-build-removeuserinstalls-$(1):
-	rm -rf $$(BUILDDIR)/removeuserinstalls-$(1).exe
-.PHONY: clean-build-removeuserinstalls-$(1)
-clean-build: clean-build-removeuserinstalls-$(1)
+	rm -rf $$(BUILDDIR)/$(1)/removeuserinstalls-$(2).exe
+.PHONY: clean-build-removeuserinstalls-$(2)
+clean-build-$(1): clean-build-removeuserinstalls-$(1)
 
 # createlinks.exe
-$$(BUILDDIR)/createlinks-$(1).dll: $$(SRCDIR)/tools/createlinks/createlinks.c $$(MINGW_DEPS)
+$$(BUILDDIR)/$(1)/createlinks-$(2).dll: $$(SRCDIR)/tools/createlinks/createlinks.c $$(MINGW_DEPS) $$(BUILDDIR)/$(1)/.dir
 	$$(MINGW_ENV) $$(MINGW_$(1))-gcc $$< -lmsi -shared -municode -mwindows -L$$(BUILDDIR) -o $$@ $$(PDB_CFLAGS_$(1)) $$(PDB_LDFLAGS_$(1))
 
-support-createlinks-$(1): $$(BUILDDIR)/createlinks-$(1).dll
+support-createlinks-$(1): $$(BUILDDIR)/$(1)/createlinks-$(2).dll
 	mkdir -p $$(IMAGEDIR)/support/
-	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/createlinks-$(1).dll $$(IMAGEDIR)/support/createlinks-$(1).dll
+	$$(INSTALL_PE_$(1)) $$(BUILDDIR)/$(1)/createlinks-$(2).dll $$(IMAGEDIR)/support/createlinks-$(2).dll
 .PHONY: support-createlinks-$(1)
-imagedir-targets: support-createlinks-$(1)
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/createlinks-$(1).dll
+imagedir-targets-$(1): support-createlinks-$(1)
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/$(1)/createlinks-$(2).dll
 
 clean-build-createlinks-$(1):
-	rm -rf $$(BUILDDIR)/createlinks-$(1).dll
+	rm -rf $$(BUILDDIR)/$(1)/createlinks-$(2).dll
 .PHONY: clean-build-createlinks-$(1)
-clean-build: clean-build-createlinks-$(1)
+clean-build-$(1): clean-build-createlinks-$(1)
 
 endef
 
@@ -180,26 +202,21 @@ include support.make
 
 include tools/tests/tests.make
 
-$(eval $(call MINGW_TEMPLATE,x86))
-$(eval $(call MINGW_TEMPLATE,x86_64))
-
-ifeq (1,$(ENABLE_ARM))
-$(eval $(call MINGW_TEMPLATE,arm))
-endif
-
-ifeq (1,$(ENABLE_ARM64))
-$(eval $(call MINGW_TEMPLATE,arm64))
-endif
+$(eval $(call MINGW_TEMPLATE,x86,x86))
+$(eval $(call MINGW_TEMPLATE,x86_64,x86_64))
+$(eval $(call MINGW_TEMPLATE,arm,arm))
+$(eval $(call MINGW_TEMPLATE,arm64,arm64))
+$(eval $(call MINGW_TEMPLATE,arm64ec,x86_64))
 
 include podman.make
 
-$(BUILDDIR)/fixupclr.exe: $(SRCDIR)/tools/fixupclr/fixupclr.c $(MINGW_DEPS)
-	$(MINGW_ENV) $(MINGW_x86_64)-gcc -municode -Wall $< -o $@ $(PDB_CFLAGS_x86_64) $(PDB_LDFLAGS_x86_64)
+$(BUILDDIR)/fixuparch.exe: $(SRCDIR)/tools/fixuparch.cs $(BUILDDIR)/mono-unix/.installed
+	$(MONO_ENV) csc $< -out:$@ -r:$(BUILDDIR)/mono-unix-install/lib/mono/gac/Mono.Cecil/0.11.1.0__0738eb9f132ed756/Mono.Cecil.dll
 
-clean-build-fixupclr:
-	rm -rf $(BUILDDIR)/fixupclr.exe
-.PHONY: clean-build-fixupclr
-clean-build: clean-build-fixupclr
+clean-build-fixuparch:
+	rm -rf $(BUILDDIR)/fixuparch.exe
+.PHONY: clean-build-fixuparch
+clean-build: clean-build-fixuparch
 
 $(BUILDDIR)/run-tests.exe: $(SRCDIR)/tools/run-tests/run-tests.cs $(BUILDDIR)/mono-unix/.installed
 	$(MONO_ENV) csc $(SRCDIR)/tools/run-tests/run-tests.cs -out:$(BUILDDIR)/run-tests.exe
@@ -275,71 +292,145 @@ support-fakedllsinf: $(SRCDIR)/dotnetfakedlls.inf
 imagedir-targets: support-fakedllsinf
 IMAGEDIR_BUILD_TARGETS += $(SRCDIR)/dotnetfakedlls.inf
 
-$(BUILDDIR)/.imagedir-built: $(IMAGEDIR_BUILD_TARGETS)
-	rm -rf "$(IMAGEDIR)"
-	+$(MAKE) imagedir-targets
+$(BUILDDIR)/.imagedir-built-arm64: $(IMAGEDIR_BUILD_TARGETS) $(IMAGEDIR_BUILD_TARGETS_x86) $(IMAGEDIR_BUILD_TARGETS_arm64) $(IMAGEDIR_BUILD_TARGETS_arm64ec)
+	rm -rf "$(IMAGEDIR_arm64)"
+	+$(MAKE) IMAGEDIR="$(IMAGEDIR_arm64)" imagedir-targets imagedir-targets-x86 imagedir-targets-arm64 imagedir-targets-arm64ec
 	touch "$@"
-clean-imagedir-built:
-	rm -f $(BUILDDIR)/.imagedir-built
-.PHONY: clean-imagedir-built
-clean-build: clean-imagedir-built
+clean-imagedir-built-arm64:
+	rm -f $(BUILDDIR)/.imagedir-built-arm64
+.PHONY: clean-imagedir-built-arm64
+clean-build: clean-imagedir-built-arm64
 
-image: $(BUILDDIR)/.imagedir-built
-.PHONY: image
+$(BUILDDIR)/.imagedir-built-x86_64: $(IMAGEDIR_BUILD_TARGETS) $(IMAGEDIR_BUILD_TARGETS_x86) $(IMAGEDIR_BUILD_TARGETS_x86_64)
+	rm -rf "$(IMAGEDIR_x86_64)"
+	+$(MAKE) IMAGEDIR="$(IMAGEDIR_x86_64)" imagedir-targets imagedir-targets-x86 imagedir-targets-x86_64
+	touch "$@"
+clean-imagedir-built-x86_64:
+	rm -f $(BUILDDIR)/.imagedir-built-arm64
+.PHONY: clean-imagedir-built-arm64
+clean-build: clean-imagedir-built-arm64
 
-clean-image:
-	rm -rf "$(IMAGEDIR)"
-.PHONY: clean-image
-clean: clean-image
+ifeq ($(ARCH),aarch64)
+image: image-arm64
+else
+image: image-x86_64
+endif
+.PHONY: image image-arm64 image-x86_64
 
-$(BUILDDIR)/.runtimemsitables-built: $(BUILDDIR)/.imagedir-built $(SRCDIR)/msi-tables/runtime/*.idt $(SRCDIR)/tools/build-msi-tables.sh $(BUILDDIR)/genfilehashes.exe $(SRCDIR)/GNUmakefile
-	$(MONO_ENV) WHICHMSI=runtime MSI_VERSION=$(MSI_VERSION) CABFILENAME=$(BUILDDIR_ABS)/image.cab TABLEDIR=$(BUILDDIR_ABS)/msi-tables/runtime TABLESRCDIR=$(SRCDIR_ABS)/msi-tables/runtime IMAGEDIR=$(IMAGEDIR_ABS) ROOTDIR=MONODIR CABINET='#image.cab' GENFILEHASHES=$(BUILDDIR_ABS)/genfilehashes.exe WINE=$(WINE) sh $(SRCDIR)/tools/build-msi-tables.sh
+image-arm64: $(BUILDDIR)/.imagedir-built-arm64
+image-x86_64: $(BUILDDIR)/.imagedir-built-x86_64
+
+clean-image-arm64:
+	rm -rf "$(IMAGEDIR_arm64)"
+.PHONY: clean-image-arm64
+clean: clean-image-arm64
+
+clean-image-x86_64:
+	rm -rf "$(IMAGEDIR_x86_64)"
+.PHONY: clean-image-x86_64
+clean: clean-image-x86_64
+
+$(BUILDDIR)/.runtimemsitables-built-arm64: $(BUILDDIR)/.imagedir-built-arm64 $(SRCDIR)/msi-tables/runtime/*.idt $(SRCDIR)/tools/build-msi-tables.sh $(BUILDDIR)/genfilehashes.exe $(SRCDIR)/GNUmakefile
+	$(MONO_ENV) WHICHMSI=runtime MSI_VERSION=$(MSI_VERSION) CABFILENAME=$(BUILDDIR_ABS)/image-arm64.cab TABLEDIR=$(BUILDDIR_ABS)/msi-tables/runtime-arm64 TABLESRCDIR=$(SRCDIR_ABS)/msi-tables/runtime IMAGEDIR=$(IMAGEDIR_arm64_ABS) ROOTDIR=MONODIR CABINET='#image.cab' GENFILEHASHES=$(BUILDDIR_ABS)/genfilehashes.exe WINE=$(WINE) sh $(SRCDIR)/tools/build-msi-tables.sh
 	touch $@
 
-$(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.msi: $(BUILDDIR)/.runtimemsitables-built
+$(BUILDDIR)/.runtimemsitables-built-x86_64: $(BUILDDIR)/.imagedir-built-x86_64 $(SRCDIR)/msi-tables/runtime/*.idt $(SRCDIR)/tools/build-msi-tables.sh $(BUILDDIR)/genfilehashes.exe $(SRCDIR)/GNUmakefile
+	$(MONO_ENV) WHICHMSI=runtime MSI_VERSION=$(MSI_VERSION) CABFILENAME=$(BUILDDIR_ABS)/image-x86_64.cab TABLEDIR=$(BUILDDIR_ABS)/msi-tables/runtime-x86_64 TABLESRCDIR=$(SRCDIR_ABS)/msi-tables/runtime IMAGEDIR=$(IMAGEDIR_x86_64_ABS) ROOTDIR=MONODIR CABINET='#image.cab' GENFILEHASHES=$(BUILDDIR_ABS)/genfilehashes.exe WINE=$(WINE) sh $(SRCDIR)/tools/build-msi-tables.sh
+	touch $@
+
+$(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.msi: $(BUILDDIR)/.runtimemsitables-built-x86_64
 	-mkdir -p $(OUTDIR)
 	rm -f "$@"
-	$(WINE) winemsibuilder -i '$(shell $(WINE) winepath -w $@)' $(BUILDDIR)/msi-tables/runtime/*.idt
-	$(WINE) winemsibuilder -a '$(shell $(WINE) winepath -w $@)' image.cab '$(shell $(WINE) winepath -w $(BUILDDIR)/image.cab)'
+	$(WINE) winemsibuilder -i '$(shell $(WINE) winepath -w $@)' $(BUILDDIR)/msi-tables/runtime-x86_64/*.idt
+	$(WINE) winemsibuilder -a '$(shell $(WINE) winepath -w $@)' image.cab '$(shell $(WINE) winepath -w $(BUILDDIR)/image-x86_64.cab)'
+
+$(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.msi: $(BUILDDIR)/.runtimemsitables-built-arm64
+	-mkdir -p $(OUTDIR)
+	rm -f "$@"
+	$(WINE) winemsibuilder -i '$(shell $(WINE) winepath -w $@)' $(BUILDDIR)/msi-tables/runtime-arm64/*.idt
+	$(WINE) winemsibuilder -a '$(shell $(WINE) winepath -w $@)' image.cab '$(shell $(WINE) winepath -w $(BUILDDIR)/image-arm64.cab)'
 
 clean-image-cab:
-	rm -f $(BUILDDIR)/image.cab
-	rm -f $(BUILDDIR)/.runtimemsitables-built
+	rm -f $(BUILDDIR)/image-arm64.cab
+	rm -f $(BUILDDIR)/image-x86_64.cab
+	rm -f $(BUILDDIR)/.runtimemsitables-built-arm64
+	rm -f $(BUILDDIR)/.runtimemsitables-built-x86_64
 .PHONY: clean-image-cab
 clean-build: clean-image-cab
 
-msi: $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.msi
+msi-x86_64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.msi
+.PHONY: msi-x86_64
+
+msi-arm64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.msi
+.PHONY: msi-arm64
+
+ifeq ($(ARCH),aarch64)
+msi: msi-arm64
+else
+msi: msi-x86_64
+endif
 .PHONY: msi
 
 clean-msi:
 	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.msi
+	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.msi
 .PHONY: clean-msi
 clean: clean-msi
 
-$(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built
+$(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built-x86_64
 	-mkdir -p $(OUTDIR)
-	cd $(IMAGEDIR)/..; tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_ABS)):wine-mono-$(MSI_VERSION):g' '--exclude=*.pdb' '--exclude=*.dbg' '--use-compress-program=$(COMPRESSOR)' $(notdir $(IMAGEDIR_ABS))
+	cd $(IMAGEDIR_x86_64)/..; tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_x86_64_ABS)):wine-mono-$(MSI_VERSION):g' '--exclude=*.pdb' '--exclude=*.dbg' '--use-compress-program=$(COMPRESSOR)' $(notdir $(IMAGEDIR_x86_64_ABS))
 
-bin: $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX)
+$(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built-arm64
+	-mkdir -p $(OUTDIR)
+	cd $(IMAGEDIR_arm64)/..; tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_arm64_ABS)):wine-mono-$(MSI_VERSION):g' '--exclude=*.pdb' '--exclude=*.dbg' '--use-compress-program=$(COMPRESSOR)' $(notdir $(IMAGEDIR_arm64_ABS))
+
+bin-arm64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.tar.$(COMPRESSED_SUFFIX)
+.PHONY: bin-arm64
+
+bin-x86_64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX)
+.PHONY: bin-x86_64
+
+ifeq ($(ARCH),aarch64)
+bin: bin-arm64
+else
+bin: bin-x86_64
+endif
 .PHONY: bin
 
 targz: bin
 .PHONY: targz
 
-clean-targz:
+clean-bin:
 	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX)
-.PHONY: clean-targz
-clean: clean-targz
+	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.tar.$(COMPRESSED_SUFFIX)
+.PHONY: clean-bin
+clean: clean-bin
 
-$(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built
+$(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym-arm64.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built-arm64
 	-mkdir -p $(OUTDIR)
-	cd $(IMAGEDIR)/..; find $(notdir $(IMAGEDIR_ABS)) -name '*.pdb' -o -name '*.dbg'|tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_ABS)):wine-mono-$(MSI_VERSION):g' -T - '--use-compress-program=$(COMPRESSOR)'
+	cd $(IMAGEDIR)/..; find $(notdir $(IMAGEDIR_arm64_ABS)) -name '*.pdb' -o -name '*.dbg'|tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-dbgsym-arm64.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_arm64_ABS)):wine-mono-$(MSI_VERSION):g' -T - '--use-compress-program=$(COMPRESSOR)'
 
-dbgsym: $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX)
+$(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym-x86.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built-x86_64
+	-mkdir -p $(OUTDIR)
+	cd $(IMAGEDIR)/..; find $(notdir $(IMAGEDIR_x86_64_ABS)) -name '*.pdb' -o -name '*.dbg'|tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-dbgsym-x86.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_x86_64_ABS)):wine-mono-$(MSI_VERSION):g' -T - '--use-compress-program=$(COMPRESSOR)'
+
+dbgsym-arm64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym-arm64.tar.$(COMPRESSED_SUFFIX)
+.PHONY: dbgsym-arm64
+
+dbgsym-x86_64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym-x86.tar.$(COMPRESSED_SUFFIX)
+.PHONY: dbgsym-x86_64
+
+ifeq ($(ARCH),aarch64)
+dbgsym: dbgsym-arm64
+else
+dbgsym: dbgsym-x86_64
+endif
 .PHONY: dbgsym
 
 clean-dbgsym:
-	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym.tar.$(COMPRESSED_SUFFIX)
+	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym-x86.tar.$(COMPRESSED_SUFFIX)
+	rm -f $(OUTDIR)/wine-mono-$(MSI_VERSION)-dbgsym-arm64.tar.$(COMPRESSED_SUFFIX)
 .PHONY: clean-dbgsym
 clean: clean-dbgsym
 

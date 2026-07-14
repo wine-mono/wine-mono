@@ -1,5 +1,13 @@
 WPF_SRCS=$(shell $(SRCDIR)/tools/git-updated-files $(SRCDIR)/wpf)
 
+# llvm-mingw doesn't have this on aarch64 for some reason
+$(BUILDDIR)/arm64-imports/libd3dx9.a: $(SRCDIR)/tools/d3dx9_43.spec $(MINGW_DEPS)
+	mkdir -p $(@D)
+	$(LLVM_MINGW_ENV) winebuild -w --implib -o "$@" --cc-cmd=aarch64-w64-mingw32-clang -b arm64ec-windows -marm64x --export $<
+clean-d3dx9-implib:
+	rm -f $(BUILDDIR)/arm64-imports/libd3dx9.a
+	-rmdir $(BUILDDIR)/arm64-imports
+
 define MINGW_TEMPLATE +=
 
 # wpfgfx
@@ -9,36 +17,43 @@ $$(BUILDDIR)/wpfgfx-$(1)/.built: $$(WPF_SRCS) $$(MINGW_DEPS)
 	touch "$$@"
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
 ifneq (1,$(ENABLE_DOTNET_CORE_WPFGFX))
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/wpfgfx-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/wpfgfx-$(1)/.built
 endif
 endif
 
-$$(BUILDDIR)/wpfgfx-netcore-$(1)/.built: $$(WPF_SRCS) $$(MINGW_DEPS)
+ifeq ($(1),$(findstring $(1),arm64 arm64ec))
+WPFGFX_EXTRADEPS_$(1)=$$(BUILDDIR)/arm64-imports/libd3dx9.a
+WPFGFX_LDFLAGS_$(1)=-L$$(BUILDDIR_ABS)/arm64-imports
+endif
+
+$$(BUILDDIR)/wpfgfx-netcore-$(1)/.built: $$(WPF_SRCS) $$(MINGW_DEPS) $$(WPFGFX_EXTRADEPS_$(1))
 	mkdir -p $$(@D)
-	+$$(LLVM_MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1))" $(MAKE) OBJDIR=$$(BUILDDIR_ABS)/wpfgfx-netcore-$(1) -C $$(SRCDIR_ABS)/wpf/src/Microsoft.DotNet.Wpf/src/WpfGfx "MINGW=$$(MINGW_$(1))" ARCH=$(1)
+	+$$(LLVM_MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1)) $$(WPFGFX_LDFLAGS_$(1))" $(MAKE) OBJDIR=$$(BUILDDIR_ABS)/wpfgfx-netcore-$(1) -C $$(SRCDIR_ABS)/wpf/src/Microsoft.DotNet.Wpf/src/WpfGfx "MINGW=$$(MINGW_$(1))" ARCH=$(1)
 	touch "$$@"
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
 ifeq (1,$(ENABLE_DOTNET_CORE_WPFGFX))
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/wpfgfx-netcore-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/wpfgfx-netcore-$(1)/.built
 endif
 endif
 
 ifeq (1,$(ENABLE_DOTNET_CORE_WPFGFX))
 wpfgfx-$(1).dll: $$(BUILDDIR)/wpfgfx-netcore-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/wpfgfx-netcore-$(1)/wpfgfx_cor3.dll" "$$(IMAGEDIR)/lib/$(1)/wpfgfx_cor3.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/wpfgfx-netcore-$(1)/wpfgfx_cor3.dll" "$$(IMAGEDIR)/lib/$(2)/wpfgfx_cor3.dll"
 else
 wpfgfx-$(1).dll: $$(BUILDDIR)/wpfgfx-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/wpfgfx-$(1)/wpfgfx_cor3.dll" "$$(IMAGEDIR)/lib/$(1)/wpfgfx_cor3.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/wpfgfx-$(1)/wpfgfx_cor3.dll" "$$(IMAGEDIR)/lib/$(2)/wpfgfx_cor3.dll"
 endif
 .PHONY: wpfgfx-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 wpfgfx_cor3.dll wpfgfx.dll: wpfgfx-$(1).dll
 .PHONY: wpfgfx_cor3.dll wpfgfx.dll
+endif
 
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
-imagedir-targets: wpfgfx-$(1).dll
+imagedir-targets-$(1): wpfgfx-$(1).dll
 endif
 
 clean-build-wpfgfx-$(1):
@@ -57,19 +72,21 @@ $$(BUILDDIR)/PresentationNative-$(1)/.built: $$(WPF_SRCS) $$(MINGW_DEPS)
 	+$$(MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1))" $(MAKE) -C $$(@D) -f $$(SRCDIR_ABS)/wpf/PresentationNative/Makefile ARCH=$(1) SRCDIR="$$(SRCDIR_ABS)/wpf/PresentationNative" "MINGW=$$(MINGW_$(1))"
 	touch "$$@"
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/PresentationNative-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/PresentationNative-$(1)/.built
 endif
 
 PresentationNative-$(1).dll: $$(BUILDDIR)/PresentationNative-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/PresentationNative-$(1)/PresentationNative_cor3.dll" "$$(IMAGEDIR)/lib/$(1)/PresentationNative_cor3.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/PresentationNative-$(1)/PresentationNative_cor3.dll" "$$(IMAGEDIR)/lib/$(2)/PresentationNative_cor3.dll"
 .PHONY: PresentationNative-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 PresentationNative_cor3.dll PresentationNative.dll: PresentationNative-$(1).dll
 .PHONY: PresentationNative_cor3.dll PresentationNative.dll
+endif
 
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
-imagedir-targets: PresentationNative-$(1).dll
+imagedir-targets-$(1): PresentationNative-$(1).dll
 endif
 
 clean-build-PresentationNative-$(1):
@@ -83,19 +100,21 @@ $$(BUILDDIR)/wmwpfdwhelper-$(1)/.built: $$(WPF_SRCS) $$(MINGW_DEPS)
 	+$$(MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1))" $(MAKE) -C $$(@D) -f $$(SRCDIR_ABS)/wpf/wmwpfdwhelper/Makefile ARCH=$(1) SRCDIR="$$(SRCDIR_ABS)/wpf/wmwpfdwhelper" "MINGW=$$(MINGW_$(1))"
 	touch "$$@"
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
-IMAGEDIR_BUILD_TARGETS += $$(BUILDDIR)/wmwpfdwhelper-$(1)/.built
+IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/wmwpfdwhelper-$(1)/.built
 endif
 
 wmwpfdwhelper-$(1).dll: $$(BUILDDIR)/wmwpfdwhelper-$(1)/.built
-	mkdir -p "$$(IMAGEDIR)/lib/$(1)"
-	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/wmwpfdwhelper-$(1)/wmwpfdwhelper.dll" "$$(IMAGEDIR)/lib/$(1)/wmwpfdwhelper.dll"
+	mkdir -p "$$(IMAGEDIR)/lib/$(2)"
+	$$(INSTALL_PE_$(1)) "$$(BUILDDIR)/wmwpfdwhelper-$(1)/wmwpfdwhelper.dll" "$$(IMAGEDIR)/lib/$(2)/wmwpfdwhelper.dll"
 .PHONY: wmwpfdwhelper-$(1).dll
 
+ifeq ($$(NATIVE_$(1)),1)
 wmwpfdwhelper.dll: wmwpfdwhelper-$(1).dll
 .PHONY: wmwpfdwhelper.dll
+endif
 
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
-imagedir-targets: wmwpfdwhelper-$(1).dll
+imagedir-targets-$(1): wmwpfdwhelper-$(1).dll
 endif
 
 clean-build-wmwpfdwhelper-$(1):

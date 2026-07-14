@@ -120,14 +120,16 @@ tools-tests-all: tools/tests/System.Windows.Forms.dll
 tools-tests-all: $(TEST_CLR_EXE_TARGETS) $(TEST_INSTALL_FILES) tools/tests/tests.make
 .PHONY: tools-tests-all
 
-tools-tests-install: tools-tests-all $(BUILDDIR)/fixupclr.exe
+tools-tests-install: tools-tests-all $(BUILDDIR)/fixuparch.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-x86
 	mkdir -p $(TESTS_OUTDIR)/tests-x86_64
 	for i in $(TEST_CLR_EXE_TARGETS); do \
 		cp $$i $(TESTS_OUTDIR)/tests-x86 ; \
-		$(WINE) $(BUILDDIR)/fixupclr.exe x86 $(TESTS_OUTDIR)/tests-x86/$$(basename $$i) ; \
+		$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $(TESTS_OUTDIR)/tests-x86/$$(basename $$i) ; \
 		cp $$i $(TESTS_OUTDIR)/tests-x86_64 ; \
-		$(WINE) $(BUILDDIR)/fixupclr.exe x86_64 $(TESTS_OUTDIR)/tests-x86_64/$$(basename $$i) ; \
+		$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86_64 $(TESTS_OUTDIR)/tests-x86_64/$$(basename $$i) ; \
+		cp $$i $(TESTS_OUTDIR)/tests-arm64 ; \
+		$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe arm64 $(TESTS_OUTDIR)/tests-arm64/$$(basename $$i) ; \
 	done
 	for i in $(TEST_INSTALL_FILES); do \
 		cp $$i $(TESTS_OUTDIR)/tests-x86 ; \
@@ -148,21 +150,21 @@ tools-tests-install: tools-tests-all $(BUILDDIR)/fixupclr.exe
 		cp $(SRCDIR)/vstests/x64/Release/$$i $(TESTS_OUTDIR)/tests-x86_64/vstests ; \
 	done
 	cp tools/tests/mixedmode-managedcaller.exe tools/tests/mixedmode-dllimport.dll $(TESTS_OUTDIR)/tests-x86/vstests
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86 $(TESTS_OUTDIR)/tests-x86/vstests/mixedmode-managedcaller.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $(TESTS_OUTDIR)/tests-x86/vstests/mixedmode-managedcaller.exe
 	$(INSTALL_PE_x86) $(BUILDDIR)/call-mixedmode-x86.exe $(TESTS_OUTDIR)/tests-x86/vstests/call-mixedmode.exe
 	$(INSTALL_PE_x86) $(BUILDDIR)/call-method-x86.exe $(TESTS_OUTDIR)/tests-x86/vstests/call-method.exe
 	cp tools/tests/mixedmode-managedcaller.exe tools/tests/mixedmode-dllimport.dll $(TESTS_OUTDIR)/tests-x86_64/vstests
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86_64 $(TESTS_OUTDIR)/tests-x86_64/vstests/mixedmode-managedcaller.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86_64 $(TESTS_OUTDIR)/tests-x86_64/vstests/mixedmode-managedcaller.exe
 	$(INSTALL_PE_x86_64) $(BUILDDIR)/call-mixedmode-x86_64.exe $(TESTS_OUTDIR)/tests-x86_64/vstests/call-mixedmode.exe
 	$(INSTALL_PE_x86_64) $(BUILDDIR)/call-method-x86_64.exe $(TESTS_OUTDIR)/tests-x86_64/vstests/call-method.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-x86/vstests-native
 	cp tools/tests/mixedmode-managedcaller.exe vstests/Win32/Release/nativelibrary.dll $(TESTS_OUTDIR)/tests-x86/vstests-native
 	cp tools/tests/mixedmode-managedcaller-nativedir.exe.config $(TESTS_OUTDIR)/tests-x86/vstests-native/mixedmode-managedcaller.exe.config
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86 $(TESTS_OUTDIR)/tests-x86/vstests-native/mixedmode-managedcaller.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $(TESTS_OUTDIR)/tests-x86/vstests-native/mixedmode-managedcaller.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-x86_64/vstests-native
 	cp tools/tests/mixedmode-managedcaller.exe vstests/x64/Release/nativelibrary.dll $(TESTS_OUTDIR)/tests-x86_64/vstests-native
 	cp tools/tests/mixedmode-managedcaller-nativedir.exe.config $(TESTS_OUTDIR)/tests-x86_64/vstests-native/mixedmode-managedcaller.exe.config
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86_64 $(TESTS_OUTDIR)/tests-x86_64/vstests-native/mixedmode-managedcaller.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86_64 $(TESTS_OUTDIR)/tests-x86_64/vstests-native/mixedmode-managedcaller.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-x86/vstests-native/vstests-mixed
 	cp vstests/Win32/Release/mixedmodelibrary.dll $(TESTS_OUTDIR)/tests-x86/vstests-native/vstests-mixed
 	mkdir -p $(TESTS_OUTDIR)/tests-x86_64/vstests-native/vstests-mixed
@@ -186,10 +188,14 @@ clean: clean-tools-tests
 
 define MINGW_TEMPLATE +=
 
+ifeq ($(1),$$(findstring $(1),x86 x86_64))
 $$(BUILDDIR)/call-mixedmode-$(1).exe: $$(SRCDIR)/tools/tests/call-mixedmode.c $$(MINGW_DEPS)
 	$$(LLVM_MINGW_ENV) $$(MINGW_$(1))-gcc $$(filter %.lib,$$^) $$< -o $$@
 
-tools-tests-all: $$(BUILDDIR)/call-mixedmode-$(1).exe $$(BUILDDIR)/call-method-$(1).exe
+tools-tests-all: $$(BUILDDIR)/call-mixedmode-$(1).exe
+endif
+
+tools-tests-all: $$(BUILDDIR)/call-method-$(1).exe
 
 clean-call-mixedmode-$(1):
 	rm -f $$(BUILDDIR)/call-mixedmode-$(1).exe
@@ -232,12 +238,15 @@ $(BUILDDIR)/call-mixedmode-x86.exe: $(SRCDIR)/vstests/Win32/Release/mixedmodelib
 
 $(BUILDDIR)/call-mixedmode-x86_64.exe: $(SRCDIR)/vstests/x64/Release/mixedmodelibrary.lib
 
-tools-tests-csharp: $(BUILDDIR)/mono-unix/.installed $(BUILDDIR)/fixupclr.exe
+tools-tests-csharp: $(BUILDDIR)/mono-unix/.installed $(BUILDDIR)/fixuparch.exe
 	mkdir -p $(TESTS_OUTDIR)/csharp
 	cp $(BUILDDIR)/mono-unix-install/lib/mono/4.5/csharp.exe $(TESTS_OUTDIR)/csharp
-	cp $(TESTS_OUTDIR)/csharp/csharp.exe $(TESTS_OUTDIR)/csharp/csharp32.exe
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86 $(TESTS_OUTDIR)/csharp/csharp32.exe
-	$(WINE) $(BUILDDIR)/fixupclr.exe x86_64 $(TESTS_OUTDIR)/csharp/csharp.exe
+	cp $(TESTS_OUTDIR)/csharp/csharp.exe $(TESTS_OUTDIR)/csharp/csharp-x86.exe
+	cp $(TESTS_OUTDIR)/csharp/csharp.exe $(TESTS_OUTDIR)/csharp/csharp-x86_64.exe
+	cp $(TESTS_OUTDIR)/csharp/csharp.exe $(TESTS_OUTDIR)/csharp/csharp-arm64.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $(TESTS_OUTDIR)/csharp/csharp-x86.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86_64 $(TESTS_OUTDIR)/csharp/csharp-x86_64.exe
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe arm64 $(TESTS_OUTDIR)/csharp/csharp-arm64.exe
 
 .PHONY: tools-tests-csharp
 
