@@ -38457,6 +38457,10 @@ MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:HelloWithParameter
 MonoTests.Microsoft.Build.Tasks.CodeTaskFactoryTest:Reference
 MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:Warp_NoPoints
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment
+arraypadding
+MonoTests.System.Windows.Forms.EventArgsTest:TestToolStripItemTextRenderEventArgs
+MonoTests.System.Windows.Forms.ToolStripItemTests:ProtectedProperties
+FileSystemTests2:FileOpenTestMultiLine
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit

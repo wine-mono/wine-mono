@@ -458,7 +458,6 @@ MonoTests.System.Windows.Forms.DateTimePickerTest:MaxDate_Invalid
 MonoTests.System.Windows.Forms.DateTimePickerTest:MinDate_Invalid
 MonoTests.System.Windows.Forms.Design.ControlBindingsConverterTest:TestProperties
 MonoTests.System.Windows.Forms.Design.ControlBindingsConverterTest
-MonoTests.System.Windows.Forms.EventArgsTest:TestToolStripItemTextRenderEventArgs
 MonoTests.System.Windows.Forms.FocusTest:ActiveControl_NoChild
 MonoTests.System.Windows.Forms.FormTest:FormPropertyTest
 MonoTests.System.Windows.Forms.Layout.TableLayoutSettingsTypeConverterTest:ConvertTo_CurrentCultureHasComma
@@ -503,7 +502,6 @@ x86.MonoTests.System.Windows.Forms.TextBoxTest
 x86.MonoTests.System.Windows.Forms.TextBoxTest
 MonoTests.System.Windows.Forms.ToolStripDropDownTests:Constructor
 MonoTests.System.Windows.Forms.ToolStripItemCollectionTests:Remove_Owned
-MonoTests.System.Windows.Forms.ToolStripItemTests:ProtectedProperties
 MonoTests.System.Windows.Forms.ToolStripLabelTests:Constructor
 MonoTests.System.Windows.Forms.ToolStripProgressBarTests:Constructor
 MonoTests.System.Windows.Forms.TreeNodeCollectionTest:IList_Indexer_Set
@@ -630,7 +628,6 @@ x86.MonoTests.System.Net.Http.HttpClientTest:Send_Content_Put
 x86.MonoTests.System.Net.Http.HttpClientTest:Send_Content_Put_CustomStream
 MonoTests.System.Net.Http.HttpClientTest:Send_Transfer_Encoding_Chunked
 webbrowsertest
-arraypadding
 MonoTests.System.IO.Pipes.PipeSecurityTest:NamedPipePermissionsActuallyWorkAsync
 MonoTests.System.Drawing.GDIPlusTest:CreatePen
 MonoTests.System.Drawing.GDIPlusTest:CreateRegionRgnData

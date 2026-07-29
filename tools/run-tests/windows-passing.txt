@@ -39438,6 +39438,7 @@ MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_UpdateMeta
 MonoTests.Microsoft.Build.Evaluation.TargetTest:PropertyGroupInsideTarget_Condition
 MonoTests.System.NumberFormatterTest:Test14026
 MonoTests.System.IO.MemoryMappedFiles.MemoryMappedFileTest:CreateNew_Null
+FileSystemTests2:FileOpenTestMultiLine
 # unreliable:
 MonoTests.System.Threading.Tasks.TaskTests:DoubleWaitTest
 MonoTests.System.Drawing.GDIPlusTest:CreateFont
