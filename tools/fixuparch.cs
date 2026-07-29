@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-class FixupConstructors
+class FixupArch
 {
 	public static void Main (string[] args)
 	{
