@@ -123,6 +123,7 @@ tools-tests-all: $(TEST_CLR_EXE_TARGETS) $(TEST_INSTALL_FILES) tools/tests/tests
 tools-tests-install: tools-tests-all $(BUILDDIR)/fixuparch.exe
 	mkdir -p $(TESTS_OUTDIR)/tests-x86
 	mkdir -p $(TESTS_OUTDIR)/tests-x86_64
+	mkdir -p $(TESTS_OUTDIR)/tests-arm64
 	for i in $(TEST_CLR_EXE_TARGETS); do \
 		cp $$i $(TESTS_OUTDIR)/tests-x86 ; \
 		$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $(TESTS_OUTDIR)/tests-x86/$$(basename $$i) ; \
@@ -134,6 +135,7 @@ tools-tests-install: tools-tests-all $(BUILDDIR)/fixuparch.exe
 	for i in $(TEST_INSTALL_FILES); do \
 		cp $$i $(TESTS_OUTDIR)/tests-x86 ; \
 		cp $$i $(TESTS_OUTDIR)/tests-x86_64 ; \
+		cp $$i $(TESTS_OUTDIR)/tests-arm64 ; \
 	done
 	mkdir -p $(TESTS_OUTDIR)/tests-x86/lib1
 	cp tools/tests/testcslib1.dll $(TESTS_OUTDIR)/tests-x86/lib1

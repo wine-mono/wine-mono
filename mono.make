@@ -134,7 +134,7 @@ clean-tests: clean-build-tests-$(1)
 
 tests-runtime-$(1): $$(BUILDDIR)/mono-unix/mono/mini/.built-tests $$(SYSCONFIG_TESTDIR)/.built-tests $$(BUILDDIR)/mono-unix/mono/tests/.built $$(BUILDDIR)/fixuparch.exe
 	mkdir -p $$(BUILDDIR)/tests-$(1)
-	cp $$(BUILDDIR)/mono-unix/mono/tests/*.exe $$(BUILDDIR)/mono-unix/mono/tests/*.dll $$(BUILDDIR)/mono-unix/mono/mini/*.exe $$(SYSCONFIG_TESTDIR)/*.exe $$(SYSCONFIG_TESTDIR)/*.dll $$(SYSCONFIG_TESTDIR)/*.exe.config $$(SYSCONFIG_TESTDIR)/*.exe.config2 $$(SYSCONFIG_TESTDIR)/*.exe.expected $$(BUILDDIR)/tests-$(1)/
+	cp $$(BUILDDIR)/mono-unix/mono/tests/*.exe $$(BUILDDIR)/mono-unix/mono/tests/*.dll $$(BUILDDIR)/mono-unix/mono/mini/*.exe $$(BUILDDIR)/mono-unix/mono/mini/MemoryIntrinsics.dll $$(BUILDDIR)/mono-unix/mono/mini/generics-variant-types.dll $$(SYSCONFIG_TESTDIR)/*.exe $$(SYSCONFIG_TESTDIR)/*.dll $$(SYSCONFIG_TESTDIR)/*.exe.config $$(SYSCONFIG_TESTDIR)/*.exe.config2 $$(SYSCONFIG_TESTDIR)/*.exe.expected $$(BUILDDIR)/tests-$(1)/
 	rm $$(BUILDDIR)/tests-$(1)/invalid-token.exe $$(BUILDDIR)/tests-$(1)/modules.exe # Mono.Cecil can't round-trip these
 	mkdir -p $$(BUILDDIR)/tests-$(1)/assembly-load-dir1
 	# exclude libsimplename.dll because it's undefined which one we'll get on a case-insensitive filesystem
@@ -147,7 +147,8 @@ ifeq ($(1),x86)
 endif
 	cd $$(BUILDDIR)/tests-$(1); $$(MONO_ENV) mono $$(BUILDDIR_ABS)/fixuparch.exe $(1) *.exe
 	mkdir -p $$(TESTS_OUTDIR)/tests-$(1)
-	$$(CP_R) $$(BUILDDIR)/tests-$(1) $$(TESTS_OUTDIR)/tests-$(1)
+	$$(CP_R) $$(BUILDDIR)/tests-$(1) $$(TESTS_OUTDIR)
+.PHONY: tests-runtime-$(1)
 
 ifeq ($(1),$(filter x86 x86_64 arm64,$(1)))
 tests: tests-runtime-$(1)
