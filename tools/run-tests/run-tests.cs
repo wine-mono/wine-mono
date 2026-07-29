@@ -558,16 +558,16 @@ class RunTests
 			string assembly = str.Substring(0, index);
 			string test = str.Substring(index+1);
 			List <string> l;
-			if (!testlist.TryGetValue(assembly, out l) || l == null)
+			if (!testlist.TryGetValue(assembly, out l))
 			{
 				l = testlist[assembly] = new List<string>();
 			}
-			l.Add(test);
+			if (l != null)
+				l.Add(test);
 		}
 		else
 		{
-			if (!testlist.ContainsKey(str))
-				testlist.Add(str, null);
+			testlist[str] = null;
 		}
 	}
 
