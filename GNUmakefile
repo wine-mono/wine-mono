@@ -383,7 +383,7 @@ $(OUTDIR)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.im
 
 $(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.tar.$(COMPRESSED_SUFFIX): $(BUILDDIR)/.imagedir-built-arm64
 	-mkdir -p $(OUTDIR)
-	cd $(IMAGEDIR_arm64)/..; tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-x86.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_arm64_ABS)):wine-mono-$(MSI_VERSION):g' '--exclude=*.pdb' '--exclude=*.dbg' '--use-compress-program=$(COMPRESSOR)' $(notdir $(IMAGEDIR_arm64_ABS))
+	cd $(IMAGEDIR_arm64)/..; tar cf $(OUTDIR_ABS)/wine-mono-$(MSI_VERSION)-arm64.tar.$(COMPRESSED_SUFFIX) --transform 's:^$(notdir $(IMAGEDIR_arm64_ABS)):wine-mono-$(MSI_VERSION):g' '--exclude=*.pdb' '--exclude=*.dbg' '--use-compress-program=$(COMPRESSOR)' $(notdir $(IMAGEDIR_arm64_ABS))
 
 bin-arm64: $(OUTDIR)/wine-mono-$(MSI_VERSION)-arm64.tar.$(COMPRESSED_SUFFIX)
 .PHONY: bin-arm64
