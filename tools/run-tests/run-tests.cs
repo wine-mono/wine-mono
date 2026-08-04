@@ -641,6 +641,9 @@ class RunTests
 	[DllImport ("ntdll", CallingConvention=CallingConvention.Cdecl)]
 	extern static void wine_get_host_version(out string sysname, out string release);
 
+	[DllImport ("kernel32", CallingConvention=CallingConvention.StdCall)]
+	extern static bool IsWow64Process2(IntPtr handle, out short process_machine, out short native_machine);
+
 	int process_arguments(string[] arguments)
 	{
 		foreach (string argument in arguments)
@@ -681,6 +684,34 @@ class RunTests
 			}
 		}
 		return 0;
+	}
+
+	Architecture OSArchitecture()
+	{
+		try
+		{
+			if (IsWow64Process2(new IntPtr((long)-1), out short _process, out short native))
+			{
+				switch (unchecked((ushort)native))
+				{
+				case 0x14c:
+					return Architecture.X86;
+				case 0x1c0:
+				case 0x1c2:
+				case 0x1c4:
+					return Architecture.Arm;
+				case 0x8664:
+					return Architecture.X64;
+				case 0xAA64:
+					return Architecture.Arm64;
+				}
+			}
+		}
+		catch (EntryPointNotFoundException)
+		{
+		}
+
+		return RuntimeInformation.OSArchitecture;
 	}
 
 	int main(string[] arguments)
@@ -760,7 +791,7 @@ class RunTests
 			}
 			
 			if (arch_list.Count == 0) {
-				switch (RuntimeInformation.OSArchitecture) {
+				switch (OSArchitecture()) {
 				case Architecture.X86:
 					arch_list.Add("x86");
 					break;
