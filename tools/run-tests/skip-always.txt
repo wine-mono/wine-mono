@@ -111,3 +111,4 @@ MonoTests.System.Net.ServicePointTest:All
 MonoTests.System.Net.HttpListener2Test:MultiResponses
 MonoTests.System.Windows.Forms.ClipboardTest:DataGetsCleared_Xamarin4959 # NRE on Windows because Process.Start fails without exception
 MonoTests.System.Windows.Forms.ClipboardTest:DataRemainsOnClipboard_Xamarin4959 # NRE on Windows because Process.Start fails without exception
+unaligned:test_0_cpobj
