@@ -1,3 +1,2 @@
 # Tests that seem to pass on Github CI and only on Github CI
-process-unref-race # Apparently they have an echo.exe in the path for some reason
 MonoTests.System.ServiceModel.ClientBaseTest:TestXmlAttributes

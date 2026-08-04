@@ -69,7 +69,6 @@ x86.pinvoke_ppcc
 x86.pinvoke_ppcd
 x86.pinvoke_ppcf
 x86.pinvoke_ppcs
-process-unref-race
 recursive-generics.2
 reference-loader:test_0_load_reference_asm_via_reference_parent
 reflection-enum
