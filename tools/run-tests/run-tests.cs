@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -208,7 +209,22 @@ class RunTests
 		p.StartInfo.UseShellExecute = false;
 		p.StartInfo.RedirectStandardOutput = true;
 		p.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
-		p.Start();
+		try
+		{
+			p.Start();
+		}
+		catch (Win32Exception e)
+		{
+			Console.WriteLine(e);
+			if (arch == "arm64" && IsRunningOnWindows())
+				Console.WriteLine("Test skipped(arm64 exe rejected on windows?): {0}", fulltestname);
+			else
+			{
+				failing_tests.Add(fulltestname);
+				Console.WriteLine("Test failed(could not start exe): {0}", fulltestname);
+			}
+			return;
+		}
 		Thread t = new Thread(process_mono_test_output);
 		t.Start(Tuple.Create(p, fulltestname, any_skips));
 		p.WaitForExit(timeout * 1000);

@@ -1,8 +1,6 @@
 # Tests that only pass with admin privs on Windows
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests:DateString_1
 MonoTests.Microsoft_VisualBasic.DateAndTimeTests
-MonoTests.Microsoft_VisualBasic.MyServices.RegistryProxyTest:TestSetValue
-MonoTests.Microsoft_VisualBasic.MyServices.RegistryProxyTest:TestSetValue2
 MonoTests.System.Net.Http.HttpClientTest:DisallowAutoRedirect
 MonoTests.System.Net.Http.HttpClientTest:GetByteArray_ServerError
 MonoTests.System.Net.Http.HttpClientTest:GetString_Many
@@ -271,10 +269,7 @@ MonoTests.System.Diagnostics.PerformanceCounterTest:PerformanceCounterCategory_C
 MonoTests.System.Diagnostics.PerformanceCounterTest:PerformanceCounter_CreateCounter_Count0
 MonoTests.System.Net.HttpListenerBugs:BindToAllInterfaces
 MonoTests.System.Net.HttpListenerBugs:BindToSingleInterface
-MonoTests.System.Net.HttpListenerBugs:ClosePort
-MonoTests.System.Net.HttpListenerBugs:Test_EmptyLineAtStart
 MonoTests.System.Net.HttpListenerBugs:Test_HostInUri
-MonoTests.System.Net.HttpListenerBugs:Test_MultipleConnections
 MonoTests.System.Net.HttpListenerBugs
 MonoTests.System.Net.HttpListenerRequestTest:HttpBasicAuthScheme
 MonoTests.System.Net.HttpListenerRequestTest:HttpRequestIsLocal

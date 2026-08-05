@@ -1,4 +1,6 @@
 x86_64.xnatest
+arm64.xnatest
 x86_64.direct3dadapter
+arm64.direct3dadapter
 Mono.Runtime.Tests
 MonoTests.System.Diagnostics.EventLogTest

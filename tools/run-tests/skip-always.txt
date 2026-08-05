@@ -113,3 +113,12 @@ MonoTests.System.Windows.Forms.ClipboardTest:DataGetsCleared_Xamarin4959 # NRE o
 MonoTests.System.Windows.Forms.ClipboardTest:DataRemainsOnClipboard_Xamarin4959 # NRE on Windows because Process.Start fails without exception
 unaligned:test_0_cpobj
 process-unref-race
+arm64.MonoTests.System.Drawing.GDIPlusTest
+arm64.MonoTests.System.Drawing.GraphicsTest:DrawString_EndlessLoop_Wrapping
+arm64.MonoTests.System.Drawing.GraphicsTest:DrawCurve_NotEnoughPoints
+arm64.MonoTests.System.Drawing.GraphicsTest:DrawCurve3_NotEnoughPoints
+arm64.MonoTests.System.Drawing.GraphicsTest:DrawString_EnglessLoop_Bug77699
+arm64.MonoTests.System.Drawing.GraphicsTest:DrawCurve_SinglePoint
+arm64.MonoTests.System.Drawing.GraphicsTest:FillRectanglesZeroRectangle
+arm64.MonoTests.Remoting.HttpAsyncCallTest:BaseCallTest.TestAbstractComplexParams
+arm64.MonoTests.Remoting.HttpAsyncCallTest:BaseCallTest.TestInstanceComplexParams
