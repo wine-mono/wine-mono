@@ -117,7 +117,6 @@ pinvoke2:test_0_marshal_stringbuilder_array
 pinvoke2:test_0_add_lib_to_name
 basic-simd
 basic-vectors
-unaligned
 basic-math:test_0_mathf_sin
 generics:test_0_variance_reflection
 gshared:test_0_span
@@ -2420,7 +2419,6 @@ MonoTests.System.Diagnostics.PerformanceCounterTest
 MonoTests.System.Diagnostics.ProcessTest:GetProcesses_StartTime
 MonoTests.System.Diagnostics.ProcessTest:Modules
 MonoTests.System.IO.FileSystemWatcherTest:CheckDefaults
-MonoTests.System.Net.DnsTest:GetHostAddresses_IPv6
 MonoTests.System.Net.DnsTest:GetHostByAddressString2
 MonoTests.System.Net.FileWebRequestTest:Async
 MonoTests.System.Net.FileWebRequestTest:Async_GetResponse_Failure
@@ -2996,3 +2994,5 @@ MonoTests.System.Threading.WaitHandleTest:WaitAnyWithSecondMutexAbandoned # some
 delegate2
 x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_1 # fails on arm64 windows
 WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:WrapTest # depends on system DPI
+MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenDefaultSignatureFormatValidatorIsNotUsedAndSignatureUsesTruncatedHmac_ReturnsTrue
+MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertToString # depends on locale

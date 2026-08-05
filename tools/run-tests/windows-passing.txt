@@ -21555,7 +21555,6 @@ MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:AsymmetricRSAMixedCaseA
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:AsymmetricRSAVerify
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignatureEmpty
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignatureEmptySafe
-MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenDefaultSignatureFormatValidatorIsNotUsedAndSignatureUsesTruncatedHmac_ReturnsTrue
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenDefaultSignatureFormatValidatorIsUsedAndSignatureUsesTruncatedHmac_ReturnsFalse
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenHmacOutputLengthIsInvalid_ThrowsFormatException
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenHmacOutputLengthIsNotMultipleOf8_ThrowsCryptographicException
@@ -31582,7 +31581,6 @@ MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertFrom_Invalid
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertFrom_InvalidValue_Invariant
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertFrom_Object
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertFrom_String
-MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertToString
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertToString_MaxValue
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertToString_MinValue
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertTo_DateTime
@@ -39546,6 +39544,15 @@ MonoTests.System.Net.HttpListenerBugs:ClosePort
 MonoTests.System.Net.HttpListenerBugs:Test_EmptyLineAtStart
 MonoTests.System.Net.HttpListenerBugs:Test_MultipleConnections
 Devices.NetworkTests:PingTest
+unaligned:test_0_ldobj_r4
+unaligned:test_0_ldobj_r8
+unaligned:test_0_ldobj
+unaligned:test_0_ldind
+unaligned:test_0_stobj
+unaligned:test_0_ldobj_stobj
+unaligned:test_0_cpblk
+unaligned:test_0_initblk
+MonoTests.System.Net.DnsTest:GetHostAddresses_IPv6
 # unreliable:
 MonoTests.System.Threading.Tasks.TaskTests:DoubleWaitTest
 MonoTests.System.Drawing.GDIPlusTest:CreateFont
@@ -39700,3 +39707,5 @@ MonoTests.System.Threading.WaitHandleTest:WaitAnyWithSecondMutexAbandoned # some
 delegate2
 x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_1 # fails on arm64 windows
 WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:WrapTest # depends on system DPI
+MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenDefaultSignatureFormatValidatorIsNotUsedAndSignatureUsesTruncatedHmac_ReturnsTrue
+MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertToString # depends on locale
