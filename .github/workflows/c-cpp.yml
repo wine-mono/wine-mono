@@ -10,7 +10,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -97,7 +97,7 @@ jobs:
 
   linux-test:
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: build
 
     steps:
@@ -108,7 +108,7 @@ jobs:
         sudo dpkg --add-architecture i386 1>&2
         wget -nc https://dl.winehq.org/wine-builds/winehq.key 1>&2
         sudo apt-key add winehq.key 1>&2
-        sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ jammy main' 1>&2
+        . /etc/lsb-release; sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/${DISTRIB_CODENAME}/winehq-${DISTRIB_CODENAME}.sources
         sudo apt update 1>&2
         sudo apt remove -y libnginx-mod-http-image-filter || true
         sudo apt remove -y nginx nginx-core || true
