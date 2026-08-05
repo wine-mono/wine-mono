@@ -2570,7 +2570,9 @@ x86_64.MonoTests.Microsoft.Build.BuildEngine.TargetTest
 x86_64.MonoTests.Microsoft.Build.Utilities.ToolTaskTest
 x86_64.MonoTests.System.Drawing.GraphicsTest:DrawCurve_LargeTension
 x86_64.MonoTests.System.Security.Cryptography.Pkcs.EnvelopedCmsTest:Decode
+arm64.MonoTests.System.Security.Cryptography.Pkcs.EnvelopedCmsTest:Decode
 x86_64.MonoTests.System.Security.Cryptography.Pkcs.EnvelopedCmsTest:Decrypt
+arm64.MonoTests.System.Security.Cryptography.Pkcs.EnvelopedCmsTest:Decrypt
 x86_64.MonoTests.Features.Serialization.PrimitiveTesterTest:TestByRef
 x86_64.MonoTests.Features.Serialization.PrimitiveTesterTest:TestByte
 x86_64.MonoTests.Features.Serialization.PrimitiveTesterTest:TestByteArray
@@ -2609,6 +2611,7 @@ x86_64.MonoTests.System.Web.UI.WebControls.ListViewTest:ListView_SetPageProperti
 x86_64.MonoTests.System.Windows.Forms.LabelTest
 x86_64.MonoTests.System.Xml.XmlReaderSettingsTests
 x86_64.MonoTests.System.XmlSerialization.XmlSerializerTests:TestSerializePrimitiveTypesContainer
+arm64.MonoTests.System.XmlSerialization.XmlSerializerTests:TestSerializePrimitiveTypesContainer
 x86_64.MonoTests.System.Net.SocketPermissionTest
 x86.localloc-noinit
 MonoTests.System.Threading.ManualResetEventSlimTests:SetAfterDisposeTest
@@ -2996,3 +2999,6 @@ x86_64.MonoTests.Microsoft_VisualBasic.FinancialTests:Rate_1 # fails on arm64 wi
 WineMono.Tests.System.Windows.Media.TextFormatting.TextFormatterTest:WrapTest # depends on system DPI
 MonoTests.System.Security.Cryptography.Xml.SignedXmlTest:CheckSignature_WhenDefaultSignatureFormatValidatorIsNotUsedAndSignatureUsesTruncatedHmac_ReturnsTrue
 MonoTests.System.ComponentModel.DateTimeOffsetConverterTests:ConvertToString # depends on locale
+MonoTests.System.ServiceModel.Channels.PeerTransportBindingElementTest:BuildInputChannelListener
+MonoTests.System.ServiceModel.Channels.PeerTransportBindingElementTest:BuildOutputChannelFactory
+MonoTests.System.ServiceModel.Channels.PeerTransportBindingElementTest:BuildReplyChannelListener

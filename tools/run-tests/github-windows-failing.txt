@@ -3,10 +3,6 @@ x86.direct3dadapter
 # NRE on github CI
 MonoTests.System.ComponentModel.DataAnnotations.EmailAddressAttributeTest
 MonoTests.System.ComponentModel.DataAnnotations.EmailAddressAttributeTest:IsValid
-# complains of unavailable PNRP resolver
-MonoTests.System.ServiceModel.Channels.PeerTransportBindingElementTest:BuildInputChannelListener
-MonoTests.System.ServiceModel.Channels.PeerTransportBindingElementTest:BuildOutputChannelFactory
-MonoTests.System.ServiceModel.Channels.PeerTransportBindingElementTest:BuildReplyChannelListener
 # fixture setup fails sometimes
 MonoTests.System.Security.Cryptography.RSACryptoServiceProviderTest:Bug79269
 MonoTests.System.Security.Cryptography.RSACryptoServiceProviderTest:Bug79320_OAEP
