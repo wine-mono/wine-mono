@@ -34,7 +34,6 @@ jobs:
         gcc --version 1>&2
         g++ --version 1>&2
         wine --version 1>&2
-        mono --version 1>&2
         ld --version 1>&2
         cmake --version 1>&2
         man libtool | tail -1 1>&2
