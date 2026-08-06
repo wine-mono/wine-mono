@@ -29,16 +29,12 @@ jobs:
         sudo apt install --install-recommends wine-devel-dev wine-devel -y 1>&2
     - name: Install Mono Build Dependencies
       run: |
-        sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF 1>&2
-        echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-        sudo apt update 1>&2
         sudo apt-get install libtool-bin gettext cmake libgdiplus zip g++ -y 1>&2
     - name: Check Environment
       run: |
         gcc --version 1>&2
         g++ --version 1>&2
         /opt/wine-devel/bin/wine --version 1>&2
-        mono --version 1>&2
         ld --version 1>&2
         cmake --version 1>&2
         man libtool | tail -1 1>&2
