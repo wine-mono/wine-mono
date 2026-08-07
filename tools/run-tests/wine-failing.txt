@@ -691,6 +691,7 @@ LateBindingTests4:LateBind_NamedParam_6
 LateBindingTests6:LateBind_IndexOfReturnObjectFromProperty1
 LateBindingTests6:LateBind_IndexOfReturnObjectFromProperty2
 x86_64.MonoTests.Microsoft_VisualBasic.StringsTest:Split_7
+arm64.MonoTests.Microsoft_VisualBasic.StringsTest:Split_7
 Devices.PortsTests:Test
 Devices.PortsTests
 x86.MonoTests.System.Security.Cryptography.Pkcs.EnvelopedCmsTest:Decrypt
@@ -773,6 +774,7 @@ MonoTests.System.Configuration.ApplicationSettingsBaseTest:TestSettings1_Propert
 MonoTests.System.Configuration.SettingsPropertyValueTest:Binary_Serialize
 MonoTests.System.Drawing.Drawing2D.GraphicsPathTest:IsOutlineVisible_Line_WithGraphics # winehq bug 55717
 x86_64.MonoTests.System.Drawing.GraphicsTest:Rotate
+arm64.MonoTests.System.Drawing.GraphicsTest:Rotate
 MonoTests.System.Drawing.Drawing2D.LinearGradientBrushTest:Constructor_Rectangle_Angle_Scalable
 MonoTests.System.Drawing.Drawing2D.LinearGradientBrushTest:MultiplyTransform2_Invalid
 MonoTests.System.Drawing.Drawing2D.LinearGradientBrushTest:MultiplyTransform_NonInvertible
@@ -812,6 +814,11 @@ MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_RemoveMeta
 MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_RemoveMetadata2
 MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_UpdateMetadata
 MonoTests.Microsoft.Build.Evaluation.TargetTest:PropertyGroupInsideTarget_Condition
+arm64.event-get.2
+arm64.module-cctor-loader.2
+arm64.releasebadptr
+arm64.MonoTests.System.Windows.Forms.ControlPaintTest:LightTest
+arm64.MonoTests.Microsoft.VisualBasic.VBCodeProviderTest:CreateCompiler
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit

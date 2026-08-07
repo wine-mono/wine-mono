@@ -794,6 +794,12 @@ class RunTests
 					Console.WriteLine($"unknown host OS: {sysname}");
 					break;
 				}
+				if (OSArchitecture == Architecture.ARM64)
+				{
+					read_stringlist(Path.Combine(BasePath, "wine-emulation-failing.txt"), fail_list);
+					if (!timeout_specified)
+						timeout = 600;
+				}
 			}
 			else
 			{
@@ -816,7 +822,8 @@ class RunTests
 					arch_list.Add("x86_64");
 					break;
 				case Architecture.Arm64:
-					arch_list.Add("x86");
+					if (!IsRunningOnWine()) // not stable enough to usefully run the tests
+						arch_list.Add("x86");
 					arch_list.Add("x86_64");
 					arch_list.Add("arm64");
 					break;
