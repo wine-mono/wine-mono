@@ -794,7 +794,7 @@ class RunTests
 					Console.WriteLine($"unknown host OS: {sysname}");
 					break;
 				}
-				if (OSArchitecture == Architecture.ARM64)
+				if (OSArchitecture() == Architecture.Arm64)
 				{
 					read_stringlist(Path.Combine(BasePath, "wine-emulation-failing.txt"), fail_list);
 					if (!timeout_specified)
