@@ -112,7 +112,6 @@ MonoTests.System.Security.Policy.PolicyStatementTest:Equals
 MonoTests.System.Security.SecurityElementTest:Attributes_Name_Invalid_MS
 MonoTests.System.Security.SecurityElementTest:FromString_CharacterReferences
 MonoTests.System.Security.SecurityElementTest:FromString_Quote_Delimiter_MS
-MonoTests.System.Threading.WaitHandleTest:DuplicateWaitAll
 MonoTests.System.Threading.WaitHandleTest:WaitAnyWithSecondMutexAbandoned
 MonoTests.Microsoft.Build.BuildEngine.BuildItemGroupTest:TestClone1
 MonoTests.Microsoft.Build.BuildEngine.BuildItemGroupTest:TestClone2
