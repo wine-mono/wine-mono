@@ -62,8 +62,7 @@ jobs:
         path: wine-mono-*-dbgsym.tar.xz
     - name: Check for unnecessary rebuild steps
       run: |
-        make -n image
-        make -q image
+        make -q image || make -nd image
     - name: Check for untracked files
       run: |
         ! (git clean -nd|grep .)
