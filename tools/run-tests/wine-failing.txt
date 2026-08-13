@@ -879,3 +879,4 @@ MonoTests.Remoting.IpcReflectionCallTest:BaseCallTest.TestAbstractComplexParams
 MonoTests.Remoting.IpcDelegateCallTest:BaseCallTest.TestAbstractComplexParams
 MonoTests.Remoting.IpcSyncCallTest:BaseCallTest.TestAbstractComplexParams
 MonoTests.Remoting.IpcAsyncCallTest:BaseCallTest.TestAbstractComplexParams
+MonoTests.System.IO.FileTest:LastWriteTimeSubMs
