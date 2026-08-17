@@ -25,7 +25,7 @@ PREFER_DWARF_SYMBOLS=0
 
 -include user-config.make
 
-MSI_VERSION=11.3.0
+MSI_VERSION=11.3.99
 
 # variables
 SRCDIR_ABS=$(shell cd $(SRCDIR); pwd)
