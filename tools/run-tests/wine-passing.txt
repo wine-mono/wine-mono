@@ -38523,7 +38523,6 @@ MonoTests.System.ServiceModel.ClientBaseTest:TestXmlAttributes
 arm64.MonoTests.System.Xml.Linq.XNodeWriterTest:Bug24300
 arm64.MonoTests.System.XmlSerialization.XmlReflectionImporterTests:Bug594490_SerializationOfXmlLangAttribute
 arm64.MonoTests.System.XmlSerialization.XmlSerializerTests:TestSerializeOptionalValueTypeContainer
-MonoTests.System.Threading.WaitHandleTest:DuplicateWaitAll
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
@@ -38592,3 +38591,4 @@ MonoTests.Remoting.IpcDelegateCallTest:BaseCallTest.TestAbstractComplexParams
 MonoTests.Remoting.IpcSyncCallTest:BaseCallTest.TestAbstractComplexParams
 MonoTests.Remoting.IpcAsyncCallTest:BaseCallTest.TestAbstractComplexParams
 MonoTests.System.IO.FileTest:LastWriteTimeSubMs
+MonoTests.System.Threading.WaitHandleTest:DuplicateWaitAll # depends on ntsync

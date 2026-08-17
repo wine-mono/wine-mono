@@ -1,5 +1,5 @@
 x86_64.appdomain-threadpool-unload
-x86_64.ckfinitetest
+x86_64.ckfiniteTest
 x86_64.exceptions:test_0_nonvirt_nullref_at_clause_start
 x86_64.generic-null-call.2
 x86_64.iltests:test_0_pop_side_effects
