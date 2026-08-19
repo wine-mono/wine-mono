@@ -41,6 +41,8 @@ class FixupArch
 				module.Attributes |= ModuleAttributes.Required32Bit;
 			module.Architecture = arch;
 			module.Runtime = TargetRuntime.Net_4_0;
+			module.Characteristics |= ModuleCharacteristics.DynamicBase;
+			module.Characteristics |= ModuleCharacteristics.NXCompat;
 
 			assembly.Write();
 		}

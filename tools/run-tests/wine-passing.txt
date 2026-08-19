@@ -38523,6 +38523,8 @@ MonoTests.System.ServiceModel.ClientBaseTest:TestXmlAttributes
 arm64.MonoTests.System.Xml.Linq.XNodeWriterTest:Bug24300
 arm64.MonoTests.System.XmlSerialization.XmlReflectionImporterTests:Bug594490_SerializationOfXmlLangAttribute
 arm64.MonoTests.System.XmlSerialization.XmlSerializerTests:TestSerializeOptionalValueTypeContainer
+arm64.event-get.2
+arm64.module-cctor-loader.2
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit

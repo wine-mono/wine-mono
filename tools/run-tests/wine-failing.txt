@@ -813,8 +813,6 @@ MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_RemoveMeta
 MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_RemoveMetadata2
 MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_UpdateMetadata
 MonoTests.Microsoft.Build.Evaluation.TargetTest:PropertyGroupInsideTarget_Condition
-arm64.event-get.2
-arm64.module-cctor-loader.2
 arm64.releasebadptr
 arm64.MonoTests.System.Windows.Forms.ControlPaintTest:LightTest
 arm64.MonoTests.Microsoft.VisualBasic.VBCodeProviderTest:CreateCompiler
