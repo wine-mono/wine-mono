@@ -36909,8 +36909,11 @@ mixedmode-call
 winemono-ccw
 thread-exit-bk
 x86_64.generic-array-exc.2
+arm64.generic-array-exc.2
 x86_64.iltests:test_0_newarr_i8
+arm64.iltests:test_0_newarr_i8
 x86_64.iltests
+arm64.iltests
 MonoTests.System.Net.Sockets.SocketTest:BeginAccept
 MonoTests.System.Net.Sockets.SocketTest:BeginAcceptClosed
 MonoTests.System.Net.Sockets.SocketTest:BeginAcceptData
@@ -38525,6 +38528,7 @@ arm64.MonoTests.System.XmlSerialization.XmlReflectionImporterTests:Bug594490_Ser
 arm64.MonoTests.System.XmlSerialization.XmlSerializerTests:TestSerializeOptionalValueTypeContainer
 arm64.event-get.2
 arm64.module-cctor-loader.2
+MonoTests.Microsoft_VisualBasic.StringsTest:Format_Numeric_Percent
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
