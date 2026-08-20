@@ -216,13 +216,8 @@ class RunTests
 		catch (Win32Exception e)
 		{
 			Console.WriteLine(e);
-			if (arch == "arm64" && IsRunningOnWindows())
-				Console.WriteLine("Test skipped(arm64 exe rejected on windows?): {0}", fulltestname);
-			else
-			{
-				failing_tests.Add(fulltestname);
-				Console.WriteLine("Test failed(could not start exe): {0}", fulltestname);
-			}
+			failing_tests.Add(fulltestname);
+			Console.WriteLine("Test failed(could not start exe): {0}", fulltestname);
 			return;
 		}
 		Thread t = new Thread(process_mono_test_output);
