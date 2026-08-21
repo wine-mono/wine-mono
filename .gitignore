@@ -1,6 +1,8 @@
 .*.swp
 /build/
 /image/
+/image-x86_64/
+/image-arm64/
 /llvm-mingw-20260616-ucrt-ubuntu-22.04-x86_64.tar.xz
 /llvm-mingw-20260616-ucrt-ubuntu-22.04-x86_64/
 /tests/
@@ -9,7 +11,9 @@
 /tools/ci/.podman-image-built
 /user-config.make
 /wine-mono-*.*.*-x86.msi
+/wine-mono-*.*.*-arm64.msi
 /wine-mono-*.*.*-x86.tar.xz
+/wine-mono-*.*.*-arm64.tar.xz
 /wine-mono-*.*.*-src.tar.xz
 /wine-mono-*.*.*-dbgsym.tar.xz
 /wine-mono-*.*.*-tests.zip
