@@ -71,3 +71,4 @@ MonoTests.System.Security.Cryptography.RSACryptoServiceProviderTest:VerifyHashNu
 MonoTests.System.Security.Cryptography.RSACryptoServiceProviderTest:KeyGeneration
 MonoTests.System.Security.Cryptography.RSACryptoServiceProviderTest:UseMachineKeyStore
 MonoTests.System.Security.Cryptography.RSACryptoServiceProviderTest
+MonoTests.System.Net.DnsTest:GetHostAddresses_IPv6
