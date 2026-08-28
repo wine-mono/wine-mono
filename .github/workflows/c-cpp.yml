@@ -157,7 +157,7 @@ jobs:
         while ! xdpyinfo; do sleep 1; jobs 1 || exit 1; done
         openbox & 1>&2
         /opt/wine-devel/bin/wine reg add 'HKCU\Software\Wine\WineDbg' /v ShowCrashDialog /t REG_DWORD /d 0 /f 1>&2
-        MONO_LOG_LEVEL=debug WINEDEBUG=module,loader /opt/wine-devel/bin/wine tests/run-tests.exe -fail-list:tests/github-wine-failing.txt MonoTests.System.Security.Cryptography.X509Certificates.X509Cert20Test:Pkcs12_5_Properties || printf 'Wine Mono tests failed\n' >> tests-failed
+        MONO_LOG_LEVEL=debug WINEDEBUG=module,loader,seh,tid,pid,relay,msvcrt /opt/wine-devel/bin/wine tests/run-tests.exe -fail-list:tests/github-wine-failing.txt MonoTests.System.Security.Cryptography.X509Certificates.X509Cert20Test:Pkcs12_5_Properties || printf 'Wine Mono tests failed\n' >> tests-failed
     - name: Check for test failures
       run: |
         if test -f tests-failed; then
@@ -175,7 +175,7 @@ jobs:
         brew update-reset
         brew update
         brew install coreutils # for gtimeout
-        brew install --cask wine@devel
+        brew install --cask --no-quarantine wine@devel
     - name: Download Wine Mono msi
       uses: actions/download-artifact@v4
       with:
