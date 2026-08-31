@@ -96,7 +96,7 @@ jobs:
 
   linux-test:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: build
 
     steps:
