@@ -197,9 +197,9 @@ mscorlib.dll: $(BUILDDIR)/mono-unix/Makefile
 
 $(BUILDDIR)/mono-unix/.installed: $(BUILDDIR)/mono-unix/.built $(BUILDDIR)/mono-unix/.built-win32
 	rm -rf $(BUILDDIR)/mono-unix-install $(BUILDDIR)/mono-win32-install
-	+$(MAKE) -C $(BUILDDIR_ABS)/mono-unix $(MONOLIST_OPTS) HOST_PLATFORM=win32 install
+	+$(MAKE) -C $(BUILDDIR_ABS)/mono-unix $(MONOLITE_OPTS) HOST_PLATFORM=win32 install
 	mv $(BUILDDIR)/mono-unix-install $(BUILDDIR)/mono-win32-install
-	+$(MAKE) -C $(BUILDDIR_ABS)/mono-unix $(MONOLIST_OPTS) install
+	+$(MAKE) -C $(BUILDDIR_ABS)/mono-unix $(MONOLITE_OPTS) install
 ifeq (1,$(ENABLE_DOTNET_CORE_WINFORMS))
 	rm -rf $(BUILDDIR)/mono-win32-install/lib/mono/gac/Accessibility
 	rm -rf $(BUILDDIR)/mono-win32-install/lib/mono/gac/System.Windows.Forms
