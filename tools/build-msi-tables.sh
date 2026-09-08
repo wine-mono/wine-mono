@@ -2,7 +2,7 @@
 
 set -e
 
-rm -f "${CABFILENAME}" "${TABLEDIR}/*.idt"
+rm -f "${CABFILENAME}" "${TABLEDIR}"/*.idt
 
 mkdir -p "${TABLEDIR}"
 cp "${TABLESRCDIR}"/*.idt "${TABLEDIR}"
