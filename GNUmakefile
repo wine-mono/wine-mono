@@ -306,9 +306,9 @@ $(BUILDDIR)/.imagedir-built-x86_64: $(IMAGEDIR_BUILD_TARGETS) $(IMAGEDIR_BUILD_T
 	+$(MAKE) IMAGEDIR="$(IMAGEDIR_x86_64)" imagedir-targets imagedir-targets-x86 imagedir-targets-x86_64
 	touch "$@"
 clean-imagedir-built-x86_64:
-	rm -f $(BUILDDIR)/.imagedir-built-arm64
-.PHONY: clean-imagedir-built-arm64
-clean-build: clean-imagedir-built-arm64
+	rm -f $(BUILDDIR)/.imagedir-built-x86_64
+.PHONY: clean-imagedir-built-x86_64
+clean-build: clean-imagedir-built-x86_64
 
 ifeq ($(ARCH),aarch64)
 image: image-arm64
