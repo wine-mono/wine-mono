@@ -18,7 +18,7 @@ class CscWrapper
 		return corlib.Location;
 	}
 
-	static void Main(string[] arguments)
+	static int Main(string[] arguments)
 	{
 		var addStdlib = true;
 
@@ -49,6 +49,7 @@ class CscWrapper
 		process.Start();
 		process.BeginOutputReadLine();
 		process.WaitForExit();
+		return process.ExitCode;
 	}
 }
 
