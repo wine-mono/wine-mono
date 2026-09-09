@@ -29,7 +29,7 @@ jobs:
         sudo apt install --install-recommends wine-devel-dev wine-devel -y 1>&2
     - name: Install Mono Build Dependencies
       run: |
-        sudo apt-get install libtool-bin gettext cmake libgdiplus zip g++ -y 1>&2
+        sudo apt-get install libtool-bin gettext cmake nasm libgdiplus zip g++ -y 1>&2
     - name: Check Environment
       run: |
         gcc --version 1>&2
