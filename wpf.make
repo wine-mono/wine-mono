@@ -28,7 +28,8 @@ endif
 
 $$(BUILDDIR)/wpfgfx-netcore-$(1)/.built: $$(WPF_SRCS) $$(MINGW_DEPS) $$(WPFGFX_EXTRADEPS_$(1))
 	mkdir -p $$(@D)
-	+$$(LLVM_MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1)) -O2" CXXFLAGS="$$(PDB_CFLAGS_$(1)) -O2" LDFLAGS="$$(PDB_LDFLAGS_$(1)) $$(WPFGFX_LDFLAGS_$(1))" $(MAKE) OBJDIR=$$(BUILDDIR_ABS)/wpfgfx-netcore-$(1) -C $$(SRCDIR_ABS)/wpf/src/Microsoft.DotNet.Wpf/src/WpfGfx "MINGW=$$(MINGW_$(1))" ARCH=$(1)
+	# keep -O0 here: -O2 drops the weak CalcProjectedBounds instantiation from 3dutils.o and breaks the link
+	+$$(LLVM_MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1)) $$(WPFGFX_LDFLAGS_$(1))" $(MAKE) OBJDIR=$$(BUILDDIR_ABS)/wpfgfx-netcore-$(1) -C $$(SRCDIR_ABS)/wpf/src/Microsoft.DotNet.Wpf/src/WpfGfx "MINGW=$$(MINGW_$(1))" ARCH=$(1)
 	touch "$$@"
 ifeq (1,$(ENABLE_DOTNET_CORE_WPF))
 ifeq (1,$(ENABLE_DOTNET_CORE_WPFGFX))
