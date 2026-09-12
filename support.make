@@ -51,6 +51,19 @@ $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/
 	cp $(BUILDDIR)/mono-win32-install/lib/mono/4.5/installutil.exe $@
 IMAGE_SUPPORT_FILES += $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework64/$(version)/installutil.exe)
 
+# regasm.exe
+$(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework/$(version)/regasm.exe): $(BUILDDIR)/mono-unix/.installed $(BUILDDIR)/fixuparch.exe $(SRCDIR)/tools/regasm/regasm.cs
+	mkdir -p $(@D)
+	$(MONO_ENV) mcs $(SRCDIR)/tools/regasm/regasm.cs -out:$@
+	$(MONO_ENV) mono $(BUILDDIR)/fixuparch.exe x86 $@
+IMAGE_SUPPORT_FILES += $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework/$(version)/regasm.exe)
+
+# Keep the Framework64 entry point AnyCPU, as with installutil.exe, for x86_64 and ARM64 runtimes.
+$(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework64/$(version)/regasm.exe): $(BUILDDIR)/mono-unix/.installed $(SRCDIR)/tools/regasm/regasm.cs
+	mkdir -p $(@D)
+	$(MONO_ENV) mcs $(SRCDIR)/tools/regasm/regasm.cs -out:$@
+IMAGE_SUPPORT_FILES += $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework64/$(version)/regasm.exe)
+
 # msbuild.exe
 $(foreach arch,Framework Framework64,$(BUILDDIR)/image-support/Microsoft.NET/$(arch)/v2.0.50727/msbuild.exe): $(BUILDDIR)/mono-unix/.installed $(SRCDIR)/tools/msbuild/msbuild.cs
 	mkdir -p $(@D)
