@@ -39593,6 +39593,10 @@ unaligned:test_0_initblk
 MonoTests.System.Net.DnsTest:GetHostAddresses_IPv6
 MonoTests.Microsoft_VisualBasic.StringsTest:FormatDateTime_LongDate
 MonoTests.Microsoft_VisualBasic.StringsTest:Format_Numeric_Percent
+pinvoke2:test_0_native_pointer_call_conventions
+pinvoke2:test_0_internal_call_signatures
+MonoTests.System.ServiceModel.NetHttpBindingTest:CreateBindingElements
+MonoTests.System.ServiceModel.NetHttpBindingTest:DefaultValues
 # unreliable:
 MonoTests.System.Threading.Tasks.TaskTests:DoubleWaitTest
 MonoTests.System.Drawing.GDIPlusTest:CreateFont

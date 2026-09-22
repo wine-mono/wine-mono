@@ -38529,6 +38529,10 @@ arm64.MonoTests.System.XmlSerialization.XmlSerializerTests:TestSerializeOptional
 arm64.event-get.2
 arm64.module-cctor-loader.2
 MonoTests.Microsoft_VisualBasic.StringsTest:Format_Numeric_Percent
+pinvoke2:test_0_native_pointer_call_conventions
+pinvoke2:test_0_internal_call_signatures
+MonoTests.System.ServiceModel.NetHttpBindingTest:CreateBindingElements
+MonoTests.System.ServiceModel.NetHttpBindingTest:DefaultValues
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
