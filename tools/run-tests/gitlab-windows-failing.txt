@@ -8,3 +8,4 @@ MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_32bppRgb
 MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_48bppRgb
 MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_64bppArgb
 MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_64bppPArgb
+MonoTests.System.Net.DnsTest:GetHostAddresses_IPv6
