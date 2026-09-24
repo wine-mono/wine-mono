@@ -812,6 +812,8 @@ MonoTests.Microsoft.Build.Evaluation.TargetTest:PropertyGroupInsideTarget_Condit
 arm64.releasebadptr
 arm64.MonoTests.System.Windows.Forms.ControlPaintTest:LightTest
 arm64.MonoTests.Microsoft.VisualBasic.VBCodeProviderTest:CreateCompiler
+x86.floatconv
+arm64.floatconv
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit

@@ -6,6 +6,7 @@ TEST_CS_EXE_SRCS = \
 	direct3dadapter.cs \
 	dllimport-cctor.cs \
 	dllimport-preload.cs \
+	floatconv.cs \
 	interactioncommand.cs \
 	marshalansi.cs \
 	mixedmode-apt.cs \

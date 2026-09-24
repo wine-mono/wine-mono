@@ -39597,6 +39597,7 @@ pinvoke2:test_0_native_pointer_call_conventions
 pinvoke2:test_0_internal_call_signatures
 MonoTests.System.ServiceModel.NetHttpBindingTest:CreateBindingElements
 MonoTests.System.ServiceModel.NetHttpBindingTest:DefaultValues
+floatconv
 # unreliable:
 MonoTests.System.Threading.Tasks.TaskTests:DoubleWaitTest
 MonoTests.System.Drawing.GDIPlusTest:CreateFont

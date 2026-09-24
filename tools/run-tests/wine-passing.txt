@@ -38540,6 +38540,7 @@ MonoTests.System.Configuration.ConfigurationPropertyTest:InvalidDefaultValueTest
 MonoTests.System.Configuration.ConfigurationPropertyTest:NullDefaultValueTest
 MonoTests.System.Drawing.GDIPlusTest:Encoder
 MonoTests.System.Drawing.GraphicsTest:MeasureLimits
+x86_64.floatconv
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
