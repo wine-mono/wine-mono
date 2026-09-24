@@ -64,6 +64,18 @@ $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/
 	$(MONO_ENV) mcs $(SRCDIR)/tools/regasm/regasm.cs -out:$@
 IMAGE_SUPPORT_FILES += $(foreach version,v2.0.50727 v4.0.30319,$(BUILDDIR)/image-support/Microsoft.NET/Framework64/$(version)/regasm.exe)
 
+$(BUILDDIR)/regasm-empty.dll: $(SRCDIR)/tools/regasm/empty-assembly.cs $(BUILDDIR)/mono-unix/.installed
+	$(MONO_ENV) mcs -target:library -out:$@ $<
+
+check-regasm: $(BUILDDIR)/regasm-empty.dll $(BUILDDIR)/image-support/Microsoft.NET/Framework64/v4.0.30319/regasm.exe
+	$(MONO_ENV) python3 $(SRCDIR)/tools/regasm/test-cli.py --assembly $(BUILDDIR)/regasm-empty.dll -- mono $(BUILDDIR_ABS)/image-support/Microsoft.NET/Framework64/v4.0.30319/regasm.exe
+.PHONY: check-regasm
+
+clean-regasm-tests:
+	rm -f $(BUILDDIR)/regasm-empty.dll
+.PHONY: clean-regasm-tests
+clean-build: clean-regasm-tests
+
 # msbuild.exe
 $(foreach arch,Framework Framework64,$(BUILDDIR)/image-support/Microsoft.NET/$(arch)/v2.0.50727/msbuild.exe): $(BUILDDIR)/mono-unix/.installed $(SRCDIR)/tools/msbuild/msbuild.cs
 	mkdir -p $(@D)
