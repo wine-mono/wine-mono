@@ -4,7 +4,7 @@ define MINGW_TEMPLATE +=
 # monodx
 $$(BUILDDIR)/monodx-$(1)/.built: $$(MONODX_SRCS) $$(MINGW_DEPS)
 	mkdir -p $$(@D)
-	+$$(MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1))" CXXFLAGS="$$(PDB_CFLAGS_$(1))" LDFLAGS="$$(PDB_LDFLAGS_$(1))" $(MAKE) -C $$(@D) -f $$(SRCDIR_ABS)/monoDX/monodx/Makefile ARCH=$(1) SRCDIR="$$(SRCDIR_ABS)/monoDX/monodx" "MINGW=$$(MINGW_$(1))"
+	+$$(MINGW_ENV) CFLAGS="$$(PDB_CFLAGS_$(1)) $$(OPT_CFLAGS)" CXXFLAGS="$$(PDB_CFLAGS_$(1)) $$(OPT_CFLAGS)" LDFLAGS="$$(PDB_LDFLAGS_$(1))" $(MAKE) -C $$(@D) -f $$(SRCDIR_ABS)/monoDX/monodx/Makefile ARCH=$(1) SRCDIR="$$(SRCDIR_ABS)/monoDX/monodx" "MINGW=$$(MINGW_$(1))"
 	touch "$$@"
 ifeq (1,$(ENABLE_MONODX))
 IMAGEDIR_BUILD_TARGETS_$(1) += $$(BUILDDIR)/monodx-$(1)/.built
