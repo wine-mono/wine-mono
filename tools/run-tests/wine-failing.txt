@@ -220,7 +220,6 @@ MonoTests.System.Drawing.FontFamilyTest:FontFamily_String_PrivateFontCollection
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_FirstTooFar
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_LengthTooLong
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_Alignment_DirectionVertical
-MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment_DirectionVertical
 MonoTests.System.Drawing.GraphicsTest:MeasureLimits
 MonoTests.System.Drawing.GraphicsTest:MeasureString_Bug76664
 MonoTests.System.Drawing.GraphicsTest:MeasureString_Bug80680
@@ -801,7 +800,6 @@ FilesSystemTest:Rename_5
 FilesSystemTest:SetAttr_2
 MonoTests.System.Windows.Forms.ContainerControlTest:AutoScaling
 MonoTests.System.Drawing.Imaging.JpegCodecTest:Save_64bppPArgb
-MonoTests.System.Windows.Forms.CursorTest:CursorPropertyTag
 MonoTests.Microsoft.Build.Evaluation.TargetTest:BuildProjectWithItemGroupInsideTarget
 MonoTests.Microsoft.Build.Evaluation.TargetTest:BuildProjectWithItemGroupInsideTarget2
 MonoTests.Microsoft.Build.Evaluation.TargetTest:ItemGroupInsideTarget_Batching

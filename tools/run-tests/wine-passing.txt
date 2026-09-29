@@ -38533,6 +38533,9 @@ pinvoke2:test_0_native_pointer_call_conventions
 pinvoke2:test_0_internal_call_signatures
 MonoTests.System.ServiceModel.NetHttpBindingTest:CreateBindingElements
 MonoTests.System.ServiceModel.NetHttpBindingTest:DefaultValues
+MonoTests.System.Globalization.CultureInfoTest:HackDefaultCurrentCulture
+MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment_DirectionVertical
+MonoTests.System.Windows.Forms.CursorTest:CursorPropertyTag
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
