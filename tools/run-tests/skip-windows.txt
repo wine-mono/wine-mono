@@ -4,3 +4,4 @@ x86_64.direct3dadapter
 arm64.direct3dadapter
 Mono.Runtime.Tests
 MonoTests.System.Diagnostics.EventLogTest
+MonoTests.System.Globalization.CultureInfoTest:HackDefaultCurrentCulture # works only when run first in the process, and breaks ThreadTest:TestCtor1
