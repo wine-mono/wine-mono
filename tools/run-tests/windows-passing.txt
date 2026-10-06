@@ -39641,6 +39641,8 @@ MonoTests.Microsoft.Build.Tasks.GetFrameworkSdkPathTest
 MonoTests.Microsoft.Build.Evaluation.ProjectTest:ProperiesMustBeDistinct
 MonoTests.Microsoft.Build.Execution.BuildParametersTest:GetToolset
 MonoTests.Microsoft.Build.Execution.BuildParametersTest
+MonoTests.System.Configuration.ConfigurationPropertyTest:InvalidDefaultValueTest
+MonoTests.System.Configuration.ConfigurationPropertyTest:NullDefaultValueTest
 # depends on whether MSMQ is installed on host:
 MonoTests.Mono.Messaging.RabbitMQ.FailuresTest:SendInTransactionWithPathNotSet
 MonoTests.Mono.Messaging.RabbitMQ.FailuresTest:SendWithPathNotSet

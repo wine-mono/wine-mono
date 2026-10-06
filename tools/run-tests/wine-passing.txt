@@ -38536,6 +38536,8 @@ MonoTests.System.ServiceModel.NetHttpBindingTest:DefaultValues
 MonoTests.System.Globalization.CultureInfoTest:HackDefaultCurrentCulture
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAlignment_DirectionVertical
 MonoTests.System.Windows.Forms.CursorTest:CursorPropertyTag
+MonoTests.System.Configuration.ConfigurationPropertyTest:InvalidDefaultValueTest
+MonoTests.System.Configuration.ConfigurationPropertyTest:NullDefaultValueTest
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit
