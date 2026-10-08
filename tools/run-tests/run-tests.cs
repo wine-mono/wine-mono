@@ -737,6 +737,12 @@ class RunTests
 		{
 			read_testlist(Path.Combine(BasePath, "skip-always.txt"), skip_list);
 
+			if (OSArchitecture() == Architecture.Arm64)
+			{
+				if (!timeout_specified)
+					timeout = 600;
+			}
+
 			if (IsRunningOnWine())
 			{
 				read_testlist(Path.Combine(BasePath, "windows-failing.txt"), skip_list);
@@ -792,8 +798,6 @@ class RunTests
 				if (OSArchitecture() == Architecture.Arm64)
 				{
 					read_stringlist(Path.Combine(BasePath, "wine-emulation-failing.txt"), fail_list);
-					if (!timeout_specified)
-						timeout = 600;
 				}
 			}
 			else
