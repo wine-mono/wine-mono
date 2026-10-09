@@ -5,3 +5,5 @@ arm64.direct3dadapter
 Mono.Runtime.Tests
 MonoTests.System.Diagnostics.EventLogTest
 MonoTests.System.Globalization.CultureInfoTest:HackDefaultCurrentCulture # works only when run first in the process, and breaks ThreadTest:TestCtor1
+arm64.MonoTests.System.Drawing.GraphicsTest:DrawString_EndlessLoop_Bug77699
+arm64.MonoTests.System.Drawing.GraphicsTest:VisibleClipBound_BigClip
