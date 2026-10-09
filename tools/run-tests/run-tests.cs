@@ -809,6 +809,10 @@ class RunTests
 				else
 					read_stringlist(Path.Combine(BasePath, "windows-admin.txt"), fail_list);
 				read_testlist(Path.Combine(BasePath, "skip-windows.txt"), skip_list);
+				if (OSArchitecture() == Architecture.Arm64)
+				{
+					read_stringlist(Path.Combine(BasePath, "windows-emulation-failing.txt"), fail_list);
+				}
 			}
 			
 			if (arch_list.Count == 0) {

@@ -1,0 +1,37 @@
+x86.iltests:test_0_long_to_r8_un_overflow
+x86.thread-suspend-suspended # times out
+x86.MonoTests.System.ConvertTest:ChangeTypeFromInvalidDouble # double.NegativeInfinity -> long doesn't throw
+x86.MonoTests.System.ConvertTest:TestToInt64 #L26 doesn't throw
+x86.MonoTests.System.DoubleFormatterTest:NegativeRoundtrip
+x86.MonoTests.System.DoubleFormatterTest:Roundtrip
+x86.MonoTests.System.DoubleFormatterTest:Roundtrip_ExactStringFormat
+x86.MonoTests.System.DoubleFormatterTest:TestFormatStringsN1
+x86.MonoTests.System.DoubleFormatterTest:TestFormatStringsN1_Fixed
+x86.MonoTests.System.DoubleFormatterTest:TestFormatStringsN2
+x86.MonoTests.System.DoubleTest:LongLongValueRoundtrip
+x86.MonoTests.System.DoubleTest:Parse
+x86.MonoTests.System.MathTest:TestIEEERemainder
+x86.MonoTests.System.NumberFormatterTest:Test11004
+x86.MonoTests.System.NumberFormatterTest:Test11005
+x86.MonoTests.System.NumberFormatterTest:Test11009
+x86.MonoTests.System.NumberFormatterTest:Test11025
+x86.MonoTests.System.NumberFormatterTest:Test11026
+x86.MonoTests.System.NumberFormatterTest:Test11027
+x86.MonoTests.System.NumberFormatterTest:Test11029
+x86.MonoTests.System.NumberFormatterTest:Test12025
+x86.MonoTests.System.NumberFormatterTest:Test13004
+x86.MonoTests.System.NumberFormatterTest:Test13005
+x86.MonoTests.System.NumberFormatterTest:Test13009
+x86.MonoTests.System.NumberFormatterTest:Test13024_CarryPropagation
+x86.MonoTests.System.NumberFormatterTest:Test13026
+x86.MonoTests.System.NumberFormatterTest:Test13027
+x86.MonoTests.System.NumberFormatterTest:Test13028
+x86.MonoTests.System.NumberFormatterTest:Test14026
+x86.MonoTests.System.NumberFormatterTest:Test15026
+x86.MonoTests.System.NumberFormatterTest:Test15027
+x86.MonoTests.System.NumberFormatterTest:TestRoundtrip
+x86.MonoTests.System.NumberFormatterTest:TestToStringOverflow
+x86.MonoTests.System.Xml.Linq.XAttributeTest:CastExtremes
+x86.MonoTests.System.Xml.Linq.XAttributeTest:CastNumbers
+x86.MonoTests.System.Xml.Linq.XElementTest:CastExtremes
+x86.MonoTests.System.Xml.Linq.XElementTest:CastNumbers
