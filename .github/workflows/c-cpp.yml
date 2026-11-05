@@ -17,8 +17,6 @@ jobs:
       with:
           submodules: recursive
 
-    - name: Remove packages require EULA
-      run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y 1>&2
     - name: Install Wine
       run: |
         sudo dpkg --add-architecture i386 1>&2
@@ -100,8 +98,6 @@ jobs:
     needs: build
 
     steps:
-    - name: Remove packages require EULA
-      run: sudo apt remove msodbcsql17 linux-azure linux-cloud-tools-azure linux-headers-azure linux-image-azure linux-tools-azure -y 1>&2
     - name: Install Wine Build Dependencies
       run: |
         sudo apt update 1>&2
