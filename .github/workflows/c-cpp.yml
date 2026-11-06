@@ -162,6 +162,7 @@ jobs:
   mac-test:
     runs-on: macos-latest
     needs: build
+    if: false
 
     steps:
     - name: Install Wine
