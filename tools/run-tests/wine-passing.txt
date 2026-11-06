@@ -38538,6 +38538,8 @@ MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_LineAl
 MonoTests.System.Windows.Forms.CursorTest:CursorPropertyTag
 MonoTests.System.Configuration.ConfigurationPropertyTest:InvalidDefaultValueTest
 MonoTests.System.Configuration.ConfigurationPropertyTest:NullDefaultValueTest
+MonoTests.System.Drawing.GDIPlusTest:Encoder
+MonoTests.System.Drawing.GraphicsTest:MeasureLimits
 # definitely unreliable:
 delegate2
 MonoTests.System.Threading.ThreadLocalTests:DisposeOnThreadExit

@@ -220,7 +220,6 @@ MonoTests.System.Drawing.FontFamilyTest:FontFamily_String_PrivateFontCollection
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_FirstTooFar
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_LengthTooLong
 MonoTests.System.Drawing.GraphicsTest:MeasureCharacterRanges_StringFormat_Alignment_DirectionVertical
-MonoTests.System.Drawing.GraphicsTest:MeasureLimits
 MonoTests.System.Drawing.GraphicsTest:MeasureString_Bug76664
 MonoTests.System.Drawing.GraphicsTest:MeasureString_Bug80680
 MonoTests.System.Drawing.GraphicsTest:Multiply_NonInvertibleMatrix
@@ -630,7 +629,6 @@ MonoTests.System.IO.Pipes.PipeSecurityTest:NamedPipePermissionsActuallyWorkAsync
 MonoTests.System.Drawing.GDIPlusTest:CreatePen
 MonoTests.System.Drawing.GDIPlusTest:CreateRegionRgnData
 MonoTests.System.Drawing.GDIPlusTest:DrawingOperations
-MonoTests.System.Drawing.GDIPlusTest:Encoder
 MonoTests.System.Drawing.GDIPlusTest:Format16bppGrayScale_GetSetPixel
 MonoTests.System.Drawing.GDIPlusTest:GdipCreateBitmapFromFile_FileNotFound
 MonoTests.System.Drawing.GDIPlusTest:GdipLoadImageFromFile_FileNotFound
