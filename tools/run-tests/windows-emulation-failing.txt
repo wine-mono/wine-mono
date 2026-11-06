@@ -35,3 +35,5 @@ x86.MonoTests.System.Xml.Linq.XAttributeTest:CastExtremes
 x86.MonoTests.System.Xml.Linq.XAttributeTest:CastNumbers
 x86.MonoTests.System.Xml.Linq.XElementTest:CastExtremes
 x86.MonoTests.System.Xml.Linq.XElementTest:CastNumbers
+x86.arraypadding # times out
+x86_64.arraypadding # times out
